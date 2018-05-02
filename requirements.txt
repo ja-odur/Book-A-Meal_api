@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 flask==0.12.2
 flasgger==0.8.3
 pytest==3.5.1
@@ -26,4 +25,4 @@ requests==2.18.4
 six==1.11.0
 urllib3==1.22
 Werkzeug==0.14.1
->>>>>>> ft-api-doc-157174275
+
