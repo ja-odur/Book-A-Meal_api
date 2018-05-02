@@ -1,0 +1,32 @@
+Endpoint to signin users, both customers and caterers
+---
+
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "category"
+        - "username"
+        - "password"
+      properties:
+        category:
+          type: "string"
+          example: "user or caterer"
+        username:
+          type: "string"
+          example: "johndoe"
+        password:
+          type: "string"
+          format: password
+          example: 12345
+
+responses:
+  201:
+    description: A message indicating the user signup success.
+    schema:
+      type: object
+    examples:
+      { "message": "user successfully logged in." }

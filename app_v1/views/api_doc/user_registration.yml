@@ -1,0 +1,45 @@
+Endpoint to signup users, both customers and caterers
+---
+
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "category"
+        - "email"
+        - "username"
+        - "password"
+        - "confirm_password"
+        - "address"
+      properties:
+        category:
+          type: "string"
+          example: "user or caterer"
+        email:
+          type: "string"
+          example: "johndoe@emaple.com"
+        username:
+          type: "string"
+          example: "johndoe"
+        password:
+          type: "string"
+          format: password
+          example: 12345
+        confirm_password:
+          type: "string"
+          format: password
+          example: 12345
+        address:
+          type: "string"
+          example: "address1"
+
+responses:
+  201:
+    description: A message indicating the user signup success.
+    schema:
+      type: object
+    examples:
+      { "message": "User johndoe successfully signed up." }

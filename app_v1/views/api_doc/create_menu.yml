@@ -1,0 +1,28 @@
+Endpoint that enable caterer to create a menu.
+---
+
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "menu"
+      properties:
+        menu:
+          type: "array"
+          example: [[1, 'rice and posho', 5000], [2, 'rice and posho', 5000], [3, 'rice and posho', 5000]]
+
+responses:
+  201:
+    description: A message showing that the menu is successfully created.
+    schema:
+      type: object
+    examples:
+      {"message": "Menu [[1, 'rice and posho', 5000], [2, 'rice and posho', 5000], [3, 'rice and posho', 5000]] successfully added."}
+  403:
+     description: If a not well formtted object is sent.
+     schema:
+       type: object
+     examples: { "message": "Bad data format" }

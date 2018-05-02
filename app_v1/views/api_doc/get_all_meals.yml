@@ -1,0 +1,36 @@
+Endpoint that enable a caterer to get all the available meals inorder to create menu
+---
+
+responses:
+  201:
+    description: Returns an object containing all meals from a particular caterer.
+    schema:
+      type: object
+    examples:
+      {
+  "message": [
+    [
+      1,
+      "rice and meat",
+      5000
+    ],
+    [
+      2,
+      "rice and meat",
+      5000
+    ],
+    [
+      3,
+      "rice and meat",
+      5000
+    ],
+
+      ]
+    }
+
+  404:
+    description: No resource found.
+    schema:
+      type: object
+    examples:
+      { "message": "Resource not found" }

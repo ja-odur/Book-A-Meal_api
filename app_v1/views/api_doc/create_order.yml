@@ -1,0 +1,28 @@
+Endpoint that enable a customer to place an order.
+---
+
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "meal"
+        - "caterer"
+      properties:
+        meal:
+          type: "array"
+          example: [1, 'rice and posho', 5000]
+
+        caterer:
+          type: "string"
+          example: "default"
+
+responses:
+  201:
+    description: A message showing that the order is successfully placed.
+    schema:
+      type: object
+    examples:
+      {"message": "Order {'meal': [1, 'rice and posho', 5000], 'caterer': 'default'} successfully placed."}

@@ -1,0 +1,25 @@
+Endpoint that enable caterer to delete a meal.
+---
+
+parameters:
+  - name: meal_id
+    in: path
+    required: true
+    properties:
+       meal_id:
+        type: "int"
+    default: 1
+
+responses:
+  201:
+    description: A message showing that the meal is deleted.
+    schema:
+      type: object
+    examples:
+      {"message": "meal deleted"}
+  404:
+     description: If the meal is not found.
+     schema:
+       type: object
+     examples:
+       {"message": "deletion failed"}

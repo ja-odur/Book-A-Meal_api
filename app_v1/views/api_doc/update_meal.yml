@@ -1,0 +1,36 @@
+Endpoint that enable caterers to update either the name or price of a meal.
+---
+
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "price"
+      properties:
+        price:
+          type: "int"
+          example: 6000
+  - name: meal_id
+    in: path
+    required: true
+    properties:
+       meal_id:
+        type: "int"
+    default: 1
+
+responses:
+  201:
+    description: A message showing the updated item.
+    schema:
+      type: object
+    examples:
+      {
+        "message": [
+        1,
+        "meat and rice",
+        6000
+        ]
+        }

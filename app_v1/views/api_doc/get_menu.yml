@@ -1,0 +1,11 @@
+Endpoint returns available menu
+---
+
+responses:
+  201:
+    description: Returns an object containing all meals from a particular caterer.
+    schema:
+      type: object
+    examples:
+      {message: "Todays menu {'default': [[1, 'rice and posho', 5000], [2, 'rice and posho', 5000],
+      [3, 'rice and posho', 5000]]}." }
