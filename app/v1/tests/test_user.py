@@ -57,7 +57,7 @@ class TestSuccesfulRegistration(unittest.TestCase):
                         confirm_password='12345', address='address1')
         login_data = dict(category='user', username='default', password='12345')
 
-        expected_response_message = 'user successfully logged in'
+
         register_user = self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(reg_data))
 
         get_response = self.tester.post('api/v1/auth/login', content_type="application/json", data=json.dumps(login_data))
@@ -65,8 +65,8 @@ class TestSuccesfulRegistration(unittest.TestCase):
         response_results = json.loads(get_response.data.decode())
         print(get_response.status_code)
 
-        self.assertEqual(get_response.status_code, 401)
-        self.assertEqual(expected_response_message, response_results['message'])
+        self.assertEqual(get_response.status_code, 200)
+        self.assertIn('token', response_results)
 
 if __name__ == '__main__':
     unittest.main()
