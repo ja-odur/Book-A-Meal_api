@@ -1,0 +1,5 @@
+[
+  "test_menu.py::TestMenu::test_create_menu_failure",
+  "test_menu.py::TestMenu::test_create_menu_successful",
+  "test_menu.py::TestMenu::test_get_menu"
+]
