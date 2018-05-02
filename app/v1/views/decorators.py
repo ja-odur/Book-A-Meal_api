@@ -2,6 +2,7 @@ from functools import wraps
 from flask import request, make_response, jsonify
 import jwt
 
+SECRET_KEY ='secretKey4512yek'
 
 def token_required(function):
     @wraps(function)
@@ -12,12 +13,31 @@ def token_required(function):
             token = request.headers['access-token']
 
         if not token:
-            return make_response(jsonify(dict(error='Token required')), 401)
+            return make_response(jsonify(dict(message='Token required')), 401)
 
         try:
-            data = jwt.decode(token, 'SECRET_KEY_1738')
-        except:
-            pass
+            raw_data = jwt.decode(token, SECRET_KEY)
+        except :
+            return make_response(jsonify(dict(message='Token is invalid ')), 401)
+        else:
+            current_user = raw_data.split(',')
+
+        return function(current_user, *args, **kwargs)
+    return decorated
+
+
+def admin_required(category):
+    def admin_validator(function):
+        @wraps(function)
+        def decorator(*args, **kwargs):
+            if category != 'caterer':
+                return make_response(jsonify(dict(message='Action not allowed this user')), 401)
+
+            return function(*args, **kwargs)
+
+        return decorator
+
+
 
 
 
