@@ -1,5 +1,8 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
+from run import app
+import jwt
+import datetime
 
 from app.v1.models.models import DbUsers, DbCaterers
 
@@ -47,7 +50,15 @@ def login():
         if user_info:
             user_password = user_info['password']
             if user_password == data['password']:
-                return make_response(jsonify({'message':'user successfully logged in'}), 401)
+                category = 'user'
+                email = user_info['email']
+                username = user_info['username']
+                token_string = str(category)+','+str(username)+','+str(email)
+                token = jwt.encode({'info': token_string,
+                                    'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+                                        app.config['SECRET_KEY'])
+                return make_response(jsonify(dict(token=token.decode('UTF-8'))), 200)
+                # return make_response(jsonify({'message':'user successfully logged in'}), 200)
             else:
                 return make_response(jsonify({'message': 'Invalid Username or Password'}), 401)
         else:
@@ -59,7 +70,7 @@ def login():
         if caterer_info:
             user_password = caterer_info['password']
             if user_password == data['password']:
-                return make_response(jsonify({'message': 'user successfully logged in'}), 401)
+                return make_response(jsonify({'message': 'user successfully logged in'}), 200)
             else:
                 return make_response(jsonify({'message': 'Invalid Username or Password'}), 201)
         else:
