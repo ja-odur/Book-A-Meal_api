@@ -1,6 +1,7 @@
-from flask import jsonify, request, make_response, Blueprint
 from flasgger import swag_from
-from app_v1.models.models import DbMenu
+from flask import jsonify, request, make_response, Blueprint
+
+from app.v1.models.models import DbMenu
 
 menu_db = DbMenu()
 

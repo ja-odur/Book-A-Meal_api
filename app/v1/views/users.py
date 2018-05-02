@@ -1,7 +1,7 @@
-from flask import jsonify, request, make_response, Blueprint
 from flasgger import swag_from
+from flask import jsonify, request, make_response, Blueprint
 
-from app_v1.models.models import DbUsers, DbCaterers
+from app.v1.models.models import DbUsers, DbCaterers
 
 user_db = DbUsers()
 caterer_db = DbCaterers()
