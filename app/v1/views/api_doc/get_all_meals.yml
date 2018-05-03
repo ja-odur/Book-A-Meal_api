@@ -1,6 +1,12 @@
 Endpoint that enable a caterer to get all the available meals inorder to create menu
 ---
-
+parameters:
+  - name: access-token
+    in: header
+    required: true
+    properties:
+       access-token:
+        type: "string"
 responses:
   201:
     description: Returns an object containing all meals from a particular caterer.
