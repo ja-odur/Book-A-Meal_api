@@ -30,7 +30,7 @@ through the link that looks like **`http://localhost:5000/apidocs/`**. Where the
 which the application is running. click the like for a demo if the applicatioon is 
 running on port 5000.
 
-Demo link  |
+Documentation  |
 ---       | 
 [LINK](http://localhost:5000/apidocs/) |
 
