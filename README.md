@@ -7,9 +7,9 @@ menus.
 
 The app is built with ___python/Flask___ for its backend.
 
-##__How to setup the api backend__
+## __How to setup the api backend__
 
-##___Prerequisites___
+## ___Prerequisites___
 
 * `Git`
 
@@ -17,12 +17,12 @@ The app is built with ___python/Flask___ for its backend.
 
 `
 
-##__for quick start__
+## __for quick start__
 
 
 
 
-##__How to use the api__
+##  __How to use the api__
 This `api` was documented flasgger swagger.
 After starting the application, the documention, if the you are working on the same machine on which
 the application is running `(localhost)`. Then the api documentation can be acccessed
