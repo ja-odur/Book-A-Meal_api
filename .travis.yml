@@ -11,7 +11,7 @@ install:
 
 # command to run tests
 script:
-  - coverage run --source='app/' pytest app/v1/tests
+  - python3 -m pytest
   - coverage report
 
 # generate code climate report
