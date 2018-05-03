@@ -5,14 +5,16 @@ python:
 
 install:
   - pip install -r requirements.txt
+  - pip install nose
   - pip install coverage
   - pip install coveralls
 
 
 # command to run tests
 script:
-  - python3 -m pytest
-  - coverage report
+#  - python3 -m pytest
+#  - coverage report
+  - nosetests --with-coverage
 
 # generate code climate report
 after_script:
