@@ -1,6 +1,7 @@
 
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
+from app.v1.views.decorators import token_required
 
 from app.v1.models.models import DbOrders
 
@@ -11,11 +12,13 @@ orders = Blueprint('orders', __name__, url_prefix='/api/v1')
 
 @orders.route('/orders', methods=['POST'])
 @swag_from('api_doc/create_order.yml')
-def create_order():
+@token_required()
+def create_order(current_user):
     data = request.get_json()
+    customer = current_user[1]
     try:
         if data['caterer'] and data['meal']:
-            new_order = orders_db.add_order(customer='default', caterer=data['caterer'], meal=data['meal'])
+            new_order = orders_db.add_order(customer=customer, caterer=data['caterer'], meal=data['meal'])
 
             if new_order:
                 message = 'Order {} successfully placed.'.format(data)
@@ -28,15 +31,17 @@ def create_order():
 
 @orders.route('/orders/<int:meal_id>', methods=['PUT'])
 @swag_from('api_doc/modify_order.yml')
-def modify_order(meal_id):
+@token_required()
+def modify_order(current_user, meal_id):
     data = request.get_json()
     try:
-        print('caterer', data['caterer'])
-        print('meal', data['meal'])
-        print('order list', orders_db.orders_caterers)
+        # print('caterer', data['caterer'])
+        # print('meal', data['meal'])
+        # print('order list', orders_db.orders_caterers)
+        customer = current_user[1]
         if data['caterer'] and data['meal']:
 
-            new_order = orders_db.modify_order(customer='default', caterer=data['caterer'], order_id=meal_id,
+            new_order = orders_db.modify_order(customer=customer, caterer=data['caterer'], order_id=meal_id,
                                                meal=data['meal'])
             print('if start')
             print('new order', new_order)
@@ -54,8 +59,10 @@ def modify_order(meal_id):
 
 @orders.route('/orders', methods=['GET'])
 @swag_from("api_doc/get_all_orders.yml")
-def get_all_orders():
-    orders_per_caterer = orders_db.get_orders(caterer='default10')
+@token_required(admin=True)
+def get_all_orders(current_user):
+    caterer = current_user[1]
+    orders_per_caterer = orders_db.get_orders(caterer=caterer)
     if orders_per_caterer:
         message = 'The request was successfull'
         return make_response(jsonify(message=message, content=orders_per_caterer), 200)
