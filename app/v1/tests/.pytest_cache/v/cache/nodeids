@@ -1,6 +1,6 @@
 [
-  "test_user.py::TestSuccesfulRegistration::test_duplicate_user_sign_up",
-  "test_user.py::TestSuccesfulRegistration::test_login_user",
-  "test_user.py::TestSuccesfulRegistration::test_successful_caterer_registration",
-  "test_user.py::TestSuccesfulRegistration::test_successful_user_registration"
+  "test_user.py::TestSuccessfulRegistration::test_duplicate_user_sign_up",
+  "test_user.py::TestSuccessfulRegistration::test_login_user",
+  "test_user.py::TestSuccessfulRegistration::test_successful_caterer_registration",
+  "test_user.py::TestSuccessfulRegistration::test_successful_user_registration"
 ]

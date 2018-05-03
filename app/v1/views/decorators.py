@@ -4,6 +4,7 @@ import jwt
 
 SECRET_KEY ='secretKey4512yek'
 
+
 def token_required(admin=False):
     def token_required_decorator(function):
         @wraps(function)

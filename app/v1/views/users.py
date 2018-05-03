@@ -92,7 +92,7 @@ def login():
                 token_string = str(category) + ',' + str(username) + ',' + str(email)
                 token = jwt.encode({'info': token_string,
                                     'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
-                                   SECRET_KEY)
+                                   SECRET_KEY,algorithm='HS256')
                 return make_response(jsonify(dict(token=token.decode('UTF-8'))), 200)
 
             else:
