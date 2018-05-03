@@ -20,8 +20,8 @@ The app is built with ___python/Flask___ for its backend.
 * After installing the **`prerequisites`** above, clone the repository Develop branch
 using this command git `clone -b Develop https://github.com/jaodur/Book-A-Meal_api.git`
 * Change into the newly cloned repo through `cd Book-A-Meal_api`
-* Install the required dependencies through command ``pip3 install -r requirements.txt`
-**`Note`** These dependencies can be installed in virtual environment, by running the same
+* Install the required dependencies through command `pip3 install -r requirements.txt`
+ **`Note`** These dependencies can be installed in virtual environment, by running the same
 command above after installing and activiting a `Python` virtual environment.
 [Guide to installing virtual environment](https://virtualenv.pypa.io/en/stable/installation/)
 
