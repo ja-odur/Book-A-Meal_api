@@ -36,39 +36,33 @@ class DbOrders:
             self.orders_caterers[caterer].append(order_caterer_format)
             set_caterer_order = True
 
-        if(set_customer_order and set_caterer_order):
+        if set_customer_order and set_caterer_order:
             return True
         return False
 
     def modify_order(self, customer, caterer, order_id, meal):
         time_now = datetime.datetime.now()
         try:
-            # print('in try block')
             orders = self.orders_customers[customer]
             orders_caterers = self.orders_caterers[caterer]
         except KeyError:
             pass
         else:
-            # print('in try-except-else block')
             match_found = False
             matched_caterer_found = False
             counter_customer = 0
             counter_caterer = 0
 
             while counter_customer < len(orders):
-                # print('in loop_customer')
                 if orders[counter_customer]['order_id'] == order_id:
                     match_found = True
-                    # print('found_customer')
                     break
                 counter_customer += 1
 
             while counter_caterer < len(orders_caterers):
-                # print('inloop_caterer')
                 if orders_caterers[counter_caterer]['order_id'] == order_id and \
                         orders_caterers[counter_caterer]['customer'] == customer:
                     matched_caterer_found = True
-                    # print('found_caterer')
                     break
                 counter_caterer += 1
 
@@ -82,11 +76,8 @@ class DbOrders:
                     return True
                 else:
                     return False
-                    # return 'elapsed time'
 
-        # return 'end hit'
         return False
-
 
     def get_orders(self, caterer):
         try:

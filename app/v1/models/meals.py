@@ -3,7 +3,6 @@
 class DbMeals:
     def __init__(self):
         self.meals = dict()
-        # self.id
 
     def add_meal(self, caterer, meal_name, price):
         try:
@@ -15,7 +14,6 @@ class DbMeals:
             meals.append(meal)
 
             self.meals[caterer] = meals
-            # self.id += 1
             return True
 
         else:
