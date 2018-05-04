@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/jaodur/Book-A-Meal_api.svg?branch=Develop)](https://travis-ci.org/jaodur/Book-A-Meal_api)
 [![Coverage Status](https://coveralls.io/repos/github/jaodur/Book-A-Meal_api/badge.svg?branch=Develop)](https://coveralls.io/github/jaodur/Book-A-Meal_api?branch=Develop)
 
-## __Book_A_Meal__ 
+## __Book A Meal__ 
 is a web based app that enables  several caterers to setup menus,and manage orders. The app also allows
 customer to order a meal, modify their orders, check their order history and also have a quick glance at the trending
 menus.
@@ -23,7 +23,7 @@ using this command git `clone -b Develop https://github.com/jaodur/Book-A-Meal_a
 * Change into the newly cloned repo through `cd Book-A-Meal_api`
 * Install the required dependencies through command `pip3 install -r requirements.txt`
  **`Note`** These dependencies can be installed in virtual environment, by running the same
-command above after installing and activiting a `Python` virtual environment.
+command above after installing and activating a `Python` virtual environment.
 [Guide to installing virtual environment](https://virtualenv.pypa.io/en/stable/installation/)
 
 

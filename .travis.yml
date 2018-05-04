@@ -12,7 +12,6 @@ install:
 # command to run tests
 script:
   - pytest --cov=app
-#  - py.test --cov app/v1/tests/
   - coverage report
 
 
@@ -21,18 +20,5 @@ after_script:
   - codeclimate-test-reporter
   - coveralls
 
-# push report to coveralls.io
 after_success:
   - coveralls
-
-#  language: python
-#  python:
-#    - "3.5.2"
-#  install:
-#    - pip install -r requirements.txt
-#    - pip install coverage
-#    - pip install coveralls
-#  script:
-#    - nosetests --with-coverage
-#  after_success:
-#- coveralls
