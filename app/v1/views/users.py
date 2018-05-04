@@ -3,7 +3,8 @@ from flask import jsonify, request, make_response, Blueprint
 import jwt
 import datetime
 
-from app.v1.models.models import DbUsers, DbCaterers
+from app.v1.models.users import DbUsers
+from app.v1.models.models import DbCaterers
 
 SECRET_KEY ='secretKey4512yek'
 
