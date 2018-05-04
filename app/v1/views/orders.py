@@ -1,8 +1,7 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
 from app.v1.views.decorators import token_required
-
-from app.v1.models.models import DbOrders
+from app.v1.models.orders import DbOrders
 
 orders_db = DbOrders()
 

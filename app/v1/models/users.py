@@ -1,9 +1,10 @@
 class DbUsers:
-    '''
+    """
     This class stores information about the registered users
     The username and email fields are unique and any duplicate value wont be inserted into
     the data structure.
-    '''
+    """
+    
     def __init__(self):
         self.all_users = dict()
         self.all_emails = list()

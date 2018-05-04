@@ -1,8 +1,8 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
 from app.v1.views.decorators import token_required
+from app.v1.models.menu import DbMenu
 
-from app.v1.models.models import DbMenu
 
 menu_db = DbMenu()
 

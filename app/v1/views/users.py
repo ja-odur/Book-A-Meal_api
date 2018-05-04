@@ -4,7 +4,7 @@ import jwt
 import datetime
 
 from app.v1.models.users import DbUsers
-from app.v1.models.models import DbCaterers
+from app.v1.models.caterers import DbCaterers
 
 SECRET_KEY ='secretKey4512yek'
 

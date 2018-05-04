@@ -2,7 +2,7 @@ from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
 
 from app.v1.views.decorators import token_required
-from app.v1.models.models import DbMeals
+from app.v1.models.meals import DbMeals
 
 meals_db = DbMeals()
 
@@ -13,6 +13,11 @@ meals = Blueprint('meals', __name__, url_prefix='/api/v1')
 @swag_from('api_doc/create_meals.yml')
 @token_required(admin=True)
 def create_meal(current_user):
+    """
+    This m
+    :param current_user:
+    :return:
+    """
     data = request.get_json()
     username = current_user[1]
     if meals_db.add_meal(username, data['name'], data['price']):
