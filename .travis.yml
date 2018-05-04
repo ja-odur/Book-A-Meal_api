@@ -11,7 +11,7 @@ install:
 
 # command to run tests
 script:
-  - python3 -m pytest
+  - nose --with-coverage --cover-erase --cover-package app
   - coverage report
 
 
