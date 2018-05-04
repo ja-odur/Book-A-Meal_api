@@ -19,12 +19,10 @@ def token_required(admin=False):
 
             try:
                 raw_data = jwt.decode(token, SECRET_KEY)
-            except :
+            except:
                 return make_response(jsonify(dict(message='Token is invalid ')), 401)
             else:
-                print(raw_data)
                 current_user = raw_data['info'].split(',')
-                print(current_user)
 
             if admin:
                 if current_user[0] != 'caterer':
@@ -36,17 +34,7 @@ def token_required(admin=False):
 
     return token_required_decorator
 
-#
-# def admin_required(function):
-#         @wraps(function)
-#         def decorator(*args, **kwargs):
-#             if current_user[0] != 'caterer':
-#                 return make_response(jsonify(dict(message='Action not allowed this user')), 401)
-#
-#             return function(*args, **kwargs)
-#
-#         return decorator
-#
+
 
 
 

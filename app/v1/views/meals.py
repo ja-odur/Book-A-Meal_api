@@ -14,9 +14,8 @@ meals = Blueprint('meals', __name__, url_prefix='/api/v1')
 @token_required(admin=True)
 def create_meal(current_user):
     """
-    This m
-    :param current_user:
-    :return:
+    This method creates enables a caterer to create a new meal.
+    :param current_user: A list containing the current users information i.e category username, email
     """
     data = request.get_json()
     username = current_user[1]

@@ -14,6 +14,8 @@ orders = Blueprint('orders', __name__, url_prefix='/api/v1')
 def create_order(current_user):
     data = request.get_json()
     customer = current_user[1]
+    if current_user[0] == 'caterer':
+        return make_response(jsonify(dict(message='Caterers can not create an order')), 403)
     try:
         if data['caterer'] and data['meal']:
             new_order = orders_db.add_order(customer=customer, caterer=data['caterer'], meal=data['meal'])
@@ -32,10 +34,9 @@ def create_order(current_user):
 @token_required()
 def modify_order(current_user, meal_id):
     data = request.get_json()
+    if current_user[0] == 'caterer':
+        return make_response(jsonify(dict(message='Caterers can not modify an order')), 403)
     try:
-        # print('caterer', data['caterer'])
-        # print('meal', data['meal'])
-        # print('order list', orders_db.orders_caterers)
         customer = current_user[1]
         if data['caterer'] and data['meal']:
 
