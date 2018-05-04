@@ -13,6 +13,12 @@ parameters:
         menu:
           type: "array"
           example: [[1, 'rice and posho', 5000], [2, 'rice and posho', 5000], [3, 'rice and posho', 5000]]
+  - name: access-token
+    in: header
+    required: true
+    properties:
+       access-token:
+        type: "string"
 
 responses:
   201:

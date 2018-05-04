@@ -20,7 +20,12 @@ parameters:
        meal_id:
         type: "int"
     default: 1
-
+  - name: access-token
+    in: header
+    required: true
+    properties:
+       access-token:
+        type: "string"
 responses:
   201:
     description: A message showing the updated item.

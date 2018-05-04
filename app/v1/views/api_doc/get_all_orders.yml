@@ -1,5 +1,13 @@
 Endpoint that enable a caterer to get all placed order.
 ---
+parameters:
+  - name: access-token
+    in: header
+    required: true
+    properties:
+       access-token:
+        type: "string"
+
 responses:
   200:
     description: A message showing all the existing placed orders.

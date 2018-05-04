@@ -29,4 +29,4 @@ responses:
     schema:
       type: object
     examples:
-      { "message": "user successfully logged in." }
+      { "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbmZvIjoiY2F0aFUDQELA_WPziQBg" }

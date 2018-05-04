@@ -21,6 +21,13 @@ parameters:
         price:
           type: "int"
           example: 5000
+  - name: access-token
+    in: header
+    required: true
+    properties:
+       access-token:
+        type: "string"
+#    default: 1
 
 responses:
   201:

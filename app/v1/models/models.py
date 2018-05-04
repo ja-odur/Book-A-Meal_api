@@ -92,7 +92,7 @@ class DbMeals:
         try:
             all_meals_caterer = self.get_all_meals(caterer)
             meal = all_meals_caterer[meal_id - 1]
-        except (KeyError, IndexError):
+        except (KeyError, IndexError, TypeError):
             pass
         else:
             return meal

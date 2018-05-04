@@ -1,5 +1,7 @@
 [
-  "test_menu.py::TestMenu::test_create_menu_failure",
-  "test_menu.py::TestMenu::test_create_menu_successful",
-  "test_menu.py::TestMenu::test_get_menu"
+  "test_orders.py::TestMenu::test_create_order_failure",
+  "test_orders.py::TestMenu::test_create_order_success",
+  "test_orders.py::TestMenu::test_get_all_orders_failure",
+  "test_orders.py::TestMenu::test_get_all_orders_successful",
+  "test_orders.py::TestMenu::test_modify_order"
 ]

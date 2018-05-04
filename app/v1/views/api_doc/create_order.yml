@@ -18,6 +18,12 @@ parameters:
         caterer:
           type: "string"
           example: "default"
+  - name: access-token
+    in: header
+    required: true
+    properties:
+       access-token:
+        type: "string"
 
 responses:
   201:
