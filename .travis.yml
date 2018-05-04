@@ -11,7 +11,7 @@ install:
 
 # command to run tests
 script:
-  - py.test --cov=app
+  - pytest --cov=app
 #  - py.test --cov app/v1/tests/
   - coverage report
 
