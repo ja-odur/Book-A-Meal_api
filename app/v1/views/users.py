@@ -17,6 +17,10 @@ users = Blueprint('users', __name__, url_prefix='/api/v1')
 @users.route('/auth/signup', methods=['POST'])
 @swag_from('api_doc/user_registration.yml')
 def register_user():
+    """
+    This function enables new users to signup. ensures that the usernames and email fields are unique in the database
+    :return: returns a confirmation message
+    """
     data = request.get_json()
     try:
         if data['category'] and data['email'] and data['username'] \
@@ -55,6 +59,10 @@ def register_user():
 @users.route('/auth/login', methods=['POST'])
 @swag_from('api_doc/user_login.yml')
 def login():
+    """
+    This function logs in users
+    :return: returns a token valid for 30 minutes
+    """
     data = request.get_json()
     try:
         if data['category'] and data['username']:

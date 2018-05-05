@@ -12,6 +12,11 @@ orders = Blueprint('orders', __name__, url_prefix='/api/v1')
 @swag_from('api_doc/create_order.yml')
 @token_required()
 def create_order(current_user):
+    """
+    This function enables only users to make an order
+    :param current_user: A list containing the current users information i.e category username, email
+    :return: returns a confirmation message
+    """
     data = request.get_json()
     customer = current_user[1]
     if current_user[0] == 'caterer':
@@ -33,6 +38,11 @@ def create_order(current_user):
 @swag_from('api_doc/modify_order.yml')
 @token_required()
 def modify_order(current_user, meal_id):
+    """
+        This function enables only users to modify an order
+        :param current_user: A list containing the current users information i.e category username, email
+        :return: returns a confirmation message
+        """
     data = request.get_json()
     if current_user[0] == 'caterer':
         return make_response(jsonify(dict(message='Caterers can not modify an order')), 403)
@@ -60,6 +70,11 @@ def modify_order(current_user, meal_id):
 @swag_from("api_doc/get_all_orders.yml")
 @token_required(admin=True)
 def get_all_orders(current_user):
+    """
+    This function enables caterers to get all placed orders
+    :param current_user: A list containing the current users information i.e category username, email
+    :return: returns  confirmation message and the content containing all available orders.
+    """
     caterer = current_user[1]
     orders_per_caterer = orders_db.get_orders(caterer=caterer)
     if orders_per_caterer:
