@@ -30,6 +30,11 @@ def create_meal(current_user):
 @swag_from('api_doc/get_all_meals.yml')
 @token_required(admin=True)
 def get_all_meals(current_user):
+    """
+    This function enables a caterer to get all meals created for purposes of creating a menu
+    :param current_user: A list containing the current users information i.e category username, email
+    :return: returns a list containing all available meals
+    """
     caterer = current_user[1]
     meals_per_caterer = meals_db.get_all_meals(caterer=caterer)
     if meals_per_caterer:
@@ -41,6 +46,12 @@ def get_all_meals(current_user):
 @swag_from('api_doc/update_meal.yml')
 @token_required(admin=True)
 def update_meal(current_user, meal_id):
+    """
+    This function enables a caterer to update to modify a single attribute of the meal identified by its meal_id
+    :param current_user: A list containing the current users information i.e category username, email
+    :param meal_id: An integer used to identify the particular meal
+    :return: returns a confirmation message i.e if successful of not
+    """
     data = request.get_json()
     caterer = current_user[1]
     update, message = False, ''
@@ -64,6 +75,12 @@ def update_meal(current_user, meal_id):
 @swag_from('api_doc/delete_meal.yml')
 @token_required(admin=True)
 def delete_meal(current_user, meal_id):
+    """
+    This function enables caterer to delete a created meal
+    :param current_user: A list containing the current users information i.e category username, email
+    :param meal_id: n integer used to identify the particular meal
+    :return:
+    """
     caterer = current_user[1]
     meal_deleted = meals_db.delete_meal(caterer=caterer, meal_id=meal_id)
 

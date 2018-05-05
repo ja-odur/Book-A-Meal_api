@@ -6,6 +6,11 @@ SECRET_KEY ='secretKey4512yek'
 
 
 def token_required(admin=False):
+    """
+    This function is used to decorate routes inorder to include token authentication.
+    :param admin: If set to True, the wrap function is only available to caterers
+    :return:
+    """
     def token_required_decorator(function):
         @wraps(function)
         def decorated(*args, **kwargs):
@@ -26,7 +31,7 @@ def token_required(admin=False):
 
             if admin:
                 if current_user[0] != 'caterer':
-                    return make_response(jsonify(dict(message='Action not allowed this user')), 401)
+                    return make_response(jsonify(dict(message='Action not allowed for this user')), 401)
 
             return function(current_user, *args, **kwargs)
 
