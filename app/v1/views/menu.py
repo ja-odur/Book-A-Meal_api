@@ -13,6 +13,11 @@ menu = Blueprint('menu', __name__, url_prefix='/api/v1')
 @swag_from('api_doc/create_menu.yml')
 @token_required(admin=True)
 def create_menu(current_user):
+    """
+    This function enables caterers to create a daily menu
+    :param current_user: A list containing the current users information i.e category username, email
+    :return: returns a nested list of meal objects
+    """
     caterer = current_user[1]
     data = request.get_json()
     created_menu = menu_db.create_menu(caterer=caterer, daily_menu=data['menu'])
@@ -27,7 +32,12 @@ def create_menu(current_user):
 @swag_from('api_doc/get_menu.yml')
 @token_required()
 def get_menu(current_user):
+    """
+    This returns all the menus available from various caterers
+    :param current_user: A list containing the current users information i.e category username, email
+    :return: returns a dictionary mapping the caterer's name to their set daily menu
+    """
     menu = menu_db.get_menu()
-    message = 'Todays menu {}.'.format(menu)
+    message = 'Todays menus, {}.'.format(menu)
     return make_response(jsonify(message=message), 200)
 
