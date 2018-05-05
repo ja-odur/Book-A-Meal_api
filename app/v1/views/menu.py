@@ -38,6 +38,6 @@ def get_menu(current_user):
     :return: returns a dictionary mapping the caterer's name to their set daily menu
     """
     menu = menu_db.get_menu()
-    message = 'Todays menus, {}.'.format(menu)
+    message = 'Todays menu {}.'.format(menu)
     return make_response(jsonify(message=message), 200)
 
