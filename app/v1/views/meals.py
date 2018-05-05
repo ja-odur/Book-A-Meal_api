@@ -79,7 +79,7 @@ def delete_meal(current_user, meal_id):
     This function enables caterer to delete a created meal
     :param current_user: A list containing the current users information i.e category username, email
     :param meal_id: n integer used to identify the particular meal
-    :return:
+    :return: returns a confirmation message, whether successful or not.
     """
     caterer = current_user[1]
     meal_deleted = meals_db.delete_meal(caterer=caterer, meal_id=meal_id)
