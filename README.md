@@ -24,6 +24,28 @@ using this command `git clone -b Develop https://github.com/jaodur/Book-A-Meal_a
 * Install the required dependencies through command `pip3 install -r requirements.txt`
  **`Note`** These dependencies can be installed in virtual environment, by running the same
 command above after installing and activating a `Python` virtual environment.
+
+### __Installing virtual environment__
+Using pip install the virtualenv package in terminal as shown below
+* $**`[sudo] pip install virtualenv`**
+
+Create a new virtual environment using the command shown below where`ENV` is a directory to place the new virtual 
+environment.
+* $ **`virtualenv ENV`**
+
+In a newly created virtualenv folder `ENV`, there will also be a activate shell script used to
+activate the environment.
+* $ **`source bin/activate`**
+
+After activating the virtual environment, the dependencies can be installed as illustrated
+above.
+
+Removing a virtual environment is simply done by deactivating it and deleting the environment folder 
+with all its contents:
+* `(ENV)$ deactivate`
+* `$ rm -r /path/to/ENV`
+
+For more information on installing and using python virtual environments, check the link below.
 [Guide to installing virtual environment](https://virtualenv.pypa.io/en/stable/installation/)
 
 
