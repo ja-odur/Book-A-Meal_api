@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/jaodur/Book-A-Meal_api/badge.svg?branch=Develop)](https://coveralls.io/github/jaodur/Book-A-Meal_api?branch=Develop)
 
 ## __Book A Meal__ 
-is a web based app that enables  several caterers to setup menus,and manage orders. The app also allows
+Is a web based app that enables  several caterers to setup menus,and manage orders. The app also allows
 customer to order a meal, modify their orders, check their order history and also have a quick glance at the trending
 menus.
 
@@ -19,7 +19,7 @@ The app is built with ___python/Flask___ for its backend.
 
 ## __Cloning and installing dependencies__
 * After installing the **`prerequisites`** above, clone the repository Develop branch
-using this command git `clone -b Develop https://github.com/jaodur/Book-A-Meal_api.git`
+using this command `git clone -b Develop https://github.com/jaodur/Book-A-Meal_api.git`
 * Change into the newly cloned repo through `cd Book-A-Meal_api`
 * Install the required dependencies through command `pip3 install -r requirements.txt`
  **`Note`** These dependencies can be installed in virtual environment, by running the same
