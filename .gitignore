@@ -8,6 +8,7 @@ env/
 .Python
 .coverage
 .coverage.*
+.coveralls.yml
 .cache
 nosetests.xml
 coverage.xml
