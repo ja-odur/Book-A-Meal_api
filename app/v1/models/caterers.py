@@ -1,6 +1,5 @@
 from app.v1.models.users import DbUsers
 
-
 class DbCaterers(DbUsers):
     def __init__(self):
         super().__init__()

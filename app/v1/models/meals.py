@@ -1,5 +1,3 @@
-
-
 class DbMeals:
     def __init__(self):
         self.meals = dict()
