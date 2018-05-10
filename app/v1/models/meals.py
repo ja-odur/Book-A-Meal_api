@@ -45,19 +45,18 @@ class DbMeals:
         return False
 
     def get_all_meals(self, caterer):
-        try:
-            if self.meals[caterer]:
-                return self.meals[caterer]
-        except KeyError:
-            pass
-        return False
+        result = self.meals.get(caterer, False)
+        return result
+
 
     def delete_meal(self, caterer, meal_id):
         deleted = False
         all_meals = self.get_all_meals(caterer)
 
         if all_meals:
-            counter, list_length = 0, len(all_meals)
+            counter = 0
+            list_length = len(all_meals)
+
             while counter < list_length:
                 meal = all_meals[counter]
 
