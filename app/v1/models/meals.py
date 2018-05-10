@@ -48,7 +48,6 @@ class DbMeals:
         result = self.meals.get(caterer, False)
         return result
 
-
     def delete_meal(self, caterer, meal_id):
         deleted = False
         all_meals = self.get_all_meals(caterer)
