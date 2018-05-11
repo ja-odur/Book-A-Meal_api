@@ -30,10 +30,10 @@ class DbUsers:
         return self.all_users
 
     def remove_user(self, username):
-        try:
+        user = self.all_users.get(username, False)
+        if user:
             del self.all_users[username]
-        except KeyError:
-            return False
-        else:
             return True
+        return False
+
 
