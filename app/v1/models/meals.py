@@ -3,9 +3,9 @@ class DbMeals:
         self.meals = dict()
 
     def add_meal(self, caterer, meal_name, price):
-        try:
-            self.meals[caterer]
-        except KeyError:
+        caterer_meals = self.meals.get(caterer, False)
+
+        if not caterer_meals:
             meals = list()
             meal_id = 1
             meal = [meal_id, meal_name, price]
@@ -24,14 +24,23 @@ class DbMeals:
         return False
 
     def get_meal(self, caterer, meal_id):
-        try:
-            all_meals_caterer = self.get_all_meals(caterer)
-            meal = all_meals_caterer[meal_id - 1]
-        except (KeyError, IndexError, TypeError):
-            pass
+        all_meals_caterer = self.get_all_meals(caterer)
+        if not all_meals_caterer:
+            return False
         else:
+            length = len(all_meals_caterer)
+
+        if isinstance(meal_id, int) and meal_id > 0:
+            actual_id = meal_id -1
+        else:
+            return False
+
+        if actual_id <= length:
+            meal = all_meals_caterer[meal_id - 1]
             return meal
+
         return False
+
 
     def update_meal(self, caterer, meal_id, update_field, value):
         meal = self.get_meal(caterer, meal_id)
@@ -45,8 +54,8 @@ class DbMeals:
         return False
 
     def get_all_meals(self, caterer):
-        result = self.meals.get(caterer, False)
-        return result
+        meals = self.meals.get(caterer, False)
+        return meals
 
     def delete_meal(self, caterer, meal_id):
         deleted = False
