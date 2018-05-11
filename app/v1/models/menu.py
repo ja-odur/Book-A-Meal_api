@@ -6,6 +6,7 @@ class DbMenu:
         if isinstance(daily_menu, list):
             self.menu[caterer] = daily_menu
             return True
+
         return False
 
     def get_menu(self):
