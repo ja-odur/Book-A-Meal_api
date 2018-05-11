@@ -46,7 +46,8 @@ class DbMeals:
         meal = self.get_meal(caterer, meal_id)
         if meal:
             if update_field == 'name':
-                meal[1] = value
+                if isinstance(value, str):
+                    meal[1] = value
             elif update_field == 'price':
                 meal[2] = value
             self.get_all_meals(caterer)[meal_id-1] = meal
