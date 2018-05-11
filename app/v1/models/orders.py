@@ -18,18 +18,17 @@ class DbOrders:
         set_customer_order = False
         set_caterer_order = False
 
-        try:
-            self.orders_customers[customer]
-        except KeyError:
+        orders_customers = self.orders_customers.get(customer, False)
+        orders_caterers = self.orders_caterers.get(caterer, False)
+
+        if not orders_customers:
             self.orders_customers[customer] = [order_customer_format]
             set_customer_order = True
         else:
             self.orders_customers[customer].append(order_customer_format)
             set_customer_order = True
 
-        try:
-            self.orders_caterers[caterer]
-        except KeyError:
+        if not orders_caterers:
             self.orders_caterers[caterer] = [order_caterer_format]
             set_caterer_order = True
         else:
@@ -42,12 +41,10 @@ class DbOrders:
 
     def modify_order(self, customer, caterer, order_id, meal):
         time_now = datetime.datetime.now()
-        try:
-            orders = self.orders_customers[customer]
-            orders_caterers = self.orders_caterers[caterer]
-        except KeyError:
-            pass
-        else:
+        orders = self.orders_customers.get(customer, False)
+        orders_caterers = self.orders_caterers.get(caterer, False)
+
+        if orders and orders_caterers:
             match_found = False
             matched_caterer_found = False
             counter_customer = 0
@@ -80,10 +77,8 @@ class DbOrders:
         return False
 
     def get_orders(self, caterer):
-        try:
-            return self.orders_caterers[caterer]
-        except KeyError:
-            return False
+        orders = self.orders_caterers.get(caterer, False)
+        return orders
 
     def clear_order(self, caterer, customer, order_id):
         pass
