@@ -12,26 +12,19 @@ class DbUsers:
 
     def add_user(self, email, username, password, address):
         if email not in self.all_emails:
-            try:
-                self.all_users[username]
-            except KeyError:
+            user_exists = self.all_users.get(username, False)
+
+            if not user_exists:
                 self.all_users[username] = dict(email=email, username=username, password=password,
                                                 address=address, id=self.id)
                 self.all_emails.append(email)
+                self.id += 1
                 return True
-
-            else:
-                self.id +=1
-                return False
-
         return False
 
     def get_user(self, username):
-        try:
-            return self.all_users[username]
-        except KeyError:
-            pass
-        return False
+        user = self.all_users.get(username, False)
+        return user
 
     def get_all_users(self):
         return self.all_users
