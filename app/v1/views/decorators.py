@@ -1,8 +1,10 @@
 from functools import wraps
 from flask import request, make_response, jsonify
+from run import app
 import jwt
 
-SECRET_KEY ='secretKey4512yek'
+SECRET_KEY = app.config['API_KEY']
+# SECRET_KEY ='secretKey4512yek'
 
 
 def token_required(admin=False):
