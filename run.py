@@ -9,8 +9,8 @@ from app.v1.views.orders import orders
 
 
 app = Flask(__name__, instance_relative_config=True)
-app.config.from_envvar('APP_SETTINGS')
-app.config['API_KEY'] = environ.get('SECRET_KEY')
+# app.config.from_envvar('APP_SETTINGS')
+# app.config['API_KEY'] = environ.get('SECRET_KEY')
 
 swagger = Swagger(app)
 
