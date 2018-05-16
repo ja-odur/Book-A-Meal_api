@@ -1,6 +1,12 @@
 from app.v1.models.users import DbUsers
 
+
 class DbCaterers(DbUsers):
+    """
+    This class stores information about the registered caterers. It inherits some methods
+    from the DbUsers class. The username and email fields are unique and any duplicate value
+    wont be inserted into the data structure.
+    """
     def __init__(self):
         super().__init__()
 
