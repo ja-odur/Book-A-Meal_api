@@ -59,12 +59,11 @@ def update_meal(current_user, meal_id):
     if not ('name' in data or 'price' in data):
         return make_response(jsonify({'message': 'Invalid data format'}), 403)
 
-    try:
-        if data['name']:
-            updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, update_field='name', value=data['name'])
-    except KeyError:
-        if data['price']:
-            updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, update_field='price', value=data['price'])
+    if 'name' in data:
+        updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, update_field='name', value=data['name'])
+
+    if 'price' in data:
+        updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, update_field='price', value=data['price'])
 
     if updated:
         return make_response(jsonify(message=updated), 201)

@@ -30,8 +30,7 @@ def create_order(current_user):
                 return make_response(jsonify(message=message), 201)
 
     except KeyError:
-        pass
-    return make_response(jsonify(message='Invalid request format'), 403)
+        return make_response(jsonify(message='Invalid request format'), 403)
 
 
 @orders.route('/orders/<int:meal_id>', methods=['PUT'])
@@ -62,8 +61,7 @@ def modify_order(current_user, meal_id):
                 return make_response(jsonify(message="Resource not found"), 201)
 
     except KeyError:
-        pass
-    return make_response(jsonify(message='Invalid request format'), 403)
+        return make_response(jsonify(message='Invalid request format'), 403)
 
 
 @orders.route('/orders', methods=['GET'])
