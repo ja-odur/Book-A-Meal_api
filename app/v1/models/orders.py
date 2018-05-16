@@ -1,6 +1,12 @@
 import datetime
 
+
 class DbOrders:
+    """
+        This class stores information about the orders made by registered users. Allows users to modify their orders
+        if it's still within the one hour time laps. This orders information is stored in a two forms that are
+        easily accessible by users (to view their orders) and caterers ( to view all the orders placed with them)
+        """
     def __init__(self):
         self.orders_customers = dict()
         self.orders_caterers = dict()

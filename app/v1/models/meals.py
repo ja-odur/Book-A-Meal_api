@@ -1,4 +1,7 @@
 class DbMeals:
+    """
+    This class stores information about the meals offered by registered caterers.
+    """
     def __init__(self):
         self.meals = dict()
 

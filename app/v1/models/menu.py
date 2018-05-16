@@ -1,4 +1,7 @@
 class DbMenu:
+    """
+        This class stores information about the menu of the day created by registered caterers.
+        """
     def __init__(self):
         self.menu = dict()
 
