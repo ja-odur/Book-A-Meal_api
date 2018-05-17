@@ -45,8 +45,8 @@ def register_user():
                 return make_response(jsonify(dict(message=message)), 403)
 
         elif data['category'] == 'caterer':
-            add_caterer = caterer_db.add_user(data['email'], data['username'], data['password'], data['address'],
-                                brand_name='easy_brand')
+            add_caterer = caterer_db.add_caterer(data['email'], data['username'], data['password'], data['address'],
+                                                 brand_name='easy_brand')
             if add_caterer:
                 message = 'Caterer {} successfully signed up.'.format(data['username'])
                 return make_response(jsonify(dict(message=message)), 201)
@@ -92,7 +92,7 @@ def login():
             return make_response(jsonify({'message': 'Invalid Username or Password'}), 401)
 
     elif data['category'] == 'caterer':
-        caterer_info = caterer_db.get_user(data['username'])
+        caterer_info = caterer_db.get_caterer(data['username'])
 
         if caterer_info:
             user_password = caterer_info['password']
