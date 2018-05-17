@@ -1,14 +1,14 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
-from run import app
+from env_config import API_KEY
 import jwt
 import datetime
 
 from app.v1.models.users import DbUsers
 from app.v1.models.caterers import DbCaterers
 
-# SECRET_KEY = app.config['API_KEY']
-SECRET_KEY ='secretKey4512yek'
+SECRET_KEY = API_KEY
+# SECRET_KEY ='secretKey4512yek'
 
 user_db = DbUsers()
 caterer_db = DbCaterers()
