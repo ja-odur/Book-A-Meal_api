@@ -16,7 +16,7 @@ class DbUsers:
 
             if not user_exists:
                 self.all_users[username] = dict(email=email, username=username, password=password,
-                                                address=address, id=self.id)
+                                                address=address, user_id=self.id)
                 self.all_emails.append(email)
                 self.id += 1
                 return True
