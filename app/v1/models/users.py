@@ -7,17 +7,23 @@ class DbUsers:
     
     def __init__(self):
         self.all_users = dict()
-        self.all_emails = list()
+        # self.all_emails = list()
         self.id = 1
 
     def add_user(self, email, username, password, address):
-        if email not in self.all_emails:
+        all_emails = []
+        for item in self.all_users.values():
+            for key, value in item:
+                if key == 'email':
+                    all_emails.append(value)
+
+        if email not in all_emails:
             user_exists = self.all_users.get(username, False)
 
             if not user_exists:
                 self.all_users[username] = dict(email=email, username=username, password=password,
                                                 address=address, user_id=self.id)
-                self.all_emails.append(email)
+                # self.all_emails.append(email)
                 self.id += 1
                 return True
         return False
