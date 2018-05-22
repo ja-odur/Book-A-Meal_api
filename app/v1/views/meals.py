@@ -60,10 +60,10 @@ def update_meal(current_user, meal_id):
         return make_response(jsonify({'message': 'Invalid data format'}), 403)
 
     if 'name' in data:
-        updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, update_field='name', value=data['name'])
+        updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, field_to_update='name', new_value=data['name'])
 
     if 'price' in data:
-        updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, update_field='price', value=data['price'])
+        updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, field_to_update='price', new_value=data['price'])
 
     if updated:
         return make_response(jsonify(message=updated), 201)

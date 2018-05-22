@@ -44,15 +44,14 @@ class DbMeals:
 
         return False
 
-
-    def update_meal(self, caterer, meal_id, update_field, value):
+    def update_meal(self, caterer, meal_id, field_to_update, new_value):
         meal = self.get_meal(caterer, meal_id)
         if meal:
-            if update_field == 'name':
-                if isinstance(value, str):
-                    meal[1] = value
-            elif update_field == 'price':
-                meal[2] = value
+            if field_to_update == 'name':
+                if isinstance(new_value, str):
+                    meal[1] = new_value
+            elif field_to_update == 'price':
+                meal[2] = new_value
             self.get_all_meals(caterer)[meal_id-1] = meal
             return meal
         return False
