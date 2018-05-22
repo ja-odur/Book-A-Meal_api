@@ -32,7 +32,14 @@ class DbUsers:
         user = self.all_users.get(username, False)
         return user
 
-    def get_all_users(self):
+    def get_user_by_id(self, user_id):
+        for user in self.all_users.values():
+            for key in user.keys():
+                if key == user_id:
+                    return user
+        return False
+
+    def get_users(self):
         return self.all_users
 
     def remove_user(self, username):
