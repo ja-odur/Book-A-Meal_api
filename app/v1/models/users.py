@@ -27,7 +27,6 @@ class DbUsers:
 
     def get_user(self, username):
         user = self.all_users.get(username, False)
-        print('user', user)
         return user
 
     def get_user_by_id(self, user_id):
