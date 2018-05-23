@@ -90,8 +90,16 @@ class DbOrders:
         orders = self.orders_customers.get(user, False)
         return orders
 
-    def delete_order(self):
-        pass
+    def delete_order(self, customer, order_id):
+        all_orders = self.orders_customers.get(customer, False)
+        if all_orders:
+            counter = 0
+            for order in all_orders:
+                if order['order_id'] == order_id and not order['cleared']:
+                    del all_orders[counter]
+                    return True
+                counter += 1
+        return False
 
     def clear_order(self, caterer, customer, order_id):
         pass
