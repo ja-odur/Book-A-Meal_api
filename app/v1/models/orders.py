@@ -92,10 +92,27 @@ class DbOrders:
 
     def delete_order(self, customer, order_id):
         all_orders = self.orders_customers.get(customer, False)
+        time_now = datetime.datetime.now()
         if all_orders:
             counter = 0
             for order in all_orders:
                 if order['order_id'] == order_id and not order['cleared']:
+                    caterer = order['caterer']
+                    order_time = order['order_time']
+                    elapse_time = time_now - order_time
+                    if elapse_time.total_seconds() <= self.order_expiry_time:
+                        self.delete_caterer(caterer, order['order_id'])
+                        del all_orders[counter]
+                        return True
+                counter += 1
+        return False
+
+    def delete_caterer(self, caterer, order_id):
+        all_orders = self.orders_caterers.get(caterer, False)
+        if all_orders:
+            counter = 0
+            for order in all_orders:
+                if order['order_id'] == order_id:
                     del all_orders[counter]
                     return True
                 counter += 1
