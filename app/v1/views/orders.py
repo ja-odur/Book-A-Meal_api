@@ -78,11 +78,40 @@ def get_all_orders(current_user):
     return make_response(jsonify(message='Oops, orders not found.'), 404)
 
 
+@orders.route('/orders/placed', methods=['GET'])
+@token_required()
+def get_orders(current_user):
+    customer = current_user[1]
+    if current_user[0] == 'caterer':
+        return make_response(jsonify(dict(message='This method is meant for customers only')), 403)
+
+    placed_orders = orders_db.get_orders_per_user(customer)
+
+    if placed_orders:
+        return make_response(jsonify(dict(message=placed_orders)), 200)
+
+    return make_response(jsonify(dict(message='No orders placed')), 200)
+
+
+@orders.route('/orders/<int:order_id>', methods=['DELETE'])
+@token_required()
+def delete_order(current_user, order_id):
+    pass
+
+
 @orders.route('/orders/clear/<int:order_id>', methods=['PUT'])
-def clear_orders(order_id):
+@token_required(admin=True)
+def clear_orders(current_user, order_id):
     pass
 
 
 @orders.route('/orders/history', methods=['GET'])
-def get_history():
+@token_required()
+def get_history(current_user):
+    pass
+
+
+@orders.route('/orders/point', methods=['POST'])
+@token_required()
+def easy_point(current_user):
     pass
