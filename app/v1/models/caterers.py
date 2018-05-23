@@ -54,6 +54,9 @@ class DbCaterers:
             user = self.get_caterer_by_id(user_id)
             return user
         return False
+
+    def get_all_caterers(self):
+        return self.caterers
        
 
 

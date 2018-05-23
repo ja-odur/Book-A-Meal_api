@@ -94,6 +94,8 @@ def login():
 
     elif data['category'] == 'caterer':
         caterer_info = caterer_db.get_caterer(data['username'])
+        print('all caterers', caterer_db.get_all_caterers())
+        print('caterer info', caterer_info)
 
         if caterer_info:
             user_password = caterer_info['password']
