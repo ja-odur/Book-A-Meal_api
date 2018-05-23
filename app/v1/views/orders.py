@@ -51,10 +51,7 @@ def modify_order(current_user, meal_id):
 
             new_order = orders_db.modify_order(customer=customer, caterer=data['caterer'], order_id=meal_id,
                                                meal=data['meal'])
-            print('if start')
-            print('new order', new_order)
             if new_order:
-                print('inside if')
                 message = 'Order {} successfully modified.'.format(data)
                 return make_response(jsonify(message=message), 201)
             else:
@@ -78,7 +75,7 @@ def get_all_orders(current_user):
     if orders_per_caterer:
         message = 'The request was successfull'
         return make_response(jsonify(message=message, content=orders_per_caterer), 200)
-    return make_response(jsonify(message='Oops, orders not found.'), 200)
+    return make_response(jsonify(message='Oops, orders not found.'), 404)
 
 
 @orders.route('/orders/clear/<int:order_id>', methods=['PUT'])
