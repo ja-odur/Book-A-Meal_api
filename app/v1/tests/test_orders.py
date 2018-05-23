@@ -33,9 +33,6 @@ class TestOrder(unittest.TestCase):
         self.token = self.response_results['token']
         self.token_user = self.response_results_user['token']
 
-
-
-
     def test_create_order_success(self):
         token_user = self.token_user
         order = dict(meal=[1, 'rice and posho', 5000], caterer='default22')
@@ -109,6 +106,32 @@ class TestOrder(unittest.TestCase):
         response_results = json.loads(get_response.data.decode())
 
         self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(expected_response_message, response_results['message'])
+
+    def test_get_orders(self):
+        token_user = self.token_user
+        expected_response_message = ''
+        response = self.tester.get('api/v1/orders/user', headers={'access-token': token_user})
+
+        response_results = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response_message, response_results['message'])
+
+    def test_delete_order(self):
+        token_user = self.token_user
+        expected_response_message = ''
+        order = dict(meal=[3, 'matooke and beef', 10000], caterer='default22')
+        order2 = dict(meal=[3, 'matooke and liver', 15000], caterer='default22')
+        self.tester.post('api/v1/orders', content_type="application/json", headers={'access-token':token_user},
+                            data=dict(order))
+        self.tester.post('api/v1/orders', content_type="application/json", headers={'access-token': token_user},
+                         data=dict(order2))
+        self.tester.delete('api/v1/orders/5', headers={'access-token':token_user})
+        response = self.tester.get('api/v1/orders/user', headers={'access-token':token_user})
+        response_results = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response_message, response_results['message'])
 
 
