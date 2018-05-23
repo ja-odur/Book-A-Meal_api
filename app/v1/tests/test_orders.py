@@ -4,11 +4,13 @@ import json
 from run import app
 
 
-class TestMenu(unittest.TestCase):
+class TestOrder(unittest.TestCase):
     def setUp(self):
         self.tester = app.test_client(self)
         self.reg_data = dict(category='caterer', email='default22@gmail.com', username='default22', password='12345',
                              confirm_password='12345', address='address1')
+        self.reg_data_empty = dict(category='caterer', email='default@gmail.com', username='default', password='12345',
+                        confirm_password='12345', address='address1')
 
         self.reg_data_user = dict(category='user', email='defaultuser@gmail.com', username='defaultuser', password='12345',
                                 confirm_password='12345', address='address1')
@@ -18,6 +20,7 @@ class TestMenu(unittest.TestCase):
 
         self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(self.reg_data))
         self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(self.reg_data_user))
+        self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(self.reg_data_empty))
 
         self.response = self.tester.post('api/v1/auth/login', content_type="application/json",
                                          data=json.dumps(self.login_data))
@@ -29,6 +32,9 @@ class TestMenu(unittest.TestCase):
 
         self.token = self.response_results['token']
         self.token_user = self.response_results_user['token']
+
+
+
 
     def test_create_order_success(self):
         token_user = self.token_user
@@ -75,23 +81,21 @@ class TestMenu(unittest.TestCase):
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_all_orders_failure(self):
-        reg_data = dict(category='caterer', email='default10@gmail.com', username='default10', password='12345',
-                             confirm_password='12345', address='address1')
-        login_data = dict(category='caterer', username='default10', password='12345')
-        self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(reg_data))
+        login_data = dict(category='caterer', username='default', password='12345')
 
         response = self.tester.post('api/v1/auth/login', content_type="application/json",
                                     data=json.dumps(login_data))
 
         response_results = json.loads(response.data.decode())
+        print('response from login', response_results)
         token_caterer = response_results['token']
 
         expected_response_message = 'Oops, orders not found.'
-        get_response = self.tester.get('api/v1/orders', headers={'access-token':token_caterer} )
+        get_response = self.tester.get('api/v1/orders', headers={'access-token':token_caterer})
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.status_code, 404)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_all_orders_successful(self):
