@@ -96,7 +96,14 @@ def get_orders(current_user):
 @orders.route('/orders/<int:order_id>', methods=['DELETE'])
 @token_required()
 def delete_order(current_user, order_id):
-    pass
+    customer = current_user[1]
+    if current_user[0] == 'caterer':
+        return make_response(jsonify(dict(message='This method is meant for customers only')), 403)
+    order_deleted = orders_db.delete_order(customer=customer, order_id=order_id)
+
+    if order_deleted:
+        return make_response(jsonify(dict(message='Order successfully deleted')), 201)
+    return make_response(jsonify(dict(message='Order not found')), 404)
 
 
 @orders.route('/orders/clear/<int:order_id>', methods=['PUT'])
