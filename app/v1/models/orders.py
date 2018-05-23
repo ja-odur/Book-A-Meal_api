@@ -86,6 +86,10 @@ class DbOrders:
         orders = self.orders_caterers.get(caterer, False)
         return orders
 
+    def get_orders_per_user(self, user):
+        orders = self.orders_customers.get(user, False)
+        return orders
+
     def delete_order(self):
         pass
 
