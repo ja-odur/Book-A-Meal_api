@@ -110,17 +110,22 @@ class TestOrder(unittest.TestCase):
 
     def test_get_orders(self):
         token_user = self.token_user
-        expected_response_message = ''
-        response = self.tester.get('api/v1/orders/user', headers={'access-token': token_user})
+        expected_response_message = len([{'order_time': 'Wed, 23 May 2018 20:39:38 GMT',
+                                          'meal': [1, 'rice and posho', 5000], 'caterer': 'default22',
+                                          'cleared': False, 'order_id': 1},
+                                         {'order_time': 'Wed, 23 May 2018 20:39:38 GMT',
+                                          'meal': [1, 'rice and posho', 5000], 'caterer': 'default22',
+                                          'cleared': False, 'order_id': 2}])
+        response = self.tester.get('api/v1/orders/placed', headers={'access-token': token_user})
 
         response_results = json.loads(response.data.decode())
-
+        print('response result', response_results['message'])
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response_message, response_results['message'])
+        self.assertEqual(expected_response_message, len(response_results['message']))
 
     def test_delete_order(self):
         token_user = self.token_user
-        expected_response_message = ''
+        expected_response_message = [{'order_time': 'Wed, 23 May 2018 20:39:38 GMT', 'meal': [1, 'rice and posho', 5000], 'caterer': 'default22', 'cleared': False, 'order_id': 1}, {'order_time': 'Wed, 23 May 2018 20:39:38 GMT', 'meal': [1, 'rice and posho', 5000], 'caterer': 'default22', 'cleared': False, 'order_id': 2}]
         order = dict(meal=[3, 'matooke and beef', 10000], caterer='default22')
         order2 = dict(meal=[3, 'matooke and liver', 15000], caterer='default22')
         self.tester.post('api/v1/orders', content_type="application/json", headers={'access-token':token_user},
@@ -128,11 +133,11 @@ class TestOrder(unittest.TestCase):
         self.tester.post('api/v1/orders', content_type="application/json", headers={'access-token': token_user},
                          data=dict(order2))
         self.tester.delete('api/v1/orders/5', headers={'access-token':token_user})
-        response = self.tester.get('api/v1/orders/user', headers={'access-token':token_user})
+        response = self.tester.get('api/v1/orders/placed', headers={'access-token':token_user})
         response_results = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response_message, response_results['message'])
+        self.assertEqual(expected_response_message, response_results['messge'])
 
 
 if __name__ == '__main__':
