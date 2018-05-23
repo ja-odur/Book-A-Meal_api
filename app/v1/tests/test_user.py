@@ -12,7 +12,8 @@ class TestSuccessfulRegistration(unittest.TestCase):
         input_data = dict(category='user', email='default23@gmail.com', username='default23', password='12345',
                           confirm_password='12345', address='address1')
         expected_response_message = 'User {} successfully signed up.'.format(input_data['username'])
-        get_response = self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(input_data))
+        get_response = self.tester.post('api/v1/auth/signup', content_type="application/json",
+                                        data=json.dumps(input_data))
 
         response_results = json.loads(get_response.data.decode())
 
@@ -20,7 +21,7 @@ class TestSuccessfulRegistration(unittest.TestCase):
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_successful_caterer_registration(self):
-        input_data = dict(category='caterer', email='default@gmail.com', username='default', password='12345',
+        input_data = dict(category='caterer', email='default100@gmail.com', username='default100', password='12345',
                           confirm_password='12345', address='address1', brand_name='easy_caterer')
         expected_response_message = 'Caterer {} successfully signed up.'.format(input_data['username'])
         get_response = self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(input_data))
@@ -49,9 +50,9 @@ class TestSuccessfulRegistration(unittest.TestCase):
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_login_user(self):
-        reg_data = dict(category='user', email='default@gmail.com', username='default', password='12345',
+        reg_data = dict(category='user', email='default78@gmail.com', username='default78', password='12345',
                         confirm_password='12345', address='address1')
-        login_data = dict(category='user', username='default', password='12345')
+        login_data = dict(category='user', username='default78', password='12345')
 
         self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(reg_data))
 
@@ -59,6 +60,7 @@ class TestSuccessfulRegistration(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
         print(get_response.status_code)
+        print(response_results)
 
         self.assertEqual(get_response.status_code, 200)
         self.assertIn('token', response_results)
