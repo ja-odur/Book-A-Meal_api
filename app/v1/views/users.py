@@ -11,7 +11,7 @@ SECRET_KEY = API_KEY
 # SECRET_KEY ='secretKey4512yek'
 
 user_db = DbUsers()
-caterer_db = DbCaterers()
+caterer_db = DbCaterers(user_db)
 
 users = Blueprint('users', __name__, url_prefix='/api/v1')
 
@@ -33,7 +33,8 @@ def register_user():
 
     if data['password'] == data['confirm_password']:
         if data['category'] == 'user':
-            add_user = user_db.add_user(data['email'], data['username'], data['password'], data['address'])
+            add_user = user_db.add_user(email=data['email'], username=data['username'], password=data['password'],
+                                        address=data['address'])
 
             if add_user:
                 message = 'User {} successfully signed up.'.format(data['username'])
@@ -45,8 +46,8 @@ def register_user():
                 return make_response(jsonify(dict(message=message)), 403)
 
         elif data['category'] == 'caterer':
-            add_caterer = caterer_db.add_user(data['email'], data['username'], data['password'], data['address'],
-                                                 brand_name='easy_brand')
+            add_caterer = caterer_db.add_caterer(email=data['email'], username=data['username'], password=data['password'],
+                                                 address=data['address'])
             if add_caterer:
                 message = 'Caterer {} successfully signed up.'.format(data['username'])
                 return make_response(jsonify(dict(message=message)), 201)
@@ -83,16 +84,16 @@ def login():
                 token_string = str(category)+','+str(username)+','+str(email)
                 token = jwt.encode({'info': token_string,
                                     'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
-                                        SECRET_KEY)
+                                    SECRET_KEY)
                 return make_response(jsonify(dict(token=token.decode('UTF-8'))), 200)
 
             else:
-                return make_response(jsonify({'message': 'Invalid Username or Password'}), 401)
+                return make_response(jsonify({'message': 'Invalid Username or Password1'}), 401)
         else:
-            return make_response(jsonify({'message': 'Invalid Username or Password'}), 401)
+            return make_response(jsonify({'message': 'Invalid Username or Password2'}), 401)
 
     elif data['category'] == 'caterer':
-        caterer_info = caterer_db.get_user(data['username'])
+        caterer_info = caterer_db.get_caterer(data['username'])
 
         if caterer_info:
             user_password = caterer_info['password']
@@ -107,6 +108,6 @@ def login():
                 return make_response(jsonify(dict(token=token.decode('UTF-8'))), 200)
 
             else:
-                return make_response(jsonify({'message': 'Invalid Username or Password'}), 201)
+                return make_response(jsonify({'message': 'Invalid Username or Password1'}), 201)
 
-    return make_response(jsonify({'message': 'Invalid Username or Password'}), 401)
+    return make_response(jsonify({'message': 'Invalid Username or Password2'}), 401)
