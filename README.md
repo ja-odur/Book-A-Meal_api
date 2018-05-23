@@ -42,14 +42,14 @@ above.
 
 Removing a virtual environment is simply done by deactivating it and deleting the environment folder 
 with all its contents:
-* `(ENV)$ deactivate`
-* `$ rm -r /path/to/ENV`
+* **`(ENV)$ deactivate`** -Deactivating the environment
+* **`$ rm -r /path/to/ENV`** -Deleting the environment
 
 For more information on installing and using python virtual environments, check the link below.
 [Guide to installing virtual environment](https://virtualenv.pypa.io/en/stable/installation/)
 
 
-## __starting the application__
+## __Starting the application__
 After cloning and installing the required dependencies, start the app using the command
 below
 **`python run.py`** in [terminal](https://www.taniarascia.com/how-to-use-the-command-line-for-apple-macos-and-linux/)
