@@ -14,3 +14,10 @@ class DbMenu:
 
     def get_menu(self):
         return self.menu
+
+    def delete_menu(self, caterer):
+        menu = self.menu.get(caterer,False)
+        if menu:
+            del self.menu[caterer]
+            return True
+        return False

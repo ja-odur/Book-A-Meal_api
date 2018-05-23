@@ -38,7 +38,7 @@ class DbUsers:
     def get_users(self):
         return self.all_users
 
-    def remove_user(self, username):
+    def delete_user(self, username):
         user = self.all_users.get(username, False)
         if user:
             del self.all_users[username]

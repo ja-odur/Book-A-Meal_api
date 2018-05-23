@@ -86,6 +86,9 @@ class DbOrders:
         orders = self.orders_caterers.get(caterer, False)
         return orders
 
+    def delete_order(self):
+        pass
+
     def clear_order(self, caterer, customer, order_id):
         pass
 
