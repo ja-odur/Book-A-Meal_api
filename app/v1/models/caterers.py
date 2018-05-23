@@ -57,6 +57,13 @@ class DbCaterers:
 
     def get_all_caterers(self):
         return self.caterers
+
+    def delete_caterer(self, caterer_id):
+        caterer = self.caterers.get(caterer_id, False)
+        if caterer:
+            del self.caterers[caterer_id]
+            return True
+        return False
        
 
 
