@@ -89,6 +89,7 @@ def delete_meal(current_user, meal_id):
 
 
 @meals.route('/meals/point/<int:meal_id>', methods=['POST'])
+@swag_from('api_doc/easy_point.yml')
 @token_required()
 def easy_point(current_user, meal_id):
     """

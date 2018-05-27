@@ -121,6 +121,7 @@ def delete_order(current_user, order_id):
 
 @orders.route('/orders/clear/<int:order_id>', methods=['PATCH'])
 @token_required(admin=True)
+@swag_from("api_doc/clear_order.yml")
 def clear_order(current_user, order_id):
     """
     This function enable caterers to clear orders placed by users
@@ -137,6 +138,7 @@ def clear_order(current_user, order_id):
 
 
 @orders.route('/orders/history', methods=['GET'])
+@swag_from("api_doc/order_history.yml")
 @token_required()
 def get_history(current_user):
     """

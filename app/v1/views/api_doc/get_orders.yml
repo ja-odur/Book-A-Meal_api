@@ -1,0 +1,42 @@
+Endpoint that enable a user to get all placed orders.
+---
+parameters:
+  - name: access-token
+    in: header
+    required: true
+    properties:
+       access-token:
+        type: "string"
+
+responses:
+  200:
+    description: A message showing all the existing placed orders.
+    schema:
+      type: object
+    examples:
+      {
+  "message": [
+    {
+      "caterer": "default",
+      "cleared": false,
+      "meal": [
+        1,
+        "rice and posho",
+        5000
+      ],
+      "order_id": 1,
+      "order_time": "Thu, 24 May 2018 23:24:34 GMT"
+    },
+    {
+      "caterer": "johndoe",
+      "cleared": false,
+      "meal": [
+        1,
+        "rice and posho",
+        5000
+      ],
+      "order_id": 2,
+      "order_time": "Thu, 24 May 2018 23:24:55 GMT"
+    }
+  ]
+}
