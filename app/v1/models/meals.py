@@ -4,23 +4,29 @@ class DbMeals:
     """
     def __init__(self):
         self.meals = dict()
+        self.meal_id = 1
 
     def add_meal(self, caterer, meal_name, price):
         caterer_meals = self.meals.get(caterer, False)
 
         if not caterer_meals:
             meals = list()
-            meal_id = 1
-            meal = [meal_id, meal_name, price]
+            meal_id = self.meal_id
+            easy_point = 0
+            meal = [meal_id, meal_name, price, easy_point, caterer]
             meals.append(meal)
 
             self.meals[caterer] = meals
+            self.meal_id += 1
             return True
 
         else:
             all_meals = self.meals[caterer]
-            meal_id = all_meals[-1][0] + 1
-            all_meals.append([meal_id, meal_name, price])
+            meal_id = self.meal_id
+            # meal_id = all_meals[-1][0] + 1
+            easy_point = 0
+            all_meals.append([meal_id, meal_name, price, easy_point, caterer])
+            self.meal_id += 1
             return True
 
         # for any reason meal not added
@@ -81,3 +87,14 @@ class DbMeals:
                 return True
 
         return False
+
+    def easy_point(self, meal_id):
+        all_meals = self.meals
+
+        for meals in all_meals.values():
+            for meal in meals:
+                if meal[0] == meal_id:
+                    meal[3] += 1
+                    return True
+        return False
+
