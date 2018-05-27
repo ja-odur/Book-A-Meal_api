@@ -8,6 +8,10 @@ from app.v1.views.orders import orders
 
 
 app = Flask(__name__, instance_relative_config=True)
+app.config['SWAGGER'] = {
+    'title': 'BOOK-A-MEAL API',
+    'version': 1,
+}
 
 swagger = Swagger(app)
 
