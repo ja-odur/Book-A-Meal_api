@@ -24,35 +24,30 @@ class TestOrders2(unittest.TestCase):
 
         self.response_results_user = json.loads(self.response_user.data.decode())
         self.response_results_caterer = json.loads(self.response_caterer.data.decode())
-        # print('user response', self.response_results_user)
-        # print('caterer response', self.response_results_caterer)
 
         self.token_user = self.response_results_user['token']
         self.token_caterer = self.response_results_caterer['token']
 
-        # print('user', self.token_user)
-        # print('caterer', self.token_caterer)
-
     def test_clear_order(self):
         token_user = self.token_user
         token_caterer = self.token_caterer
-        expected_response_message = ''
-        order1 = dict(meal=[1, 'rice and beef', 10000], caterer='default22')
-        order2 = dict(meal=[1, 'matooke and beef', 5000], caterer='default22')
+        expected_response_message = True
+        order1 = dict(meal=[1, 'rice and beef', 10000], caterer='odur')
+        order2 = dict(meal=[1, 'matooke and beef', 5000], caterer='odur')
 
         self.tester.post('api/v1/orders', headers={'access-token': token_user},
                          content_type="application/json", data=json.dumps(order1))
         self.tester.post('api/v1/orders', headers={'access-token': token_user},
                          content_type="application/json", data=json.dumps(order2))
 
-        self.tester.patch('api/v1/orders/clear/1', headers={'access-token':token_user})
+        self.tester.patch('api/v1/orders/clear/1', headers={'access-token':token_caterer})
 
         response = self.tester.get('api/v1/orders/placed', headers={'access-token': token_user})
         response_results = json.loads(response.data.decode())
         print(response_results['message'])
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response_message, len(response_results['message']))
+        self.assertEqual(expected_response_message, response_results['message'][0]['cleared'])
 
 
 if __name__ == '__main__':
