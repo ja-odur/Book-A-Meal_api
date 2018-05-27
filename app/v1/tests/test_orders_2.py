@@ -66,13 +66,6 @@ class TestOrders2(unittest.TestCase):
         self.assertEqual(expected_length, len(history['message']))
         self.assertEqual(expected_result, history['message'][0]['cleared'])
 
-    # def test_easy_point(self):
-    #     history_response = self.tester.post('api/v1/orders/point/', headers={'access-token': token_user})
-    #     history = json.loads(history_response.data.decode())
-    #
-    #     self.assertEqual(history_response.status_code, 200)
-    #     self.assertEqual(expected_length, len(history['message']))
-
 
 if __name__ == '__main__':
     unittest.main()
