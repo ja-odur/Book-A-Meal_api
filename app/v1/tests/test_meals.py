@@ -32,7 +32,7 @@ class TestMeals(unittest.TestCase):
     def test_get_all_meals(self):
         input_data = dict(name='meal', price=5000)
         token = self.token
-        expected_response_message = [[1, 'meal', 5000], [3, 'meal', 5000], [4, 'meal', 5000], [5, 'meal', 5000]]
+        expected_response_message = [[1, 'meal', 5000, 0], [3, 'meal', 5000, 0], [4, 'meal', 5000, 0], [5, 'meal', 5000, 0]]
         self.tester.post('api/v1/meals/', content_type="application/json", headers={'access-token':token},
                          data=json.dumps(input_data))
         self.tester.post('api/v1/meals/', content_type="application/json", headers={'access-token':token},
@@ -48,7 +48,7 @@ class TestMeals(unittest.TestCase):
         token = self.token
         input_data = dict(name='meal', price=5000)
         update_data = dict(price=6000)
-        expected_response_message = [3, 'meal', 6000]
+        expected_response_message = [3, 'meal', 6000, 0]
         self.tester.post('api/v1/meals/', content_type="application/json", headers={'access-token':token},
                          data=json.dumps(input_data))
         self.tester.post('api/v1/meals/', content_type="application/json", headers={'access-token':token},
@@ -64,7 +64,7 @@ class TestMeals(unittest.TestCase):
     def test_delete_meal(self):
         token = self.token
         input_data = dict(name='meal', price=5000)
-        expected_response_message = [[1, 'meal', 5000], [3, 'meal', 5000]]
+        expected_response_message = [[1, 'meal', 5000, 0], [3, 'meal', 5000, 0]]
         self.tester.post('api/v1/meals/', content_type="application/json", headers={'access-token':token},
                          data=json.dumps(input_data))
         self.tester.post('api/v1/meals/', content_type="application/json", data=json.dumps(input_data),
