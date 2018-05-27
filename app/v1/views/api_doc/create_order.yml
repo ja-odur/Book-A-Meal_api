@@ -1,6 +1,7 @@
 Endpoint that enable a customer to place an order.
 ---
-
+tags:
+  - Orders
 parameters:
   - name: body
     in: body

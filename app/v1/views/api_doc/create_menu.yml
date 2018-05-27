@@ -1,6 +1,7 @@
 Endpoint that enable caterer to create a menu.
 ---
-
+tags:
+  - Menu
 parameters:
   - name: body
     in: body

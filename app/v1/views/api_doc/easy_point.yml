@@ -1,6 +1,7 @@
 Endpoint that enable customer to point out a meal.
 ---
-
+tags:
+  - Meals
 parameters:
   - name: meal_id
     in: path

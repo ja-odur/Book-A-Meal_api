@@ -1,5 +1,7 @@
 Endpoint that enable a caterer to get all the available meals inorder to create menu
 ---
+tags:
+  - Meals
 parameters:
   - name: access-token
     in: header

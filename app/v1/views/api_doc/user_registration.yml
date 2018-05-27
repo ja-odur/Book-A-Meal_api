@@ -1,6 +1,7 @@
 Endpoint to signup users, both customers and caterers
 ---
-
+tags:
+  - Book-A-Meals API -Singup and login
 parameters:
   - name: body
     in: body

@@ -1,5 +1,7 @@
 Endpoint that enable a user to get all placed orders.
 ---
+tags:
+  - Orders
 parameters:
   - name: access-token
     in: header

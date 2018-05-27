@@ -1,6 +1,7 @@
 Endpoint that enable caterer to clear a placed order.
 ---
-
+tags:
+  - Orders
 parameters:
   - name: order_id
     in: path

@@ -1,6 +1,7 @@
 Endpoint that enable caterer to delete a meal.
 ---
-
+tags:
+  - Meals
 parameters:
   - name: meal_id
     in: path

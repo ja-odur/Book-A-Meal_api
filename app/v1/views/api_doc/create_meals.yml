@@ -1,6 +1,7 @@
 Endpoint that enable caterers to create a new meal
 ---
-
+tags:
+  - Meals
 parameters:
   - name: body
     in: body

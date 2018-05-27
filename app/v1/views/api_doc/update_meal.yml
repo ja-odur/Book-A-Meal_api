@@ -1,6 +1,7 @@
 Endpoint that enable caterers to update either the name or price of a meal.
 ---
-
+tags:
+  - Meals
 parameters:
   - name: body
     in: body

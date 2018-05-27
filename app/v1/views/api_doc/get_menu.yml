@@ -1,5 +1,7 @@
 Endpoint returns available menu
 ---
+tags:
+  - Menu
 parameters:
   - name: access-token
     in: header

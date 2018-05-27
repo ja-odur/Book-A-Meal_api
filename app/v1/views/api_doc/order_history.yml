@@ -1,6 +1,7 @@
 Endpoint that enable users to get previously cleared orders.
 ---
-
+tags:
+  - Orders
 parameters:
   - name: access-token
     in: header
