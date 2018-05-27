@@ -71,7 +71,7 @@ def get_all_orders(current_user):
     :return: returns  confirmation message and the content containing all available orders.
     """
     caterer = current_user[1]
-    orders_per_caterer = orders_db.get_orders(caterer=caterer)
+    orders_per_caterer = orders_db.get_all_orders(caterer=caterer)
     if orders_per_caterer:
         message = 'The request was successfull'
         return make_response(jsonify(message=message, content=orders_per_caterer), 200)
@@ -79,6 +79,7 @@ def get_all_orders(current_user):
 
 
 @orders.route('/orders/placed', methods=['GET'])
+@swag_from("api_doc/get_orders.yml")
 @token_required()
 def get_orders(current_user):
     customer = current_user[1]
@@ -94,6 +95,7 @@ def get_orders(current_user):
 
 
 @orders.route('/orders/<int:order_id>', methods=['DELETE'])
+@swag_from("api_doc/delete_order.yml")
 @token_required()
 def delete_order(current_user, order_id):
     customer = current_user[1]
@@ -106,10 +108,15 @@ def delete_order(current_user, order_id):
     return make_response(jsonify(dict(message='Order not found')), 404)
 
 
-@orders.route('/orders/clear/<int:order_id>', methods=['PUT'])
+@orders.route('/orders/clear/<int:order_id>', methods=['PATCH'])
 @token_required(admin=True)
-def clear_orders(current_user, order_id):
-    pass
+def clear_order(current_user, order_id):
+    caterer = current_user[1]
+    cleared = orders_db.clear_order(caterer, order_id)
+
+    if cleared:
+        return make_response(jsonify(dict(message='Order successfully cleared')), 200)
+    return make_response(jsonify(dict(message='Order does not exist')), 200)
 
 
 @orders.route('/orders/history', methods=['GET'])
