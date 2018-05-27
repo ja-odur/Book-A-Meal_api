@@ -86,3 +86,17 @@ def delete_meal(current_user, meal_id):
     if meal_deleted:
         return make_response(jsonify(message='meal deleted'), 201)
     return make_response(jsonify(message='deletion failed, not item found to delete'), 404)
+
+
+@meals.route('/meals/point/<int:meal_id>', methods=['POST'])
+@token_required()
+def easy_point(current_user, meal_id):
+    category = current_user[0]
+    if category == 'caterer':
+        return make_response(jsonify(message='Operation not permitted for this user'), 403)
+
+    point_out = meals_db.easy_point(meal_id=meal_id)
+
+    if point_out:
+        return make_response(jsonify(message='Point out successful'), 200)
+    return make_response(jsonify(message='Point out failed'), 200)

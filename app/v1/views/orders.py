@@ -133,9 +133,3 @@ def get_history(current_user):
     if order_history:
         return make_response(jsonify(dict(message=order_history)), 200)
     return make_response(jsonify(dict(message='No order history')), 200)
-
-
-@orders.route('/orders/point', methods=['POST'])
-@token_required()
-def easy_point(current_user):
-    pass
