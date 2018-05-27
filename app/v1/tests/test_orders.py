@@ -9,11 +9,11 @@ class TestOrder(unittest.TestCase):
         self.tester = app.test_client(self)
         self.reg_data = dict(category='caterer', email='default22@gmail.com', username='default22', password='12345',
                              confirm_password='12345', address='address1')
-        self.reg_data_empty = dict(category='caterer', email='default@gmail.com', username='default', password='12345',
-                        confirm_password='12345', address='address1')
+        self.reg_data_empty = dict(category='caterer', email='default@gmail.com', username='default',
+                                   password='12345', confirm_password='12345', address='address1')
 
-        self.reg_data_user = dict(category='user', email='defaultuser@gmail.com', username='defaultuser', password='12345',
-                                confirm_password='12345', address='address1')
+        self.reg_data_user = dict(category='user', email='defaultuser@gmail.com', username='defaultuser',
+                                  password='12345', confirm_password='12345', address='address1')
 
         self.login_data = dict(category='caterer', username='default22', password='12345')
         self.login_data_user = dict(category='user', username='defaultuser', password='12345')
@@ -25,7 +25,7 @@ class TestOrder(unittest.TestCase):
         self.response = self.tester.post('api/v1/auth/login', content_type="application/json",
                                          data=json.dumps(self.login_data))
         self.response_user = self.tester.post('api/v1/auth/login', content_type="application/json",
-                                         data=json.dumps(self.login_data_user))
+                                              data=json.dumps(self.login_data_user))
 
         self.response_results = json.loads(self.response.data.decode())
         self.response_results_user = json.loads(self.response_user.data.decode())
@@ -123,7 +123,7 @@ class TestOrder(unittest.TestCase):
 
         response22 = self.tester.get('api/v1/orders/placed', headers={'access-token': token_user})
         response_results1 = json.loads(response22.data.decode())
-        print('response result', response_results1['message'])
+        # print('response result', response_results1['message'])
 
         self.tester.delete('api/v1/orders/2', headers={'access-token':token_user})
         response = self.tester.get('api/v1/orders/placed', headers={'access-token':token_user})
