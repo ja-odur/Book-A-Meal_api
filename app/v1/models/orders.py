@@ -90,8 +90,13 @@ class DbOrders:
         return False
 
     def clear_order(self, caterer, order_id):
-        for customer in self.orders_customers.values():
-            pass
+        orders_per_caterer = self.get_all_orders(caterer)
+        if orders_per_caterer:
+            for order in orders_per_caterer:
+                if order['order_id'] == order_id and not order['cleared']:
+                    order['cleared'] = True
+                    return True
+        return False
 
     def get_order_history(self, customer):
         pass
