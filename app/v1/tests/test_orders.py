@@ -30,6 +30,9 @@ class TestOrder(unittest.TestCase):
         self.response_results = json.loads(self.response.data.decode())
         self.response_results_user = json.loads(self.response_user.data.decode())
 
+        print('user', self.response_results_user)
+        print('caterer', self.response_results)
+
         self.token = self.response_results['token']
         self.token_user = self.response_results_user['token']
 
