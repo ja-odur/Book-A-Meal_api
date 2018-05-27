@@ -44,14 +44,27 @@ class TestOrders2(unittest.TestCase):
         url_clear_order = 'api/v1/orders/clear/'+str(order_id)
 
         self.tester.patch(url_clear_order, headers={'access-token':token_caterer})
-        # self.tester.patch('api/v1/orders/clear/1', headers={'access-token':token_caterer})
 
+        response = self.tester.get('api/v1/orders/placed', headers={'access-token': token_user})
+        response_results = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response_message, response_results['message'][0]['cleared'])
+
+    def test_get_history(self):
+        token_user = self.token_user
+        expected_result = True
+        expected_length = 1
         response = self.tester.get('api/v1/orders/placed', headers={'access-token': token_user})
         response_results = json.loads(response.data.decode())
         print(response_results['message'])
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(expected_response_message, response_results['message'][0]['cleared'])
+        history_response = self.tester.get('api/v1/orders/history', headers={'access-token':token_user})
+        history = json.loads(history_response.data.decode())
+
+        self.assertEqual(history_response.status_code, 200)
+        self.assertEqual(expected_length, len(history['message']))
+        self.assertEqual(expected_result, history['message'][0]['cleared'])
 
 
 if __name__ == '__main__':
