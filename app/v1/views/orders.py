@@ -122,7 +122,17 @@ def clear_order(current_user, order_id):
 @orders.route('/orders/history', methods=['GET'])
 @token_required()
 def get_history(current_user):
-    pass
+    customer = current_user[1]
+    category = current_user[0]
+
+    if category == 'caterer':
+        return make_response(jsonify(dict(message='Sorry operation not permitted for this user.')), 403)
+
+    order_history = orders_db.get_order_history(customer=customer)
+
+    if order_history:
+        return make_response(jsonify(dict(message=order_history)), 200)
+    return make_response(jsonify(dict(message='No order history')), 200)
 
 
 @orders.route('/orders/point', methods=['POST'])

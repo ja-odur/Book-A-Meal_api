@@ -99,4 +99,11 @@ class DbOrders:
         return False
 
     def get_order_history(self, customer):
-        pass
+        orders = self.get_orders_per_user(customer)
+        order_history = []
+        for order in orders:
+            if order['cleared']:
+                order_history.append(order)
+        if order_history:
+            return order_history
+        return False
