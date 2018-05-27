@@ -82,6 +82,11 @@ def get_all_orders(current_user):
 @swag_from("api_doc/get_orders.yml")
 @token_required()
 def get_orders(current_user):
+    """
+    This function enables a user  to get all the orders that is already placed.
+    :param current_user: A list containing the current users information i.e category username, email
+    :return: returns the orders if the operation is successful
+    """
     customer = current_user[1]
     if current_user[0] == 'caterer':
         return make_response(jsonify(dict(message='This method is meant for customers only')), 403)
@@ -98,6 +103,12 @@ def get_orders(current_user):
 @swag_from("api_doc/delete_order.yml")
 @token_required()
 def delete_order(current_user, order_id):
+    """
+    This function enables a user to delete a placed order
+    :param current_user: A list containing the current users information i.e category username, email
+    :param order_id: the id of the order to be deleted
+    :return: returns a confirmation message
+    """
     customer = current_user[1]
     if current_user[0] == 'caterer':
         return make_response(jsonify(dict(message='This method is meant for customers only')), 403)
@@ -111,6 +122,12 @@ def delete_order(current_user, order_id):
 @orders.route('/orders/clear/<int:order_id>', methods=['PATCH'])
 @token_required(admin=True)
 def clear_order(current_user, order_id):
+    """
+    This function enable caterers to clear orders placed by users
+    :param current_user: A list containing the current users information i.e category username, email
+    :param order_id: the id of the order to be cleared
+    :return: returns a confirmation message
+    """
     caterer = current_user[1]
     cleared = orders_db.clear_order(caterer, order_id)
 
@@ -122,6 +139,11 @@ def clear_order(current_user, order_id):
 @orders.route('/orders/history', methods=['GET'])
 @token_required()
 def get_history(current_user):
+    """
+    This function enables users to get a list of previously cleared orders
+    :param current_user: A list containing the current users information i.e category username, email
+    :return: returns the order history if the operation is successful
+    """
     customer = current_user[1]
     category = current_user[0]
 

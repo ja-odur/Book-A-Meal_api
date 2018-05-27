@@ -76,7 +76,7 @@ def update_meal(current_user, meal_id):
 def delete_meal(current_user, meal_id):
     """
     This function enables caterer to delete a created meal
-    :param current_user: A list containing the current users information i.e category username, email
+    :param current_user: A list containing the current user's information i.e category username, email
     :param meal_id: n integer used to identify the particular meal
     :return: returns a confirmation message, whether successful or not.
     """
@@ -91,6 +91,13 @@ def delete_meal(current_user, meal_id):
 @meals.route('/meals/point/<int:meal_id>', methods=['POST'])
 @token_required()
 def easy_point(current_user, meal_id):
+    """
+    This function enables to point out best meals by giving the meal a point. Accumulated points
+    are used to rank the meals
+    :param current_user: A list containing the current user's information i.e category username, email
+    :param meal_id: The id of the meal to pointed out
+    :return: returns a confirmation message, whether the operation is successful or not.
+    """
     category = current_user[0]
     if category == 'caterer':
         return make_response(jsonify(message='Operation not permitted for this user'), 403)
