@@ -33,13 +33,14 @@ def create_order(current_user):
         return make_response(jsonify(message='Invalid request format'), 403)
 
 
-@orders.route('/orders/<int:meal_id>', methods=['PUT'])
+@orders.route('/orders/<int:order_id>', methods=['PUT'])
 @swag_from('api_doc/modify_order.yml')
 @token_required()
-def modify_order(current_user, meal_id):
+def modify_order(current_user, order_id):
     """
         This function enables only users to modify an order
         :param current_user: A list containing the current users information i.e category username, email
+        :param order_id: the id of the order to be modified
         :return: returns a confirmation message
         """
     data = request.get_json()
@@ -49,7 +50,7 @@ def modify_order(current_user, meal_id):
         customer = current_user[1]
         if data['caterer'] and data['meal']:
 
-            new_order = orders_db.modify_order(customer=customer, caterer=data['caterer'], order_id=meal_id,
+            new_order = orders_db.modify_order(customer=customer, caterer=data['caterer'], order_id=order_id,
                                                meal=data['meal'])
             if new_order:
                 message = 'Order {} successfully modified.'.format(data)
