@@ -74,7 +74,12 @@ def login():
         return make_response(jsonify({'message': 'Invalid Username or Password'}), 401)
 
     if data['category'] == 'user':
-        user_info = user_db.get_user(data['username'])
+        user_info = False
+        users_info = user_db.get_users()
+        for user in users_info.values():
+            if user['username'] == data['username']:
+                user_info = user
+
         if user_info:
             user_password = user_info['password']
             if user_password == data['password']:
@@ -93,7 +98,13 @@ def login():
             return make_response(jsonify({'message': 'Invalid Username or Password2'}), 401)
 
     elif data['category'] == 'caterer':
-        caterer_info = caterer_db.get_caterer(data['username'])
+        caterer_info = False
+        caterer_ids = caterer_db.get_all_caterers().keys()
+        for caterer_id in caterer_ids:
+            info = caterer_db.get_caterer(caterer_id)
+            if info['username'] == data['username']:
+                caterer_info = info
+                break
 
         if caterer_info:
             user_password = caterer_info['password']

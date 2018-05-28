@@ -25,13 +25,10 @@ class DbUsers:
                 return True
         return False
 
-    def get_user(self, username):
-        user = self.all_users.get(username, False)
-        return user
-
-    def get_user_by_id(self, user_id):
-        for user in self.all_users.values():
-            if user_id == user['user_id']:
+    def get_user(self, user_id):
+        all_users = self.all_users
+        for user in all_users.values():
+            if user['user_id'] == user_id:
                 return user
         return False
 
@@ -44,5 +41,3 @@ class DbUsers:
             del self.all_users[username]
             return True
         return False
-
-
