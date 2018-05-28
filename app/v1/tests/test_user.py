@@ -42,7 +42,6 @@ class TestSuccessfulRegistration(unittest.TestCase):
         get_response3 = self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(input_data))
 
         response_results = json.loads(get_response3.data.decode())
-        print(response_results)
 
         expected_response_message = 'User {} already exists.'.format(input_data['username'])
 
@@ -59,8 +58,6 @@ class TestSuccessfulRegistration(unittest.TestCase):
         get_response = self.tester.post('api/v1/auth/login', content_type="application/json", data=json.dumps(login_data))
 
         response_results = json.loads(get_response.data.decode())
-        print(get_response.status_code)
-        print(response_results)
 
         self.assertEqual(get_response.status_code, 200)
         self.assertIn('token', response_results)

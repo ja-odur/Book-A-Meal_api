@@ -30,9 +30,6 @@ class TestOrder(unittest.TestCase):
         self.response_results = json.loads(self.response.data.decode())
         self.response_results_user = json.loads(self.response_user.data.decode())
 
-        print('user', self.response_results_user)
-        print('caterer', self.response_results)
-
         self.token = self.response_results['token']
         self.token_user = self.response_results_user['token']
 
@@ -86,7 +83,6 @@ class TestOrder(unittest.TestCase):
                                     data=json.dumps(login_data))
 
         response_results = json.loads(response.data.decode())
-        print('response from login', response_results)
         token_caterer = response_results['token']
 
         expected_response_message = 'Oops, orders not found.'
@@ -126,7 +122,6 @@ class TestOrder(unittest.TestCase):
 
         response22 = self.tester.get('api/v1/orders/placed', headers={'access-token': token_user})
         response_results1 = json.loads(response22.data.decode())
-        # print('response result', response_results1['message'])
 
         self.tester.delete('api/v1/orders/2', headers={'access-token':token_user})
         response = self.tester.get('api/v1/orders/placed', headers={'access-token':token_user})

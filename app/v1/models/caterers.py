@@ -48,13 +48,9 @@ class DbCaterers:
             return False
         user_id_for_caterer = self.caterers[caterer_id]
         caterer = self.users.get_user(user_id_for_caterer)
-        # caterer = self.users.get_user(caterer_id)
-        print('Id caterer', caterer_id)
-        print('Returned caterer', caterer)
         return caterer
 
     def get_all_caterers(self):
-        print('All caterers', self.caterers)
         return self.caterers
 
     def delete_caterer(self, caterer_id):
