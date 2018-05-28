@@ -9,7 +9,6 @@ class DbOrders:
     """
     def __init__(self):
         self.orders_customers = dict()
-        self.orders_history = dict()
         self.order_expiry_time = datetime.timedelta(minutes=1).total_seconds()
         self.id_count = 1
 
