@@ -1,7 +1,7 @@
-Endpoint to signup users, both customers and caterers
+Endpoint to signup both customers and caterers
 ---
 tags:
-  - Singup and login
+  - Sign-up
 parameters:
   - name: body
     in: body

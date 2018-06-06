@@ -12,36 +12,21 @@ class DbCaterers:
         self.users = users
 
     def add_caterer(self, email, username, password, address):
-        user_info = False
         users = self.users.get_users()
+        for user_key in self.caterers.values():
+            if username == self.users.get_user(user_key)['username']:
+                return False
 
         for user in users.values():
             if user['username'] == username:
-                user_info = user
+                self.caterers[self.id] = user['user_id']
+                self.id += 1
+                return True
 
-        new_caterer = False
-        if not user_info:
-            new_caterer = self.users.add_user(email, username, password, address)
-        else:
-            if not user_info:
-                new_caterer = True
-            else:
-                new_caterer = False
+        self.caterers[self.id] = self.users.add_user(email, username, password, address)
+        self.id += 1
 
-        if new_caterer:
-            if user_info:
-                user_id = user_info['user_id']
-            else:
-                users = self.users.get_users()
-                for user in users.values():
-                    if user['username'] == username:
-                        info = user
-                user_id = info['user_id']
-            self.caterers[self.id] = user_id
-            self.id += 1
-            return True
-
-        return False
+        return True
 
     def get_caterer(self, caterer_id):
         if caterer_id not in self.caterers.keys():
@@ -50,8 +35,12 @@ class DbCaterers:
         caterer = self.users.get_user(user_id_for_caterer)
         return caterer
 
-    def get_all_caterers(self):
-        return self.caterers
+    def get_caterers(self):
+        all_caterers = {}
+
+        for caterer_id in self.caterers.keys():
+            all_caterers[caterer_id] = self.get_caterer(caterer_id)
+        return all_caterers
 
     def delete_caterer(self, caterer_id):
         caterer = self.caterers.get(caterer_id, False)
@@ -59,6 +48,7 @@ class DbCaterers:
             del self.caterers[caterer_id]
             return True
         return False
+
        
 
 

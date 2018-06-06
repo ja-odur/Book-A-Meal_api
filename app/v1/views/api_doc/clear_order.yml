@@ -7,7 +7,7 @@ parameters:
     in: path
     required: true
     properties:
-       meal_id:
+       order_id:
         type: "int"
     default: 1
   - name: access-token

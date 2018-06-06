@@ -28,7 +28,6 @@ parameters:
     properties:
        access-token:
         type: "string"
-#    default: 1
 
 responses:
   201:

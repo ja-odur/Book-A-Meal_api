@@ -99,7 +99,7 @@ def login():
 
     elif data['category'] == 'caterer':
         caterer_info = False
-        caterer_ids = caterer_db.get_all_caterers().keys()
+        caterer_ids = caterer_db.get_caterers().keys()
         for caterer_id in caterer_ids:
             info = caterer_db.get_caterer(caterer_id)
             if info['username'] == data['username']:

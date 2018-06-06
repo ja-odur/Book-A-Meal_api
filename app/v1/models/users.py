@@ -10,24 +10,20 @@ class DbUsers:
         self.id = 1
 
     def add_user(self, email, username, password, address):
-        all_emails = []
         for user_key in self.all_users.keys():
             existing_email = self.all_users[user_key]['email']
-            all_emails.append(existing_email)
+            if existing_email == email:
+                return False
 
-        if email not in all_emails:
-            user_exists = self.all_users.get(username, False)
-
-            if not user_exists:
-                self.all_users[username] = dict(email=email, username=username, password=password,
-                                                address=address, user_id=self.id)
-                self.id += 1
-                return True
+        if not self.all_users.get(username, False):
+            self.all_users[username] = dict(email=email, username=username, password=password,
+                                            address=address, user_id=self.id)
+            self.id += 1
+            return self.all_users[username]['user_id']
         return False
 
     def get_user(self, user_id):
-        all_users = self.all_users
-        for user in all_users.values():
+        for user in self.all_users.values():
             if user['user_id'] == user_id:
                 return user
         return False
