@@ -41,3 +41,4 @@ def get_menu(current_user):
     message = 'Todays menu {}.'.format(menu)
     return make_response(jsonify(message=message), 200)
 
+

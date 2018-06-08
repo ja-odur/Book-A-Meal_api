@@ -10,7 +10,7 @@ class TestMeals(unittest.TestCase):
         self.reg_data = dict(category='caterer', email='default22@gmail.com', username='default22', password='12345',
                              confirm_password='12345', address='address1')
         self.reg_data_user = dict(category='user', email='agnes@gmail.com', username='agnes', password='12345',
-                             confirm_password='12345', address='address1')
+                                  confirm_password='12345', address='address1')
 
         self.login_data = dict(category='caterer', username='default22', password='12345')
         self.login_data_user = dict(category='user', username='agnes', password='12345')
@@ -60,8 +60,8 @@ class TestMeals(unittest.TestCase):
                          data=json.dumps(input_data))
         self.tester.post('api/v1/meals/', content_type="application/json", headers={'access-token':token},
                          data=json.dumps(input_data))
-        get_response = self.tester.put('api/v1/meals/2', content_type="application/json", headers={'access-token':token},
-                                       data=json.dumps(update_data))
+        get_response = self.tester.put('api/v1/meals/2', content_type="application/json",
+                                       headers={'access-token':token}, data=json.dumps(update_data))
 
         response_results = json.loads(get_response.data.decode())
 

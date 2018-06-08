@@ -46,8 +46,8 @@ def register_user():
                 return make_response(jsonify(dict(message=message)), 403)
 
         elif data['category'] == 'caterer':
-            add_caterer = caterer_db.add_caterer(email=data['email'], username=data['username'], password=data['password'],
-                                                 address=data['address'])
+            add_caterer = caterer_db.add_caterer(email=data['email'], username=data['username'],
+                                                 password=data['password'], address=data['address'])
             if add_caterer:
                 message = 'Caterer {} successfully signed up.'.format(data['username'])
                 return make_response(jsonify(dict(message=message)), 201)

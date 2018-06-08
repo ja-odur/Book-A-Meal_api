@@ -27,7 +27,8 @@ responses:
     schema:
       type: object
     examples:
-      {"message": "Menu [[1, 'rice and posho', 5000], [2, 'rice and posho', 5000], [3, 'rice and posho', 5000]] successfully added."}
+      {"message": "Menu [[1, 'rice and posho', 5000], [2, 'rice and posho', 5000],
+                            [3, 'rice and posho', 5000]] successfully added."}
   403:
      description: If a not well formtted object is sent.
      schema:

@@ -68,8 +68,8 @@ class TestOrder(unittest.TestCase):
         modified_order = dict(meal=[1, 'rice and posho_modified', 5000], caterer='default22')
         expected_response_message = 'Order {} successfully modified.'.format(modified_order)
 
-        get_response = self.tester.put('api/v1/orders/1', content_type="application/json", headers={'access-token':token_user},
-                                       data=json.dumps(modified_order))
+        get_response = self.tester.put('api/v1/orders/1', content_type="application/json",
+                                       headers={'access-token':token_user}, data=json.dumps(modified_order))
 
         response_results = json.loads(get_response.data.decode())
 

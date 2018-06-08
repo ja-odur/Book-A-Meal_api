@@ -24,7 +24,8 @@ class TestSuccessfulRegistration(unittest.TestCase):
         input_data = dict(category='caterer', email='default100@gmail.com', username='default100', password='12345',
                           confirm_password='12345', address='address1', brand_name='easy_caterer')
         expected_response_message = 'Caterer {} successfully signed up.'.format(input_data['username'])
-        get_response = self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(input_data))
+        get_response = self.tester.post('api/v1/auth/signup', content_type="application/json",
+                                        data=json.dumps(input_data))
 
         response_results = json.loads(get_response.data.decode())
 
@@ -35,11 +36,12 @@ class TestSuccessfulRegistration(unittest.TestCase):
         input_data = dict(category='user', email='default223@gmail.com', username='default3323', password='12345',
                           confirm_password='12345', address='address1')
 
-        # initialsignup
+        # initial signup
         self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(input_data))
 
-        #second signup
-        get_response3 = self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(input_data))
+        # second signup
+        get_response3 = self.tester.post('api/v1/auth/signup', content_type="application/json",
+                                         data=json.dumps(input_data))
 
         response_results = json.loads(get_response3.data.decode())
 
@@ -55,7 +57,8 @@ class TestSuccessfulRegistration(unittest.TestCase):
 
         self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(reg_data))
 
-        get_response = self.tester.post('api/v1/auth/login', content_type="application/json", data=json.dumps(login_data))
+        get_response = self.tester.post('api/v1/auth/login', content_type="application/json",
+                                        data=json.dumps(login_data))
 
         response_results = json.loads(get_response.data.decode())
 
