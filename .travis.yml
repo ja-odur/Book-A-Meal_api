@@ -1,0 +1,24 @@
+
+language: python
+python:
+  - "3.6"
+
+install:
+  - pip install -r requirements.txt
+  - pip install coverage
+  - pip install coveralls
+
+
+# command to run tests
+script:
+  - pytest --cov=app/
+  - coverage report
+
+
+# generate code climate report
+after_script:
+  - codeclimate-test-reporter
+  - coveralls
+
+after_success:
+  - coveralls

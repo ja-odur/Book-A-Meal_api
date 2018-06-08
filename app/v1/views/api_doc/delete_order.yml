@@ -1,0 +1,32 @@
+Endpoint that enable customer to delete a placed order.
+---
+tags:
+  - Orders
+parameters:
+  - name: order_id
+    in: path
+    required: true
+    properties:
+       meal_id:
+        type: "int"
+    default: 1
+  - name: access-token
+    in: header
+    required: true
+    properties:
+       access-token:
+        type: "string"
+
+responses:
+  201:
+    description: A message showing that the order is deleted.
+    schema:
+      type: object
+    examples:
+      {"message": "Order successfully deleted"}
+  404:
+     description: If the order is not found.
+     schema:
+       type: object
+     examples:
+       {"message": "Order not found"}

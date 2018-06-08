@@ -1,0 +1,33 @@
+Endpoint to login both customers and caterers
+---
+tags:
+  - Login
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "category"
+        - "username"
+        - "password"
+      properties:
+        category:
+          type: "string"
+          example: "user or caterer"
+        username:
+          type: "string"
+          example: "johndoe"
+        password:
+          type: "string"
+          format: password
+          example: 12345
+
+responses:
+  201:
+    description: A message indicating the user signup success.
+    schema:
+      type: object
+    examples:
+      { "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpbmZvIjoiY2F0aFUDQELA_WPziQBg" }

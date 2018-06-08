@@ -1,0 +1,19 @@
+Endpoint that enable users to get previously cleared orders.
+---
+tags:
+  - Orders
+parameters:
+  - name: access-token
+    in: header
+    required: true
+    properties:
+       access-token:
+        type: "string"
+
+responses:
+  200:
+    description: Returns a list of order history.
+    schema:
+      type: object
+    examples:
+      {"message": "Order successfully cleared"}
