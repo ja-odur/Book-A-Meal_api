@@ -1,17 +1,10 @@
 from app.v1.views.meals import meals
 from app.v1.views.menu import menu
 from app.v1.views.users import users
-from flasgger import Swagger
-from flask import Flask
-
 from app.v1.views.orders import orders
 
-
-app = Flask(__name__, instance_relative_config=True)
-app.config['SWAGGER'] = {
-    'title': 'BOOK-A-MEAL API',
-    'version': 1,
-}
+from flasgger import Swagger
+from run_setup import app
 
 swagger = Swagger(app)
 
