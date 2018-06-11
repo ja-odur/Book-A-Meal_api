@@ -1,5 +1,6 @@
 from app.v1.models.db_connection import DB
 from sqlalchemy.orm import relationship
+from sqlalchemy.exc import IntegrityError
 
 class DbUsers:
     """
@@ -98,6 +99,9 @@ class Users(DB.Model):
         return False
 
     def commit_changes(self):
-        if DB.session.commit():
+        try:
+            DB.session.commit()
             return True
-        return False
+        except IntegrityError:
+            DB.session.rollback()
+            return False
