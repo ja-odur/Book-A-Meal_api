@@ -1,6 +1,7 @@
 from app.v1.models.db_connection import DB
-from sqlalchemy.orm import relationship
+
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import UnmappedInstanceError
 
 class DbUsers:
     """
@@ -55,6 +56,7 @@ class User(DB.Model):
     password = DB.Column(DB.String(254), nullable=False)
     address = DB.Column(DB.String(254))
     user_id = DB.Column(DB.Integer, primary_key=True)
+    caterer = DB.relationship('Caterer', backref='user')
 
     def __init__(self, email, username, password, address='No address provided'):
         self.email = email
@@ -63,13 +65,46 @@ class User(DB.Model):
         self.address = address
 
     @staticmethod
+    def to_dictionary(user_object):
+        if isinstance(user_object, User):
+            return dict(username=user_object.username, email=user_object.email, address=user_object.address,
+                        id=user_object.id)
+        return False
+
+    @staticmethod
     def commit_changes():
         try:
             DB.session.commit()
             return True
-        except IntegrityError:
+        except (IntegrityError, UnmappedInstanceError):
             DB.session.rollback()
             return False
+
+    @staticmethod
+    def get_user(username, email=None, user_id=None):
+        if user_id:
+            user = User.query.filter_by(id=user_id).first()
+
+        elif email:
+            user = User.query.filter_by(email=email).first()
+        else:
+            user = User.query.filter_by(username=username).first()
+        return user
+        # return User.to_dictionary(user)
+
+    @staticmethod
+    def delete_user(username):
+        user = User.query.filter_by(username=username).first()
+        try:
+            DB.session.delete(user)
+        except UnmappedInstanceError:
+            return False
+        else:
+            return User.commit_changes()
+
+    @staticmethod
+    def get_users():
+        return User.query.all()
 
     def add_user(self):
         user = DB.session.add(self)
@@ -78,19 +113,55 @@ class User(DB.Model):
             return True
         return False
 
-    def get_user(self, user_id):
-        for user in self.all_users.values():
-            if user['user_id'] == user_id:
-                return user
-        return False
 
-    def get_users(self):
-        return self.all_users
+class Caterer(DB.Model):
+    """
+    This class stores information about the registered caterers. The username and email fields are unique and any duplicate value
+    wont be inserted into the database.
+    """
 
-    def delete_user(self, username):
-        user = self.all_users.get(username, False)
+    __tablename__ = 'caterers'
+    caterer_id = DB.Column(DB.Integer, primary_key=True)
+    brand_name = DB.Column(DB.String(120), nullable=True)
+    user_id = DB.Column(DB.Integer, DB.ForeignKey('users.user_id'))
+
+    def __init__(self):
+        self.brand_name = None
+
+    def add_caterer(self, email, username, password, address='', brand_name=''):
+        user = User.get_user(username=username, email=email)
+        if not user:
+            user = User(email=email, username=username, password=password, address=address).add_user()
+
         if user:
-            del self.all_users[username]
+            self.brand_name = brand_name
+            self.user_id= User.get_user(username=username, email=email).user_id
+            DB.session.add(self)
+            DB.session.commit()
             return True
         return False
+
+    @staticmethod
+    def get_caterer(caterer_id):
+        return Caterer.query.filter_by(caterer_id=caterer_id).first()
+
+    @staticmethod
+    def get_caterers():
+        all_caterers = {}
+        caterers = Caterer.query.all()
+        for caterer in caterers:
+            user = User.get_user(username=None, user_id=caterer.user_id)
+            all_caterers[caterer.caterer_id] = [user.username, user.email, user.address, caterer.brand_name]
+        return all_caterers
+
+    @staticmethod
+    def delete_caterer(caterer_id):
+        caterer = Caterer.query.filter_by(caterer_id=caterer_id)
+        DB.session.delete(caterer)
+        DB.commit()
+
+
+
+
+
 

@@ -2,6 +2,7 @@ import unittest
 import json
 
 from run import app
+from app.v1.models.users import User
 
 
 class TestSuccessfulRegistration(unittest.TestCase):
@@ -9,11 +10,13 @@ class TestSuccessfulRegistration(unittest.TestCase):
         self.tester = app.test_client(self)
 
     def test_successful_user_registration(self):
-        input_data = dict(category='user', email='default23@gmail.com', username='default23', password='12345',
+        input_data = dict(category='user', email='default233@gmail.com', username='default233', password='12345',
                           confirm_password='12345', address='address1')
         expected_response_message = 'User {} successfully signed up.'.format(input_data['username'])
         get_response = self.tester.post('api/v1/auth/signup', content_type="application/json",
                                         data=json.dumps(input_data))
+        # deleting user for recurrence purpose
+        User.delete_user('default233')
 
         response_results = json.loads(get_response.data.decode())
 

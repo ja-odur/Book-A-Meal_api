@@ -1,14 +1,17 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
-from env_config import API_KEY
-import jwt
-import datetime
+from app.v1.views.utils import verify_password
 
-from app.v1.models.users import DbUsers
+from app.v1.models.users import DbUsers, User
 from app.v1.models.caterers import DbCaterers
 
+import jwt
+import datetime
+from env_config import API_KEY
+
 SECRET_KEY = API_KEY
-# SECRET_KEY ='secretKey4512yek'
+
+
 
 user_db = DbUsers()
 caterer_db = DbCaterers(user_db)
@@ -33,10 +36,10 @@ def register_user():
 
     if data['password'] == data['confirm_password']:
         if data['category'] == 'user':
-            add_user = user_db.add_user(email=data['email'], username=data['username'], password=data['password'],
-                                        address=data['address'])
+            new_user = User(email=data['email'], username=data['username'], password=data['password'],
+                            address=data['address']).add_user()
 
-            if add_user:
+            if new_user:
                 message = 'User {} successfully signed up.'.format(data['username'])
                 message.encode('utf-8')
                 return make_response(jsonify(dict(message=message)), 201)
@@ -75,22 +78,16 @@ def login():
 
     if data['category'] == 'user':
         user_info = False
-        users_info = user_db.get_users()
-        for user in users_info.values():
-            if user['username'] == data['username']:
+        users_info = User.get_users()
+        for user in users_info:
+            if user.username == data['username']:
                 user_info = user
 
         if user_info:
-            user_password = user_info['password']
-            if user_password == data['password']:
-                category = 'user'
-                email = user_info['email']
-                username = user_info['username']
-                token_string = str(category)+','+str(username)+','+str(email)
-                token = jwt.encode({'info': token_string,
-                                    'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
-                                    SECRET_KEY)
-                return make_response(jsonify(dict(token=token.decode('UTF-8'))), 200)
+            token = verify_password(username=user_info.username, user_email=user_info.email, db_password=user_info.password,
+                                    input_password=data['password'], category='user')
+            if token:
+                return make_response(jsonify(dict(token=token)), 200)
 
             else:
                 return make_response(jsonify({'message': 'Invalid Username or Password1'}), 401)
