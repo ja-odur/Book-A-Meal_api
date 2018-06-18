@@ -2,7 +2,8 @@ from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
 from app.v1.views.utils import verify_password
 
-from app.v1.models.users import DbUsers, User
+from app.v1.models.users import User, Caterer
+from app.v1.models.users2 import DbUsers
 from app.v1.models.caterers import DbCaterers
 
 import jwt
@@ -28,7 +29,7 @@ def register_user():
     """
     data = request.get_json()
     try:
-        if data['category'] and data['email'] and data['username'] \
+        if data['category'] and data['email'] and data['username'] and data['first_name'] and data['last_name']\
                 and data['password'] and data['confirm_password'] and data['address']:
             pass
     except:
@@ -36,8 +37,8 @@ def register_user():
 
     if data['password'] == data['confirm_password']:
         if data['category'] == 'user':
-            new_user = User(email=data['email'], username=data['username'], password=data['password'],
-                            address=data['address']).add_user()
+            new_user = User(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
+                            username=data['username'], password=data['password'], address=data['address']).add_user()
 
             if new_user:
                 message = 'User {} successfully signed up.'.format(data['username'])
@@ -49,9 +50,9 @@ def register_user():
                 return make_response(jsonify(dict(message=message)), 403)
 
         elif data['category'] == 'caterer':
-            add_caterer = caterer_db.add_caterer(email=data['email'], username=data['username'],
-                                                 password=data['password'], address=data['address'])
-            if add_caterer:
+            new_caterer = Caterer(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
+                            username=data['username'], password=data['password'], address=data['address']).add_caterer()
+            if new_caterer:
                 message = 'Caterer {} successfully signed up.'.format(data['username'])
                 return make_response(jsonify(dict(message=message)), 201)
             else:
@@ -82,6 +83,7 @@ def login():
         for user in users_info:
             if user.username == data['username']:
                 user_info = user
+                break
 
         if user_info:
             token = verify_password(username=user_info.username, user_email=user_info.email, db_password=user_info.password,
@@ -96,11 +98,10 @@ def login():
 
     elif data['category'] == 'caterer':
         caterer_info = False
-        caterer_ids = caterer_db.get_caterers().keys()
-        for caterer_id in caterer_ids:
-            info = caterer_db.get_caterer(caterer_id)
-            if info['username'] == data['username']:
-                caterer_info = info
+        caterers_info = Caterer.get_caterers()
+        for caterer in caterers_info:
+            if caterer.username == data['username']:
+                caterer_info = caterer
                 break
 
         if caterer_info:
