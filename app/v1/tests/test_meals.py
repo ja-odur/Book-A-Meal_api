@@ -8,9 +8,9 @@ class TestMeals(unittest.TestCase):
     def setUp(self):
         self.tester = app.test_client(self)
         self.reg_data = dict(category='caterer', email='default22@gmail.com', username='default22', password='12345',
-                             confirm_password='12345', address='address1')
+                             confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
         self.reg_data_user = dict(category='user', email='agnes@gmail.com', username='agnes', password='12345',
-                                  confirm_password='12345', address='address1')
+                                  confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
 
         self.login_data = dict(category='caterer', username='default22', password='12345')
         self.login_data_user = dict(category='user', username='agnes', password='12345')
