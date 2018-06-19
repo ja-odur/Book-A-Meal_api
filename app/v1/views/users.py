@@ -3,8 +3,6 @@ from flask import jsonify, request, make_response, Blueprint
 from app.v1.views.utils import verify_password
 
 from app.v1.models.users import User, Caterer
-from app.v1.models.users2 import DbUsers
-from app.v1.models.caterers import DbCaterers
 
 import jwt
 import datetime
@@ -12,10 +10,6 @@ from env_config import API_KEY
 
 SECRET_KEY = API_KEY
 
-
-
-user_db = DbUsers()
-caterer_db = DbCaterers(user_db)
 
 users = Blueprint('users', __name__, url_prefix='/api/v1')
 
