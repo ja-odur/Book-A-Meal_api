@@ -2,7 +2,7 @@ import unittest
 import json
 
 from run import app
-from app.v1.models.users import User, Caterer
+from app.v1.models.models import User, Caterer
 
 
 class TestSuccessfulRegistration(unittest.TestCase):

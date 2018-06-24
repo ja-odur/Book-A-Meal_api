@@ -1,6 +1,6 @@
 # from app.v1.models.users import DbUsers
 # from app.v1.models.db_connection import DB
-from app.v1.models.users import User, DB
+from app.v1.models.models import User, DB
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 

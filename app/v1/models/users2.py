@@ -2,7 +2,7 @@
 #
 # from sqlalchemy.exc import IntegrityError
 # from sqlalchemy.orm.exc import UnmappedInstanceError
-from app.v1.models.users import DB, UserInfo, IntegrityError, UnmappedInstanceError
+from app.v1.models.models import DB, UserInfo, IntegrityError, UnmappedInstanceError
 
 
 class DbUsers:

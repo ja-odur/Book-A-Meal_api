@@ -2,7 +2,7 @@ from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
 from app.v1.views.utils import verify_password
 
-from app.v1.models.users import User, Caterer
+from app.v1.models.models import User, Caterer
 
 import jwt
 import datetime

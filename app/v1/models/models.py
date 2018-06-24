@@ -1,6 +1,7 @@
 from app.v1.models.db_connection import DB
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
+import datetime
 
 
 class UserInfo(DB.Model):
@@ -89,6 +90,7 @@ class User(DB.Model):
     email = DB.Column(DB.String(160), unique=True)
     password = DB.Column(DB.String(254), nullable=False)
     user = DB.Column(DB.Integer, DB.ForeignKey('users_info.user_id'))
+    order = DB.relationship('Order', backref='client')
 
     def __init__(self, first_name, last_name, email, username, password, address='No address provided'):
         self.email = email
@@ -123,7 +125,9 @@ class User(DB.Model):
             user = User.query.filter_by(email=email).first()
         else:
             user = User.query.filter_by(username=username).first()
-        return user
+        if user:
+            return user
+        return False
 
     @staticmethod
     def delete_user(username):
@@ -173,9 +177,13 @@ class User(DB.Model):
         return self.commit_changes()
 
     def __repr__(self):
-        return "User->(email={}, username={}, first_name={}, last_name={}," \
+        try:
+            return "User->(email={}, username={}, first_name={}, last_name={}," \
                " address={})".format(self.email, self.username, self.customer.first_name, self.customer.last_name,
                                      self.customer.address)
+        except AttributeError:
+            return "User to created->(email={}, username={}, first_name={}, last_name={}" \
+               ")".format(self.email, self.username, self.first_name, self.last_name)
 
 
 class Caterer(DB.Model):
@@ -218,7 +226,9 @@ class Caterer(DB.Model):
             caterer = Caterer.query.filter_by(email=email).first()
         else:
             caterer = Caterer.query.filter_by(username=username).first()
-        return caterer
+        if caterer:
+            return caterer
+        return False
 
     @staticmethod
     def delete_caterer(username):
@@ -268,115 +278,19 @@ class Caterer(DB.Model):
         return self.commit_changes()
 
     def __repr__(self):
-        return "Caterer->(email={}, username={}, first_name={}, last_name={}," \
+        try:
+            return "Caterer->(email={}, username={}, first_name={}, last_name={}," \
                " address={})".format(self.email, self.username, self.caterer.first_name, self.caterer.last_name,
                                      self.caterer.address)
-
-class DbMeals:
-    """
-    This class stores information about the meals offered by registered caterers.
-    """
-    def __init__(self):
-        self.meals = dict()
-        self.meal_id = 1
-
-    def add_meal(self, caterer, meal_name, price):
-        caterer_meals = self.meals.get(caterer, False)
-
-        if not caterer_meals:
-            meals = list()
-            meal_id = self.meal_id
-            easy_point = 0
-            meal = [meal_id, meal_name, price, easy_point, caterer]
-            meals.append(meal)
-
-            self.meals[caterer] = meals
-            self.meal_id += 1
-            return True
-
-        else:
-            all_meals = self.meals[caterer]
-            meal_id = self.meal_id
-            # meal_id = all_meals[-1][0] + 1
-            easy_point = 0
-            all_meals.append([meal_id, meal_name, price, easy_point, caterer])
-            self.meal_id += 1
-            return True
-
-        # for any reason meal not added
-        return False
-
-    def get_meal(self, caterer, meal_id):
-        all_meals_caterer = self.get_all_meals(caterer)
-        if not all_meals_caterer:
-            return False
-        else:
-            length = len(all_meals_caterer)
-
-        if isinstance(meal_id, int) and meal_id > 0:
-            actual_id = meal_id -1
-        else:
-            return False
-
-        if actual_id <= length:
-            meal = all_meals_caterer[meal_id - 1]
-            return meal
-
-        return False
-
-    def update_meal(self, caterer, meal_id, field_to_update, new_value):
-        meal = self.get_meal(caterer, meal_id)
-        if meal:
-            if field_to_update == 'name':
-                if isinstance(new_value, str):
-                    meal[1] = new_value
-            elif field_to_update == 'price':
-                meal[2] = new_value
-            self.get_all_meals(caterer)[meal_id-1] = meal
-            return meal
-        return False
-
-    def get_all_meals(self, caterer):
-        meals = self.meals.get(caterer, False)
-        return meals
-
-    def delete_meal(self, caterer, meal_id):
-        deleted = False
-        all_meals = self.get_all_meals(caterer)
-
-        if all_meals:
-            counter = 0
-            list_length = len(all_meals)
-
-            while counter < list_length:
-                meal = all_meals[counter]
-
-                if meal[0] == meal_id:
-                    deleted = True
-                    break
-
-                counter += 1
-            if deleted:
-                del self.meals[caterer][counter]
-                return True
-
-        return False
-
-    def easy_point(self, meal_id):
-        all_meals = self.meals
-
-        for meals in all_meals.values():
-            for meal in meals:
-                if meal[0] == meal_id:
-                    meal[3] += 1
-                    return True
-        return False
+        except AttributeError:
+            return "Caterer to created->(email={}, username={}, first_name={}, last_name={}" \
+                   ")".format(self.email, self.username, self.first_name, self.last_name)
 
 
 class Meal(DB.Model):
     """
         This class stores information about the meals offered by each registered caterer.
-        """
+    """
     __tablename__ = 'meals'
 
     id = DB.Column(DB.Integer, primary_key=True)
@@ -384,11 +298,11 @@ class Meal(DB.Model):
     price = DB.Column(DB.Integer, nullable=False)
     point = DB.Column(DB.Integer, default=0)
     caterer = DB.Column(DB.Integer, DB.ForeignKey('caterers.id'))
+    menu = DB.relationship('Menu', backref='menu')
 
     def __init__(self, name, price):
         self.name = name
         self.price = price
-        # self.point = point
 
     @staticmethod
     def commit_changes():
@@ -402,7 +316,7 @@ class Meal(DB.Model):
     def add_meal(self, caterer):
         try:
             caterer_id = caterer.id
-        except:
+        except AttributeError:
             return False
         else:
             self.caterer = caterer_id
@@ -421,8 +335,249 @@ class Meal(DB.Model):
                 return self.commit_changes()
         return False
 
-    def get_meal(self):
+    @staticmethod
+    def get_meal(meal_id):
+        return Meal.query.filter_by(id=meal_id).first()
         pass
 
-    def get_meals(self):
-        
+    @staticmethod
+    def get_meals():
+        return Meal.query.all()
+
+    @staticmethod
+    def delete_meal(meal_id):
+        meal = Meal.query.filter_by(id=meal_id).first()
+        if meal:
+            DB.session.delete(meal)
+            return Meal.commit_changes()
+        return False
+
+    @staticmethod
+    def easy_point(meal_id):
+        meal = Meal.query.filter_by(id=meal_id).first()
+
+        if meal:
+            meal.point += 1
+            return Meal.commit_changes()
+        return False
+
+    def __repr__(self):
+        return "Meal ->(name={}, price={})".format(self.name, self.price)
+
+
+class Menu(DB.Model):
+    """
+        This class stores information about the menu of the day created by registered caterers.
+    """
+    __tablename__ = 'menus'
+    id = DB.Column(DB.Integer, primary_key=True)
+    meal = DB.Column(DB.Integer, DB.ForeignKey('meals.id'))
+    order = DB.relationship('Order', backref='order')
+    caterer = DB.Column(DB.Integer)
+
+    def __init__(self, caterer_id, meal_id):
+        self.caterer = caterer_id
+        self.meal = meal_id
+
+    @staticmethod
+    def commit_changes():
+        try:
+            DB.session.commit()
+            return True
+        except (IntegrityError, UnmappedInstanceError):
+            DB.session.rollback()
+            return False
+
+    def add_meal_to_menu(self):
+        meal = Meal.query.filter_by(id=self.meal).first()
+
+        if not meal:
+            return False
+        if meal.caterer == self.caterer:
+            DB.session.add(self)
+            return Menu.commit_changes()
+        return False
+
+    @staticmethod
+    def remove_meal_from_menu(caterer_id, meal_id):
+        meal = Menu.query.filter_by(id=meal_id).first()
+        if not meal:
+            return False
+        if meal.caterer == caterer_id:
+            DB.session.delete(meal)
+            return Menu.commit_changes()
+        return False
+
+    @staticmethod
+    def create_menu(caterer_id, *meal_ids):
+        added_meals = []
+        if not Caterer.query.filter_by(id=caterer_id).first():
+            return False
+
+        for meal_id in meal_ids:
+            meal_added = Menu(caterer_id=caterer_id, meal_id=meal_id).add_meal_to_menu()
+
+            if meal_added:
+                added_meals.append(meal_id)
+
+        if added_meals:
+            return added_meals
+        return False
+
+    @staticmethod
+    def delete_menu(caterer_id):
+        menu = Menu.query.filter_by(caterer=caterer_id)
+        if not menu:
+            return False
+        for menu_item in menu:
+            DB.session.delete(menu_item)
+        return Menu.commit_changes()
+
+    @staticmethod
+    def get_menu(caterer_id):
+        menu = []
+        raw_menu = Menu.query.filter_by(caterer=caterer_id)
+
+        if not raw_menu:
+            return False
+        for menu_item in raw_menu:
+            menu.append(
+                dict(name=menu_item.menu.name, price=menu_item.menu.price, point=menu_item.menu.point,
+                     caterer_id=menu_item.menu.caterer)
+            )
+
+        return menu
+
+    @staticmethod
+    def get_menus():
+        all_menus = {}
+        raw_menus = Menu.query.all()
+
+        for menu_item in raw_menus:
+            if menu_item.menu.caterer not in all_menus.keys():
+                all_menus[menu_item.menu.caterer] = Menu.get_menu(caterer_id=menu_item.caterer)
+
+        if all_menus:
+            return all_menus
+        return False
+
+    def __repr__(self):
+        return 'Menu Object'
+
+
+class Order(DB.Model):
+    """
+    This class stores information about the orders made by registered users. Allows users to modify their orders
+    if it's still within the one hour time lap. This orders information is stored in a two forms that are
+    easily accessible by users (to view their orders) and caterers ( to view all the orders placed with them).
+    """
+    __tablename__ = 'orders'
+
+    id = DB.Column(DB.Integer, primary_key=True)
+    meal = DB.Column(DB.Integer, DB.ForeignKey('menus.id'), nullable=False)
+    order_time = DB.Column(DB.DateTime, nullable=False)
+    order_cleared = DB.Column(DB.Boolean, default=False)
+    customer = DB.Column(DB.Integer, DB.ForeignKey('users.id'))
+
+    ORDER_MODIFICATION_EXPIRY = datetime.timedelta(hours=1).total_seconds()
+
+    def __init__(self, customer_id, meal_id):
+        self.customer = customer_id
+        self.meal = meal_id
+
+    @staticmethod
+    def commit_changes():
+        try:
+            DB.session.commit()
+            return True
+        except (IntegrityError, UnmappedInstanceError):
+            DB.session.rollback()
+            return False
+
+    def add_order(self):
+        self.order_time = datetime.datetime.now()
+        DB.session.add(self)
+        return Order.commit_changes()
+
+    @staticmethod
+    def modify_order(customer_id, order_id, meal_id):
+        order = Order.query.filter_by(id=order_id).first()
+
+        if not order:
+            return False
+        if order.customer != customer_id:
+            return False
+
+        elapsed_time = datetime.datetime.now() - order.order_time
+
+        if elapsed_time.total_seconds() > Order.ORDER_MODIFICATION_EXPIRY:
+            return False
+
+        order.meal = meal_id
+        return Order.commit_changes()
+
+    @staticmethod
+    def get_orders(customer_id=None, caterer_id=None):
+        if customer_id:
+            raw_orders = Order.query.filter_by(customer=customer_id)
+            if raw_orders:
+                orders = []
+                for order in raw_orders:
+                    orders.append(order.to_dictionary())
+                return orders
+            return False
+
+        if caterer_id:
+            raw_orders = Order.query.all()
+            orders = []
+            if raw_orders:
+                for order in raw_orders:
+                    if order.order.menu.caterer == caterer_id:
+                        orders.append(order.to_dictionary())
+                return orders
+        return False
+
+    @staticmethod
+    def delete_order(customer_id, order_id):
+        order = Order.query.filter_by(id=order_id).first()
+
+        if not order:
+            return False
+        if order.customer != customer_id:
+            return False
+
+        elapsed_time = datetime.datetime.now() - order.order_time
+
+        if elapsed_time.total_seconds() > Order.ORDER_MODIFICATION_EXPIRY:
+            return False
+
+        DB.session.delete(order)
+        return Order.commit_changes()
+
+    @staticmethod
+    def clear_order(caterer_id, order_id):
+        order = Order.query.filter_by(id=order_id).first()
+
+        if not order:
+            return False
+        if order.order.menu.caterer == caterer_id:
+            order.order_cleared = True
+            return Order.commit_changes()
+        return False
+
+    @staticmethod
+    def get_order_history(customer_id):
+        orders = Order.query.filter_by(customer=customer_id)
+
+        if not orders:
+            return False
+        order_history = []
+
+        for order in orders:
+            if order.order_cleared:
+                order_history.append(order.to_dictionary())
+        return order_history
+
+    def to_dictionary(self):
+        return dict(order_id=self.id, meal=self.order.menu.name, price=self.order.menu.price,
+                    order_cleared=self.order_cleared, customer_id=self.customer, caterer_id=self.order.menu.caterer)
