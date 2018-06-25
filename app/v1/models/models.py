@@ -341,8 +341,15 @@ class Meal(DB.Model):
         pass
 
     @staticmethod
-    def get_meals():
-        return Meal.query.all()
+    def get_meals(caterer):
+        meals = []
+        raw_meals = Meal.query.filter_by(caterer=caterer.id)
+
+        if raw_meals:
+            for meal in raw_meals:
+                meals.append(meal.to_dictionary())
+            return meals
+        return False
 
     @staticmethod
     def delete_meal(meal_id):
@@ -360,6 +367,9 @@ class Meal(DB.Model):
             meal.point += 1
             return Meal.commit_changes()
         return False
+
+    def to_dictionary(self):
+        return dict(name=self.name, price=self.price, point=self.point, caterer=self.caterer)
 
     def __repr__(self):
         return "Meal ->(name={}, price={})".format(self.name, self.price)
@@ -581,3 +591,6 @@ class Order(DB.Model):
     def to_dictionary(self):
         return dict(order_id=self.id, meal=self.order.menu.name, price=self.order.menu.price,
                     order_cleared=self.order_cleared, customer_id=self.customer, caterer_id=self.order.menu.caterer)
+
+
+DB.create_all()

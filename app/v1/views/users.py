@@ -1,6 +1,6 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
-from app.v1.views.utils import verify_password, verify_input_data
+from app.v1.views.utils import verify_password, verify_input_data, verify_registration_data
 
 from app.v1.models.models import User, Caterer
 
@@ -21,21 +21,22 @@ def register_user():
     This function enables new users to signup. ensures that the usernames and email fields are unique in the database
     :return: returns a confirmation message
     """
+
     data = request.get_json()
     try:
-        if data['category'] and data['email'] and data['username'] and data['first_name'] and data['last_name']\
+        if data['category'] and data['email'] and data['username'] and data['first_name'] and data['last_name'] \
                 and data['password'] and data['confirm_password'] and data['address']:
             pass
     except KeyError:
-        return make_response(jsonify({'message': 'PROVIDE ALL REQUIRED INFORMATION.'}), 403)
+        pass
 
-    if not verify_input_data(**dict(category=data['category'], email=data['email'], username=data['username'],
-                                    first_name=data['first_name'], last_name=data['last_name'],
-                                    password=data['password'], confirm_password=data['confirm_password'],
-                                    address=data['address'])):
-        return make_response(jsonify({'message': 'Invalid data format. Check email field and fill in all'
-                                                 'fields.'}), 403)
+    error_response = verify_registration_data(category=data['category'], email=data['email'], username=data['username'],
+                                        first_name=data['first_name'], last_name=data['last_name'],
+                                        password=data['password'], confirm_password=data['confirm_password'],
+                                        address=data['address'])
 
+    if error_response:
+        return make_response(jsonify({'message': error_response['message']}), error_response['status_code'])
 
     if data['password'] == data['confirm_password']:
         if data['category'] == 'user':
@@ -93,8 +94,6 @@ def login():
             if token:
                 return make_response(jsonify(dict(token=token)), 200)
 
-            else:
-                return make_response(jsonify({'message': 'Invalid Username or Password1'}), 401)
         else:
             return make_response(jsonify({'message': 'Invalid Username or Password2'}), 401)
 
@@ -107,18 +106,10 @@ def login():
                 break
 
         if caterer_info:
-            user_password = caterer_info['password']
-            if user_password == data['password']:
-                category = 'caterer'
-                email = caterer_info['email']
-                username = caterer_info['username']
-                token_string = str(category) + ',' + str(username) + ',' + str(email)
-                token = jwt.encode({'info': token_string,
-                                    'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
-                                   SECRET_KEY,algorithm='HS256')
-                return make_response(jsonify(dict(token=token.decode('UTF-8'))), 200)
-
-            else:
-                return make_response(jsonify({'message': 'Invalid Username or Password1'}), 201)
+            token = verify_password(username=caterer_info.username, user_email=caterer_info.email,
+                                    db_password=caterer_info.password,
+                                    input_password=data['password'], category='caterer')
+            if token:
+                return make_response(jsonify(dict(token=token)), 200)
 
     return make_response(jsonify({'message': 'Invalid Username or Password2'}), 401)

@@ -41,6 +41,22 @@ def verify_input_data(**input_data):
     return True
 
 
+def verify_registration_data(category, email, username, first_name, last_name, password, confirm_password,
+                             address):
+    try:
+        if category and email and username and first_name and last_name\
+                and password and confirm_password and address:
+            pass
+    except KeyError:
+        return dict(message='PROVIDE ALL REQUIRED INFORMATION.', status_code=403)
+
+    if not verify_input_data(**dict(category=category, email=email, username=username,
+                                    first_name=first_name, last_name=last_name,
+                                    password=password, confirm_password=confirm_password,
+                                    address=address)):
+        return dict(message='Invalid data format. Check email field and fill in all fields.', status_code=403)
+
+
 
 
 

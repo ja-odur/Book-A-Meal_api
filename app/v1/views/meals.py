@@ -2,9 +2,10 @@ from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
 
 from app.v1.views.decorators import token_required
-from app.v1.models.meals import DbMeals
+# from app.v1.models.meals import DbMeals
+from app.v1.models.models import Caterer, Meal
 
-meals_db = DbMeals()
+# meals_db = DbMeals()
 
 meals = Blueprint('meals', __name__, url_prefix='/api/v1')
 
@@ -18,8 +19,9 @@ def create_meal(current_user):
     :param current_user: A list containing the current users information i.e category username, email
     """
     data = request.get_json()
-    username = current_user[1]
-    if meals_db.add_meal(username, data['name'], data['price']):
+    # username = current_user[1]
+    caterer = Caterer.get_caterer(current_user[1])
+    if Meal(name=data['name'], price=data['price']).add_meal(caterer=caterer):
         message = 'Meal {} successfully added.'.format(data['name'])
         return make_response(jsonify(dict(message=message)), 201)
     else:
@@ -35,8 +37,8 @@ def get_all_meals(current_user):
     :param current_user: A list containing the current users information i.e category username, email
     :return: returns a list containing all available meals
     """
-    caterer = current_user[1]
-    meals_per_caterer = meals_db.get_all_meals(caterer=caterer)
+    caterer = Caterer.get_caterer(current_user[1])
+    meals_per_caterer = Meal.get_meals(caterer=caterer)
     if meals_per_caterer:
         return make_response(jsonify(message=meals_per_caterer), 201)
     return make_response(jsonify(message='Resource not found'), 404)
@@ -53,19 +55,20 @@ def update_meal(current_user, meal_id):
     :return: returns a confirmation message i.e if successful of not
     """
     data = request.get_json()
-    caterer = current_user[1]
-    update, message = False, ''
+    caterer = Caterer.get_caterer(current_user[1])
+    meal = Meal.get_meal(meal_id=meal_id)
 
-    if not ('name' in data or 'price' in data):
-        return make_response(jsonify({'message': 'Invalid data format'}), 403)
+    updated, message = False, ''
 
-    if 'name' in data:
-        updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, field_to_update='name',
-                                       new_value=data['name'])
+    if meal:
+        if not ('name' in data or 'price' in data):
+            return make_response(jsonify({'message': 'Invalid data format'}), 403)
 
-    if 'price' in data:
-        updated = meals_db.update_meal(caterer=caterer, meal_id=meal_id, field_to_update='price',
-                                       new_value=data['price'])
+        if 'name' in data:
+            updated = meal.update_meal(caterer=caterer, value=data['name'])
+
+        if 'price' in data:
+            updated = meal.update_meal(caterer=caterer, meal_id=meal_id, value=data['price'])
 
     if updated:
         return make_response(jsonify(message=updated), 201)
@@ -83,7 +86,7 @@ def delete_meal(current_user, meal_id):
     :return: returns a confirmation message, whether successful or not.
     """
     caterer = current_user[1]
-    meal_deleted = meals_db.delete_meal(caterer=caterer, meal_id=meal_id)
+    meal_deleted = Meal.delete_meal(meal_id=meal_id)
 
     if meal_deleted:
         return make_response(jsonify(message='meal deleted'), 201)
@@ -105,7 +108,7 @@ def easy_point(current_user, meal_id):
     if category == 'caterer':
         return make_response(jsonify(message='Operation not permitted for this user'), 403)
 
-    point_out = meals_db.easy_point(meal_id=meal_id)
+    point_out = Meal.easy_point(meal_id=meal_id)
 
     if point_out:
         return make_response(jsonify(message='Point out successful'), 200)
