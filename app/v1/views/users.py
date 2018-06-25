@@ -1,6 +1,6 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
-from app.v1.views.utils import verify_password
+from app.v1.views.utils import verify_password, verify_input_data
 
 from app.v1.models.models import User, Caterer
 
@@ -26,8 +26,16 @@ def register_user():
         if data['category'] and data['email'] and data['username'] and data['first_name'] and data['last_name']\
                 and data['password'] and data['confirm_password'] and data['address']:
             pass
-    except:
-        return make_response(jsonify({'message': 'Invalid data format'}), 403)
+    except KeyError:
+        return make_response(jsonify({'message': 'PROVIDE ALL REQUIRED INFORMATION.'}), 403)
+
+    if not verify_input_data(**dict(category=data['category'], email=data['email'], username=data['username'],
+                                    first_name=data['first_name'], last_name=data['last_name'],
+                                    password=data['password'], confirm_password=data['confirm_password'],
+                                    address=data['address'])):
+        return make_response(jsonify({'message': 'Invalid data format. Check email field and fill in all'
+                                                 'fields.'}), 403)
+
 
     if data['password'] == data['confirm_password']:
         if data['category'] == 'user':
