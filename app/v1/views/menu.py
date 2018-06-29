@@ -1,10 +1,8 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
 from app.v1.views.decorators import token_required
-from app.v1.models.menu import DbMenu
+from app.v1.models.models import Menu, Caterer
 
-
-menu_db = DbMenu()
 
 menu = Blueprint('menu', __name__, url_prefix='/api/v1')
 
@@ -18,13 +16,21 @@ def create_menu(current_user):
     :param current_user: A list containing the current users information i.e category username, email
     :return: returns a nested list of meal objects
     """
-    caterer = current_user[1]
+    caterer = Caterer.get_caterer(current_user[1])
     data = request.get_json()
-    created_menu = menu_db.create_menu(caterer=caterer, daily_menu=data['menu'])
 
-    if created_menu:
-        message = 'Menu {} successfully added.'.format(data['menu'])
-        return make_response(jsonify(message=message), 201)
+    try:
+        if not isinstance(data['meal_ids'], list):
+            return make_response(jsonify(message='Bad data format'), 403)
+    except KeyError:
+        return make_response(jsonify(message='Bad data format'), 403)
+
+    if caterer:
+        created_menu = Menu.create_menu(caterer.id, *data['meal_ids'])
+
+        if created_menu:
+            message = 'Menu successfully created.'
+            return make_response(jsonify(message=message), 201)
     return make_response(jsonify(message='Bad data format'), 403)
 
 
@@ -37,8 +43,10 @@ def get_menu(current_user):
     :param current_user: A list containing the current users information i.e category username, email
     :return: returns a dictionary mapping the caterer's name to their set daily menu
     """
-    menu = menu_db.get_menu()
-    message = 'Todays menu {}.'.format(menu)
-    return make_response(jsonify(message=message), 200)
+    menu = Menu.get_menus()
+    if menu:
+        return make_response(jsonify(message=dict(MENU=menu)), 200)
+    return make_response(jsonify(message='Menu not found.'), 404)
+
 
 

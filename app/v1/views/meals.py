@@ -21,11 +21,12 @@ def create_meal(current_user):
     data = request.get_json()
     # username = current_user[1]
     caterer = Caterer.get_caterer(current_user[1])
-    if Meal(name=data['name'], price=data['price']).add_meal(caterer=caterer):
-        message = 'Meal {} successfully added.'.format(data['name'])
-        return make_response(jsonify(dict(message=message)), 201)
-    else:
-        return make_response(jsonify(dict(message='meal not added.')), 401)
+    if caterer:
+        if Meal(name=data['name'], price=data['price']).add_meal(caterer=caterer):
+            message = 'Meal {} successfully added.'.format(data['name'])
+            return make_response(jsonify(dict(message=message)), 201)
+
+    return make_response(jsonify(dict(message='meal not added.')), 401)
 
 
 @meals.route('/meals/', methods=["GET"])
@@ -56,19 +57,17 @@ def update_meal(current_user, meal_id):
     """
     data = request.get_json()
     caterer = Caterer.get_caterer(current_user[1])
-    meal = Meal.get_meal(meal_id=meal_id)
 
     updated, message = False, ''
 
-    if meal:
-        if not ('name' in data or 'price' in data):
-            return make_response(jsonify({'message': 'Invalid data format'}), 403)
+    if not ('name' in data or 'price' in data):
+        return make_response(jsonify({'message': 'Invalid data format'}), 403)
 
-        if 'name' in data:
-            updated = meal.update_meal(caterer=caterer, value=data['name'])
+    if 'name' in data:
+        updated = Meal.update_meal(caterer=caterer, meal_id=meal_id, value=data['name'])
 
-        if 'price' in data:
-            updated = meal.update_meal(caterer=caterer, meal_id=meal_id, value=data['price'])
+    if 'price' in data:
+        updated = Meal.update_meal(caterer=caterer, meal_id=meal_id, value=data['price'])
 
     if updated:
         return make_response(jsonify(message=updated), 201)

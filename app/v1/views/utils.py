@@ -33,7 +33,7 @@ def verify_input_data(**input_data):
 
         if at_char_found and char == '.':
             period_count += 1
-    print('@', at_count, '.', period_count)
+
     if at_count != 1:
         return False
     if period_count != 1:

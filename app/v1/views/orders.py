@@ -1,9 +1,8 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
 from app.v1.views.decorators import token_required
-from app.v1.models.orders import DbOrders
+from app.v1.models.models import Order, User, Caterer
 
-orders_db = DbOrders()
 
 orders = Blueprint('orders', __name__, url_prefix='/api/v1')
 
@@ -18,19 +17,23 @@ def create_order(current_user):
     :return: returns a confirmation message
     """
     data = request.get_json()
-    customer = current_user[1]
     if current_user[0] == 'caterer':
         return make_response(jsonify(dict(message='Caterers can not create an order')), 403)
-    try:
-        if data['caterer'] and data['meal']:
-            new_order = orders_db.add_order(customer=customer, caterer=data['caterer'], meal=data['meal'])
 
-            if new_order:
-                message = 'Order {} successfully placed.'.format(data)
-                return make_response(jsonify(message=message), 201)
+    customer = User.get_user(current_user[1])
 
-    except KeyError:
-        return make_response(jsonify(message='Invalid request format'), 403)
+    if customer:
+        try:
+            if data['meal_id']:
+                new_order = Order(customer_id=customer.id, meal_id=data['meal_id']).add_order()
+
+                if new_order:
+                    message = 'Order successfully placed.'
+                    return make_response(jsonify(message=message), 201)
+
+        except KeyError:
+            return make_response(jsonify(message='Invalid request format'), 403)
+    return make_response(jsonify(message='Order not placed'), 403)
 
 
 @orders.route('/orders/<int:order_id>', methods=['PUT'])
@@ -47,16 +50,16 @@ def modify_order(current_user, order_id):
     if current_user[0] == 'caterer':
         return make_response(jsonify(dict(message='Caterers can not modify an order')), 403)
     try:
-        customer = current_user[1]
-        if data['caterer'] and data['meal']:
+        customer = User.get_user(current_user[1])
+        if customer:
+            if data['meal_id']:
 
-            new_order = orders_db.modify_order(customer=customer, caterer=data['caterer'], order_id=order_id,
-                                               meal=data['meal'])
-            if new_order:
-                message = 'Order {} successfully modified.'.format(data)
-                return make_response(jsonify(message=message), 201)
-            else:
-                return make_response(jsonify(message="Resource not found"), 201)
+                updated_order = Order.modify_order(customer_id=customer.id, order_id=order_id, meal_id=data['meal_id'])
+                if updated_order:
+                    message = 'Order successfully modified.'
+                    return make_response(jsonify(message=message), 201)
+
+        return make_response(jsonify(message="Resource not found"), 201)
 
     except KeyError:
         return make_response(jsonify(message='Invalid request format'), 403)
@@ -71,11 +74,14 @@ def get_all_orders(current_user):
     :param current_user: A list containing the current users information i.e category username, email
     :return: returns  confirmation message and the content containing all available orders.
     """
-    caterer = current_user[1]
-    orders_per_caterer = orders_db.get_all_orders(caterer=caterer)
+    if current_user[0] == 'user':
+        return make_response(jsonify(dict(message='Customers can not modify an order')), 403)
+
+    caterer = Caterer.get_caterer(current_user[1])
+
+    orders_per_caterer = Order.get_orders(caterer_id=caterer.id)
     if orders_per_caterer:
-        message = 'The request was successfull'
-        return make_response(jsonify(message=message, content=orders_per_caterer), 200)
+        return make_response(jsonify(message=dict(content=orders_per_caterer)), 200)
     return make_response(jsonify(message='Oops, orders not found.'), 404)
 
 
@@ -88,14 +94,15 @@ def get_orders(current_user):
     :param current_user: A list containing the current users information i.e category username, email
     :return: returns the orders if the operation is successful
     """
-    customer = current_user[1]
+    customer = User.get_user(current_user[1])
     if current_user[0] == 'caterer':
         return make_response(jsonify(dict(message='This method is meant for customers only')), 403)
 
-    placed_orders = orders_db.get_orders_per_user(customer)
+    if customer:
+        placed_orders = Order.get_orders(customer_id=customer.id)
 
-    if placed_orders:
-        return make_response(jsonify(dict(message=placed_orders)), 200)
+        if placed_orders:
+            return make_response(jsonify(dict(message=placed_orders)), 200)
 
     return make_response(jsonify(dict(message='No orders placed')), 200)
 
@@ -110,10 +117,10 @@ def delete_order(current_user, order_id):
     :param order_id: the id of the order to be deleted
     :return: returns a confirmation message
     """
-    customer = current_user[1]
+    customer = User.get_user(current_user[1])
     if current_user[0] == 'caterer':
         return make_response(jsonify(dict(message='This method is meant for customers only')), 403)
-    order_deleted = orders_db.delete_order(customer=customer, order_id=order_id)
+    order_deleted = Order.delete_order(customer_id=customer.id, order_id=order_id)
 
     if order_deleted:
         return make_response(jsonify(dict(message='Order successfully deleted')), 201)
@@ -130,8 +137,8 @@ def clear_order(current_user, order_id):
     :param order_id: the id of the order to be cleared
     :return: returns a confirmation message
     """
-    caterer = current_user[1]
-    cleared = orders_db.clear_order(caterer, order_id)
+    caterer = Caterer.get_caterer(current_user[1])
+    cleared = Order.clear_order(caterer_id=caterer.id, order_id=order_id)
 
     if cleared:
         return make_response(jsonify(dict(message='Order successfully cleared')), 200)
@@ -147,13 +154,12 @@ def get_history(current_user):
     :param current_user: A list containing the current users information i.e category username, email
     :return: returns the order history if the operation is successful
     """
-    customer = current_user[1]
-    category = current_user[0]
+    customer = User.get_user(current_user[1])
 
-    if category == 'caterer':
+    if current_user[0] == 'caterer':
         return make_response(jsonify(dict(message='Sorry operation not permitted for this user.')), 403)
 
-    order_history = orders_db.get_order_history(customer=customer)
+    order_history = Order.get_order_history(customer_id=customer.id)
 
     if order_history:
         return make_response(jsonify(dict(message=order_history)), 200)
