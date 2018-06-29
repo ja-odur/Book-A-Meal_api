@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/jaodur/Book-A-Meal_api.svg?branch=persistentDATA)](https://travis-ci.org/jaodur/Book-A-Meal_api)
 [![Coverage Status](https://coveralls.io/repos/github/jaodur/Book-A-Meal_api/badge.svg?branch=persistentDATA)](https://coveralls.io/github/jaodur/Book-A-Meal_api?branch=Develop)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
+<a href="https://codeclimate.com/github/jaodur/Book-A-Meal_api/maintainability"><img src="https://api.codeclimate.com/v1/badges/cb220ab726615c522d8a/maintainability" /></a>
 
 ## __Book A Meal__ 
 Is a web based app that enables  several caterers to setup menus,and manage orders. The app also allows
