@@ -8,8 +8,10 @@ install:
   - pip install coverage
   - pip install coveralls
 
-
+before_script:
+  - psql -c 'test_db;' -U postgres -P '13811923'
 # command to run tests
+
 script:
   - pytest --cov=app/
   - coverage report
