@@ -2,61 +2,82 @@ import unittest
 import json
 
 from run import app
+from app.v1.models.db_connection import DB
+
+URL_PREFIX = 'api/v1'
 
 
 class TestOrder(unittest.TestCase):
     def setUp(self):
+        DB.create_all()
+        signup_url = URL_PREFIX + '/auth/signup'
+        login_url = URL_PREFIX + '/auth/login'
+        self.meals_url = URL_PREFIX + '/meals/'
+        self.menu_url = URL_PREFIX + '/menu/'
+        self.order_url = URL_PREFIX + '/orders'
+
         self.tester = app.test_client(self)
-        self.reg_data = dict(category='caterer', email='default22@gmail.com', username='default22', password='12345',
-                             confirm_password='12345', address='address1')
-        self.reg_data_empty = dict(category='caterer', email='default@gmail.com', username='default',
-                                   password='12345', confirm_password='12345', address='address1')
+        self.reg_data = dict(category='caterer', email='caterer1@gmail.com', username='caterer1', password='12345',
+                             confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
 
-        self.reg_data_user = dict(category='user', email='defaultuser@gmail.com', username='defaultuser',
-                                  password='12345', confirm_password='12345', address='address1')
+        self.reg_data_user = dict(category='user', email='user1@gmail.com', username='user1', password='12345',
+                                  confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
 
-        self.login_data = dict(category='caterer', username='default22', password='12345')
-        self.login_data_user = dict(category='user', username='defaultuser', password='12345')
+        self.login_data = dict(category='caterer', username='caterer1', password='12345')
+        self.login_data_user = dict(category='user', username='user1', password='12345')
 
-        self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(self.reg_data))
-        self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(self.reg_data_user))
-        self.tester.post('api/v1/auth/signup', content_type="application/json", data=json.dumps(self.reg_data_empty))
+        self.tester.post(signup_url, content_type="application/json", data=json.dumps(self.reg_data))
+        self.tester.post(signup_url, content_type="application/json", data=json.dumps(self.reg_data_user))
 
-        self.response = self.tester.post('api/v1/auth/login', content_type="application/json",
+        self.response = self.tester.post(login_url, content_type="application/json",
                                          data=json.dumps(self.login_data))
-        self.response_user = self.tester.post('api/v1/auth/login', content_type="application/json",
+        self.response_user = self.tester.post(login_url, content_type="application/json",
                                               data=json.dumps(self.login_data_user))
 
-        self.response_results = json.loads(self.response.data.decode())
-        self.response_results_user = json.loads(self.response_user.data.decode())
+        self.response_caterer = json.loads(self.response.data.decode())
+        self.response_user = json.loads(self.response_user.data.decode())
 
-        self.token = self.response_results['token']
-        self.token_user = self.response_results_user['token']
+        self.token_caterer = self.response_caterer['token']
+        self.token_user = self.response_user['token']
+
+        meal_data1 = dict(name='meal', price=5000)
+        meal_data2 = dict(name='meal2', price=10000)
+
+        self.tester.post(self.meals_url, content_type="application/json", headers={'access-token': self.token_caterer},
+                         data=json.dumps(meal_data1))
+        self.tester.post(self.meals_url, content_type="application/json", headers={'access-token': self.token_caterer},
+                         data=json.dumps(meal_data2))
+
+    def tearDown(self):
+        DB.drop_all()
 
     def test_create_order_success(self):
-        token_user = self.token_user
-        order = dict(meal=[1, 'rice and posho', 5000], caterer='default22')
-        order1 = dict(meal=[1, 'rice and posho', 5000], caterer='default22')
+        meal_ids = dict(meal_ids=[1, 2])
 
-        expected_response_message = 'Order {} successfully placed.'.format(order)
-        self.tester.post('api/v1/orders', headers={'access-token':token_user},
-                         content_type="application/json", data=json.dumps(order1))
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
+                                             content_type="application/json", data=json.dumps(meal_ids))
 
-        get_response = self.tester.post('api/v1/orders', headers={'access-token':token_user},
-                                        content_type="application/json", data=json.dumps(order))
+        expected_response_message = 'Order successfully placed.'
+        self.tester.post(self.order_url, headers={'access-token':self.token_user},
+                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+
+        get_response = self.tester.post(self.order_url, headers={'access-token':self.token_user},
+                                        content_type="application/json", data=json.dumps(dict(meal_id=2)))
 
         response_results = json.loads(get_response.data.decode())
 
         self.assertEqual(get_response.status_code, 201)
         self.assertEqual(expected_response_message, response_results['message'])
 
-    def test_create_order_failure(self):
-        token_user = self.token_user
-        order = dict(meal3=[1, 'rice and posho', 5000], caterer='default3')
+    def test_create_order_failure_invalid_meal_id(self):
+        meal_ids = dict(meal_ids=[1, 2])
 
-        expected_response_message = 'Invalid request format'
-        get_response = self.tester.post('api/v1/orders', headers={'access-token':token_user},
-                                        content_type="application/json", data=json.dumps(order))
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        expected_response_message = 'Order not placed'
+        get_response = self.tester.post(self.order_url, headers={'access-token':self.token_user},
+                                        content_type="application/json", data=json.dumps(dict(meal_id=3)))
 
         response_results = json.loads(get_response.data.decode())
 
@@ -64,71 +85,133 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_modify_order(self):
-        token_user = self.token_user
-        modified_order = dict(meal=[1, 'rice and posho_modified', 5000], caterer='default22')
-        expected_response_message = 'Order {} successfully modified.'.format(modified_order)
+        meal_data3 = dict(name='meal3_modified', price=15000)
 
-        get_response = self.tester.put('api/v1/orders/1', content_type="application/json",
-                                       headers={'access-token':token_user}, data=json.dumps(modified_order))
+        expected_response_message = 'Order successfully modified.'
+
+        self.tester.post(self.meals_url, content_type="application/json", headers={'access-token': self.token_caterer},
+                         data=json.dumps(meal_data3))
+
+        meal_ids = dict(meal_ids=[1, 2, 3])
+
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        self.tester.post(self.order_url, headers={'access-token': self.token_user},
+                         content_type="application/json", data=json.dumps(dict(meal_id=2)))
+
+        get_response = self.tester.put(self.order_url + '/1', headers={'access-token': self.token_user},
+                                       content_type="application/json", data=json.dumps(dict(meal_id=3)))
 
         response_results = json.loads(get_response.data.decode())
 
         self.assertEqual(get_response.status_code, 201)
         self.assertEqual(expected_response_message, response_results['message'])
 
-    def test_get_all_orders_failure(self):
-        login_data = dict(category='caterer', username='default', password='12345')
-
-        response = self.tester.post('api/v1/auth/login', content_type="application/json",
-                                    data=json.dumps(login_data))
-
-        response_results = json.loads(response.data.decode())
-        token_caterer = response_results['token']
-
+    def test_no_order_found(self):
         expected_response_message = 'Oops, orders not found.'
-        get_response = self.tester.get('api/v1/orders', headers={'access-token':token_caterer})
+        get_response = self.tester.get(self.order_url, headers={'access-token':self.token_caterer})
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 404)
+        self.assertEqual(404, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
-    def test_get_all_orders_successful(self):
-        token_caterer = self.token
-        order = dict(meal=[1, 'rice and posho', 5000], caterer='default22')
-        expected_response_message = 'The request was successfull'
-        self.tester.post('api/v1/orders', content_type="application/json", headers={'access-token':token_caterer},
-                         data=json.dumps(order))
-        get_response = self.tester.get('api/v1/orders', headers={'access-token':token_caterer})
+    def test_get_orders_per_caterer_works(self):
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        self.tester.post(self.order_url, headers={'access-token': self.token_user},
+                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+
+        expected_response_message = {'content': [{'caterer_id': 1, 'customer_id': 1, 'meal': 'meal',
+                                                  'order_cleared': False, 'order_id': 1, 'price': 5000}]}
+
+        get_response = self.tester.get(self.order_url, headers={'access-token':self.token_caterer})
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(200, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
-    def test_get_orders(self):
-        token_user = self.token_user
+    def test_get_orders_placed_customer(self):
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        self.tester.post(self.order_url, headers={'access-token': self.token_user},
+                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
         expected_response_message = 1
-        response = self.tester.get('api/v1/orders/placed', headers={'access-token': token_user})
+        response = self.tester.get(self.order_url + '/placed', headers={'access-token': self.token_user})
 
         response_results = json.loads(response.data.decode())
-        # print('response result', response_results['message'])
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response_message, len(response_results['message']))
 
     def test_delete_order(self):
-        token_user = self.token_user
         expected_response_message = 1
 
-        response22 = self.tester.get('api/v1/orders/placed', headers={'access-token': token_user})
-        response_results1 = json.loads(response22.data.decode())
+        meal_ids = dict(meal_ids=[1, 2])
 
-        self.tester.delete('api/v1/orders/2', headers={'access-token':token_user})
-        response = self.tester.get('api/v1/orders/placed', headers={'access-token':token_user})
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        self.tester.post(self.order_url, headers={'access-token': self.token_user},
+                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+
+        self.tester.post(self.order_url, headers={'access-token': self.token_user},
+                         content_type="application/json", data=json.dumps(dict(meal_id=2)))
+
+        self.tester.delete(self.order_url + '/1', headers={'access-token':self.token_user})
+        response = self.tester.get(self.order_url + '/placed', headers={'access-token':self.token_user})
         response_results = json.loads(response.data.decode())
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response_message, len(response_results['message']))
+
+    def test_clear_order(self):
+        expected_response_message = True
+
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        self.tester.post(self.order_url, headers={'access-token': self.token_user},
+                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+
+        self.tester.patch(self.order_url + '/clear/1', headers={'access-token':self.token_caterer})
+
+        response = self.tester.get(self.order_url + '/placed', headers={'access-token': self.token_user})
+        response_results = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response_message, response_results['message'][0]['order_cleared'])
+
+    def test_get_history(self):
+        expected_result = True
+        expected_length = 1
+
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        self.tester.post(self.order_url, headers={'access-token': self.token_user},
+                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+
+        self.tester.patch(self.order_url + '/clear/1', headers={'access-token':self.token_caterer})
+
+        history_response = self.tester.get(self.order_url + '/history', headers={'access-token': self.token_user})
+        history = json.loads(history_response.data.decode())
+
+        self.assertEqual(history_response.status_code, 200)
+        self.assertEqual(expected_length, len(history['message']))
+        self.assertEqual(expected_result, history['message'][0]['order_cleared'])
 
 
 if __name__ == '__main__':

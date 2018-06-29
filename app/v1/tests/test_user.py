@@ -3,11 +3,16 @@ import json
 
 from run import app
 from app.v1.models.models import User, Caterer
+from app.v1.models.db_connection import DB
 
 
 class TestSuccessfulRegistration(unittest.TestCase):
     def setUp(self):
+        DB.create_all()
         self.tester = app.test_client(self)
+
+    def tearDown(self):
+        DB.drop_all()
 
     def test_successful_user_registration(self):
         input_data = dict(category='user', email='default233@gmail.com', username='default233', password='12345',
@@ -15,8 +20,6 @@ class TestSuccessfulRegistration(unittest.TestCase):
         expected_response_message = 'User {} successfully signed up.'.format(input_data['username'])
         get_response = self.tester.post('api/v1/auth/signup', content_type="application/json",
                                         data=json.dumps(input_data))
-        # deleting user for recurrence purpose
-        User.delete_user('default233')
 
         response_results = json.loads(get_response.data.decode())
 
@@ -30,8 +33,6 @@ class TestSuccessfulRegistration(unittest.TestCase):
         expected_response_message = 'Caterer {} successfully signed up.'.format(input_data['username'])
         get_response = self.tester.post('api/v1/auth/signup', content_type="application/json",
                                         data=json.dumps(input_data))
-        # deleting caterer for recurrence purpose
-        Caterer.delete_caterer('default100')
 
         response_results = json.loads(get_response.data.decode())
 
