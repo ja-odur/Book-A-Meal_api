@@ -67,7 +67,7 @@ class UserInfo(DB.Model):
 
     def add_user(self):
         user = DB.session.add(self)
-        print(user)
+
         if self.commit_changes():
             return True
         return False
@@ -158,7 +158,7 @@ class User(DB.Model):
                 return False
 
         user_info = UserInfo.query.filter_by(email=self.email).first()
-        print('user', user_info)
+
         if user_info:
             user_info.user_counter += 1
             self.user = user_info.user_id
@@ -259,7 +259,6 @@ class Caterer(DB.Model):
                 return False
 
         user_info = UserInfo.query.filter_by(email=self.email).first()
-        print('user', user_info)
         if user_info:
             user_info.user_counter += 1
             self.user = user_info.user_id
@@ -324,21 +323,24 @@ class Meal(DB.Model):
 
         return self.commit_changes()
 
-    def update_meal(self, caterer, value):
+    @staticmethod
+    def update_meal(caterer, meal_id, value):
         caterer = Caterer.get_caterer(username=None, caterer_id=caterer.id)
+        meal = Meal.get_meal(meal_id)
         if caterer:
-            if isinstance(value, str):
-                self.name = value
-                return self.commit_changes()
-            if isinstance(value, int):
-                self.price = value
-                return self.commit_changes()
+            if meal and caterer.id == meal.caterer:
+                if isinstance(value, str):
+                    meal.name = value
+                    return Meal.commit_changes()
+
+                if isinstance(value, int):
+                    meal.price = value
+                    return Meal.commit_changes()
         return False
 
     @staticmethod
     def get_meal(meal_id):
         return Meal.query.filter_by(id=meal_id).first()
-        pass
 
     @staticmethod
     def get_meals(caterer):
@@ -369,7 +371,7 @@ class Meal(DB.Model):
         return False
 
     def to_dictionary(self):
-        return dict(name=self.name, price=self.price, point=self.point, caterer=self.caterer)
+        return dict(name=self.name, price=self.price, point=self.point, caterer=self.caterer, meal_id=self.id)
 
     def __repr__(self):
         return "Meal ->(name={}, price={})".format(self.name, self.price)
