@@ -2,6 +2,9 @@
 language: python
 python:
   - "3.6"
+env:
+  global:
+    - CC_TEST_REPORTER_ID=b42f01c176a6247bceb928ed6c66c8e882a3baaf17359b393c095721cb4cdef6
 
 services:
   - postgresql
