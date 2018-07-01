@@ -293,7 +293,7 @@ class Meal(DB.Model):
     __tablename__ = 'meals'
 
     id = DB.Column(DB.Integer, primary_key=True)
-    name = DB.Column(DB.String(120), nullable=False)
+    name = DB.Column(DB.String(120), unique=True, nullable=False)
     price = DB.Column(DB.Integer, nullable=False)
     point = DB.Column(DB.Integer, default=0)
     caterer = DB.Column(DB.Integer, DB.ForeignKey('caterers.id'))

@@ -32,8 +32,8 @@ def create_order(current_user):
                     return make_response(jsonify(message=message), 201)
 
         except KeyError:
-            return make_response(jsonify(message='Invalid request format'), 403)
-    return make_response(jsonify(message='Order not placed'), 403)
+            return make_response(jsonify(message='Invalid request format'), 400)
+    return make_response(jsonify(message='Order not placed'), 404)
 
 
 @orders.route('/orders/<int:order_id>', methods=['PUT'])
@@ -59,7 +59,7 @@ def modify_order(current_user, order_id):
                     message = 'Order successfully modified.'
                     return make_response(jsonify(message=message), 201)
 
-        return make_response(jsonify(message="Resource not found"), 201)
+        return make_response(jsonify(message="Resource not found"), 404)
 
     except KeyError:
         return make_response(jsonify(message='Invalid request format'), 403)
@@ -74,9 +74,6 @@ def get_all_orders(current_user):
     :param current_user: A list containing the current users information i.e category username, email
     :return: returns  confirmation message and the content containing all available orders.
     """
-    if current_user[0] == 'user':
-        return make_response(jsonify(dict(message='Customers can not modify an order')), 403)
-
     caterer = Caterer.get_caterer(current_user[1])
 
     orders_per_caterer = Order.get_orders(caterer_id=caterer.id)

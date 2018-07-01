@@ -81,7 +81,7 @@ class TestOrder(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 403)
+        self.assertEqual(get_response.status_code, 404)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_modify_order(self):
@@ -192,6 +192,16 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_response_message, response_results['message'][0]['order_cleared'])
 
+    def test_clear_order_invalid_order_id(self):
+        expected_response_message = 'Order does not exist'
+
+        response = self.tester.patch(self.order_url + '/clear/1', headers={'access-token':self.token_caterer})
+
+        response_results = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_response_message, response_results['message'])
+
     def test_get_history(self):
         expected_result = True
         expected_length = 1
@@ -212,6 +222,42 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(history_response.status_code, 200)
         self.assertEqual(expected_length, len(history['message']))
         self.assertEqual(expected_result, history['message'][0]['order_cleared'])
+
+    def test_create_order_caterer(self):
+
+        expected_response_message = 'Caterers can not create an order'
+
+        get_response = self.tester.post(self.order_url, headers={'access-token':self.token_caterer},
+                                        content_type="application/json", data=json.dumps(dict(meal_id=2)))
+
+        response_results = json.loads(get_response.data.decode())
+
+        self.assertEqual(get_response.status_code, 403)
+        self.assertEqual(expected_response_message, response_results['message'])
+
+    def test_create_order_invalid_data_format(self):
+
+        expected_response_message = 'Invalid request format'
+
+        get_response = self.tester.post(self.order_url, headers={'access-token':self.token_user},
+                                        content_type="application/json", data=json.dumps(dict(meal=2)))
+
+        response_results = json.loads(get_response.data.decode())
+
+        self.assertEqual(get_response.status_code, 400)
+        self.assertEqual(expected_response_message, response_results['message'])
+
+    def test_modify_order_caterer(self):
+
+        expected_response_message = 'Caterers can not modify an order'
+
+        get_response = self.tester.put(self.order_url + '/1', headers={'access-token': self.token_caterer},
+                                       content_type="application/json", data=json.dumps(dict(meal_id=3)))
+
+        response_results = json.loads(get_response.data.decode())
+
+        self.assertEqual(get_response.status_code, 403)
+        self.assertEqual(expected_response_message, response_results['message'])
 
 
 if __name__ == '__main__':

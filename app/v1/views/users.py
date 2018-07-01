@@ -1,11 +1,7 @@
 from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
-from app.v1.views.utils import verify_password, verify_input_data, verify_registration_data
+from app.v1.views.utils import sign_up, verify_registration_data, log_in
 
-from app.v1.models.models import User, Caterer
-
-import jwt
-import datetime
 from env_config import API_KEY
 
 SECRET_KEY = API_KEY
@@ -28,7 +24,7 @@ def register_user():
                 and data['password'] and data['confirm_password'] and data['address']:
             pass
     except KeyError:
-        pass
+        return make_response(jsonify(dict(message='PROVIDE ALL REQUIRED INFORMATION.')), 400)
 
     error_response = verify_registration_data(category=data['category'], email=data['email'], username=data['username'],
                                         first_name=data['first_name'], last_name=data['last_name'],
@@ -38,32 +34,11 @@ def register_user():
     if error_response:
         return make_response(jsonify({'message': error_response['message']}), error_response['status_code'])
 
-    if data['password'] == data['confirm_password']:
-        if data['category'] == 'user':
-            new_user = User(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
-                            username=data['username'], password=data['password'], address=data['address']).add_user()
+    new_sign_up = sign_up(category=data['category'], email=data['email'], username=data['username'],
+                          first_name=data['first_name'], last_name=data['last_name'], password=data['password'],
+                          confirm_password=data['confirm_password'], address=data['address'])
 
-            if new_user:
-                message = 'User {} successfully signed up.'.format(data['username'])
-                message.encode('utf-8')
-                return make_response(jsonify(dict(message=message)), 201)
-            else:
-                message = 'User {} already exists.'.format(data['username'])
-                message.encode('utf-8')
-                return make_response(jsonify(dict(message=message)), 403)
-
-        elif data['category'] == 'caterer':
-            new_caterer = Caterer(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
-                            username=data['username'], password=data['password'], address=data['address']).add_caterer()
-            if new_caterer:
-                message = 'Caterer {} successfully signed up.'.format(data['username'])
-                return make_response(jsonify(dict(message=message)), 201)
-            else:
-                message = 'Caterer {} already exists.'.format(data['username'])
-                message.encode('utf-8')
-                return make_response(jsonify(dict(message=message)), 403)
-
-    return make_response(jsonify({'message': 'category can either be user or caterer.'}), 403)
+    return make_response(jsonify({'message': new_sign_up['message']}), new_sign_up['status_code'])
 
 
 @users.route('/auth/login', methods=['POST'])
@@ -75,41 +50,14 @@ def login():
     """
     data = request.get_json()
     try:
-        if data['category'] and data['username']:
+        if data['category'] and data['username'] and data['password']:
             pass
     except KeyError:
         return make_response(jsonify({'message': 'Invalid Username or Password'}), 401)
 
-    if data['category'] == 'user':
-        user_info = False
-        users_info = User.get_users()
-        for user in users_info:
-            if user.username == data['username']:
-                user_info = user
-                break
+    new_login = log_in(category=data['category'], username=data['username'], password=data['password'])
 
-        if user_info:
-            token = verify_password(username=user_info.username, user_email=user_info.email, db_password=user_info.password,
-                                    input_password=data['password'], category='user')
-            if token:
-                return make_response(jsonify(dict(token=token)), 200)
+    if new_login['operation']:
+        return make_response(jsonify({'token': new_login['token']}), new_login['status_code'])
+    return make_response(jsonify({'message': new_login['message']}), new_login['status_code'])
 
-        else:
-            return make_response(jsonify({'message': 'Invalid Username or Password2'}), 401)
-
-    elif data['category'] == 'caterer':
-        caterer_info = False
-        caterers_info = Caterer.get_caterers()
-        for caterer in caterers_info:
-            if caterer.username == data['username']:
-                caterer_info = caterer
-                break
-
-        if caterer_info:
-            token = verify_password(username=caterer_info.username, user_email=caterer_info.email,
-                                    db_password=caterer_info.password,
-                                    input_password=data['password'], category='caterer')
-            if token:
-                return make_response(jsonify(dict(token=token)), 200)
-
-    return make_response(jsonify({'message': 'Invalid Username or Password2'}), 401)

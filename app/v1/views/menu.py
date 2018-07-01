@@ -21,9 +21,9 @@ def create_menu(current_user):
 
     try:
         if not isinstance(data['meal_ids'], list):
-            return make_response(jsonify(message='Bad data format'), 403)
-    except KeyError:
-        return make_response(jsonify(message='Bad data format'), 403)
+            return make_response(jsonify(message='Please submit a list of meal ids.'), 400)
+    except (KeyError, TypeError):
+        return make_response(jsonify(message='Bad data format'), 400)
 
     if caterer:
         created_menu = Menu.create_menu(caterer.id, *data['meal_ids'])
@@ -31,7 +31,7 @@ def create_menu(current_user):
         if created_menu:
             message = 'Menu successfully created.'
             return make_response(jsonify(message=message), 201)
-    return make_response(jsonify(message='Bad data format'), 403)
+    return make_response(jsonify(message='Menu not created.'), 400)
 
 
 @menu.route('/menu/', methods=['GET'])

@@ -27,7 +27,7 @@ def token_required(admin=False):
             try:
                 raw_data = jwt.decode(token, SECRET_KEY)
             except:
-                return make_response(jsonify(dict(message='Token is invalid ')), 401)
+                return make_response(jsonify(dict(message='Token is invalid')), 401)
             else:
                 current_user = raw_data['info'].split(',')
 

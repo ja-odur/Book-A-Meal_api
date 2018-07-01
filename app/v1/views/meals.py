@@ -19,14 +19,19 @@ def create_meal(current_user):
     :param current_user: A list containing the current users information i.e category username, email
     """
     data = request.get_json()
-    # username = current_user[1]
+    try:
+        if data['name'] and data['price']:
+            pass
+    except KeyError:
+        return make_response(jsonify(dict(message='Invalid format.')), 400)
+
     caterer = Caterer.get_caterer(current_user[1])
     if caterer:
         if Meal(name=data['name'], price=data['price']).add_meal(caterer=caterer):
             message = 'Meal {} successfully added.'.format(data['name'])
             return make_response(jsonify(dict(message=message)), 201)
 
-    return make_response(jsonify(dict(message='meal not added.')), 401)
+    return make_response(jsonify(dict(message='Meal already exists.')), 200)
 
 
 @meals.route('/meals/', methods=["GET"])
@@ -41,8 +46,8 @@ def get_all_meals(current_user):
     caterer = Caterer.get_caterer(current_user[1])
     meals_per_caterer = Meal.get_meals(caterer=caterer)
     if meals_per_caterer:
-        return make_response(jsonify(message=meals_per_caterer), 201)
-    return make_response(jsonify(message='Resource not found'), 404)
+        return make_response(jsonify(message=meals_per_caterer), 200)
+    return make_response(jsonify(message='Meal not found'), 404)
 
 
 @meals.route('/meals/<int:meal_id>', methods=['PUT'])
@@ -58,10 +63,7 @@ def update_meal(current_user, meal_id):
     data = request.get_json()
     caterer = Caterer.get_caterer(current_user[1])
 
-    updated, message = False, ''
-
-    if not ('name' in data or 'price' in data):
-        return make_response(jsonify({'message': 'Invalid data format'}), 403)
+    updated = False
 
     if 'name' in data:
         updated = Meal.update_meal(caterer=caterer, meal_id=meal_id, value=data['name'])
@@ -71,7 +73,7 @@ def update_meal(current_user, meal_id):
 
     if updated:
         return make_response(jsonify(message=updated), 201)
-    return make_response(jsonify(message='failed'), 201)
+    return make_response(jsonify(message='Invalid format.'), 400)
 
 
 @meals.route('/meals/<int:meal_id>', methods=['DELETE'])
@@ -88,8 +90,8 @@ def delete_meal(current_user, meal_id):
     meal_deleted = Meal.delete_meal(meal_id=meal_id)
 
     if meal_deleted:
-        return make_response(jsonify(message='meal deleted'), 201)
-    return make_response(jsonify(message='deletion failed, not item found to delete'), 404)
+        return make_response(jsonify(message='meal deleted'), 200)
+    return make_response(jsonify(message='Deletion failed, not item found to delete.'), 404)
 
 
 @meals.route('/meals/point/<int:meal_id>', methods=['POST'])
@@ -105,10 +107,10 @@ def easy_point(current_user, meal_id):
     """
     category = current_user[0]
     if category == 'caterer':
-        return make_response(jsonify(message='Operation not permitted for this user'), 403)
+        return make_response(jsonify(message='Operation not permitted for caterers.'), 403)
 
     point_out = Meal.easy_point(meal_id=meal_id)
 
     if point_out:
         return make_response(jsonify(message='Point out successful'), 200)
-    return make_response(jsonify(message='Point out failed'), 200)
+    return make_response(jsonify(message='Point out failed.'), 200)
