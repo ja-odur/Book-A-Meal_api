@@ -62,7 +62,7 @@ def modify_order(current_user, order_id):
         return make_response(jsonify(message="Resource not found"), 404)
 
     except KeyError:
-        return make_response(jsonify(message='Invalid request format'), 403)
+        return make_response(jsonify(message='Invalid request format'), 400)
 
 
 @orders.route('/orders', methods=['GET'])
@@ -154,7 +154,7 @@ def get_history(current_user):
     customer = User.get_user(current_user[1])
 
     if current_user[0] == 'caterer':
-        return make_response(jsonify(dict(message='Sorry operation not permitted for this user.')), 403)
+        return make_response(jsonify(dict(message='Sorry operation not permitted for caterers.')), 403)
 
     order_history = Order.get_order_history(customer_id=customer.id)
 
