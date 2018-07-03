@@ -58,15 +58,13 @@ class TestOrder(unittest.TestCase):
                                              content_type="application/json", data=json.dumps(meal_ids))
 
         expected_response_message = 'Order successfully placed.'
-        self.tester.post(self.order_url, headers={'access-token':self.token_user},
-                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+        self.tester.post(self.order_url + '/1', headers={'access-token':self.token_user})
 
-        get_response = self.tester.post(self.order_url, headers={'access-token':self.token_user},
-                                        content_type="application/json", data=json.dumps(dict(meal_id=2)))
+        get_response = self.tester.post(self.order_url + '/2', headers={'access-token':self.token_user})
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 201)
+        self.assertEqual(201, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_create_order_failure_invalid_meal_id(self):
@@ -76,12 +74,11 @@ class TestOrder(unittest.TestCase):
                                              content_type="application/json", data=json.dumps(meal_ids))
 
         expected_response_message = 'Order not placed'
-        get_response = self.tester.post(self.order_url, headers={'access-token':self.token_user},
-                                        content_type="application/json", data=json.dumps(dict(meal_id=3)))
+        get_response = self.tester.post(self.order_url + '/3', headers={'access-token':self.token_user})
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 404)
+        self.assertEqual(404, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_modify_order(self):
@@ -97,15 +94,14 @@ class TestOrder(unittest.TestCase):
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
                                              content_type="application/json", data=json.dumps(meal_ids))
 
-        self.tester.post(self.order_url, headers={'access-token': self.token_user},
-                         content_type="application/json", data=json.dumps(dict(meal_id=2)))
+        self.tester.post(self.order_url + '/2', headers={'access-token': self.token_user})
 
         get_response = self.tester.put(self.order_url + '/1', headers={'access-token': self.token_user},
                                        content_type="application/json", data=json.dumps(dict(meal_id=3)))
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 201)
+        self.assertEqual(201, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_no_order_found(self):
@@ -123,8 +119,7 @@ class TestOrder(unittest.TestCase):
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
                                              content_type="application/json", data=json.dumps(meal_ids))
 
-        self.tester.post(self.order_url, headers={'access-token': self.token_user},
-                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+        self.tester.post(self.order_url + '/1', headers={'access-token': self.token_user})
 
         expected_response_message = {'content': [{'caterer_id': 1, 'customer_id': 1, 'meal': 'meal',
                                                   'order_cleared': False, 'order_id': 1, 'price': 5000}]}
@@ -142,14 +137,13 @@ class TestOrder(unittest.TestCase):
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
                                              content_type="application/json", data=json.dumps(meal_ids))
 
-        self.tester.post(self.order_url, headers={'access-token': self.token_user},
-                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+        self.tester.post(self.order_url + '/1', headers={'access-token': self.token_user})
         expected_response_message = 1
         response = self.tester.get(self.order_url + '/placed', headers={'access-token': self.token_user})
 
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(200, response.status_code)
         self.assertEqual(expected_response_message, len(response_results['message']))
 
     def test_delete_order(self):
@@ -160,17 +154,15 @@ class TestOrder(unittest.TestCase):
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
                                              content_type="application/json", data=json.dumps(meal_ids))
 
-        self.tester.post(self.order_url, headers={'access-token': self.token_user},
-                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+        self.tester.post(self.order_url + '/1', headers={'access-token': self.token_user})
 
-        self.tester.post(self.order_url, headers={'access-token': self.token_user},
-                         content_type="application/json", data=json.dumps(dict(meal_id=2)))
+        self.tester.post(self.order_url + '/2', headers={'access-token': self.token_user})
 
         self.tester.delete(self.order_url + '/1', headers={'access-token':self.token_user})
         response = self.tester.get(self.order_url + '/placed', headers={'access-token':self.token_user})
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(200, response.status_code)
         self.assertEqual(expected_response_message, len(response_results['message']))
 
     def test_clear_order(self):
@@ -181,15 +173,13 @@ class TestOrder(unittest.TestCase):
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
                                              content_type="application/json", data=json.dumps(meal_ids))
 
-        self.tester.post(self.order_url, headers={'access-token': self.token_user},
-                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+        self.tester.post(self.order_url + '/1', headers={'access-token': self.token_user})
 
         self.tester.patch(self.order_url + '/clear/1', headers={'access-token':self.token_caterer})
 
         response = self.tester.get(self.order_url + '/placed', headers={'access-token': self.token_user})
         response_results = json.loads(response.data.decode())
-
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(200, response.status_code)
         self.assertEqual(expected_response_message, response_results['message'][0]['order_cleared'])
 
     def test_clear_order_invalid_order_id(self):
@@ -199,7 +189,7 @@ class TestOrder(unittest.TestCase):
 
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(200, response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_history(self):
@@ -211,15 +201,14 @@ class TestOrder(unittest.TestCase):
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token_caterer},
                                              content_type="application/json", data=json.dumps(meal_ids))
 
-        self.tester.post(self.order_url, headers={'access-token': self.token_user},
-                         content_type="application/json", data=json.dumps(dict(meal_id=1)))
+        self.tester.post(self.order_url + '/1', headers={'access-token': self.token_user})
 
         self.tester.patch(self.order_url + '/clear/1', headers={'access-token':self.token_caterer})
 
         history_response = self.tester.get(self.order_url + '/history', headers={'access-token': self.token_user})
         history = json.loads(history_response.data.decode())
 
-        self.assertEqual(history_response.status_code, 200)
+        self.assertEqual(200, history_response.status_code)
         self.assertEqual(expected_length, len(history['message']))
         self.assertEqual(expected_result, history['message'][0]['order_cleared'])
 
@@ -227,24 +216,22 @@ class TestOrder(unittest.TestCase):
 
         expected_response_message = 'Caterers can not create an order'
 
-        get_response = self.tester.post(self.order_url, headers={'access-token':self.token_caterer},
-                                        content_type="application/json", data=json.dumps(dict(meal_id=2)))
+        get_response = self.tester.post(self.order_url + '/2', headers={'access-token':self.token_caterer})
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 403)
+        self.assertEqual(403, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_create_order_invalid_data_format(self):
 
-        expected_response_message = 'Invalid request format'
+        expected_response_message = 'Order not placed'
 
-        get_response = self.tester.post(self.order_url, headers={'access-token':self.token_user},
-                                        content_type="application/json", data=json.dumps(dict(meal=2)))
+        get_response = self.tester.post(self.order_url + '/2', headers={'access-token':self.token_user})
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 400)
+        self.assertEqual(404, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_modify_order_caterer(self):
@@ -256,7 +243,7 @@ class TestOrder(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 403)
+        self.assertEqual(403, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_history_caterer(self):
@@ -265,7 +252,7 @@ class TestOrder(unittest.TestCase):
         history_response = self.tester.get(self.order_url + '/history', headers={'access-token': self.token_caterer})
         history = json.loads(history_response.data.decode())
 
-        self.assertEqual(history_response.status_code, 403)
+        self.assertEqual(403, history_response.status_code)
         self.assertEqual(expected_result, history['message'])
 
     def test_get_empty_history(self):
@@ -274,7 +261,7 @@ class TestOrder(unittest.TestCase):
         history_response = self.tester.get(self.order_url + '/history', headers={'access-token': self.token_user})
         history = json.loads(history_response.data.decode())
 
-        self.assertEqual(history_response.status_code, 200)
+        self.assertEqual(200, history_response.status_code)
         self.assertEqual(expected_result, history['message'])
 
     def test_delete_order_caterer(self):
@@ -283,7 +270,7 @@ class TestOrder(unittest.TestCase):
 
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(403, response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_delete_order_invalid_order_id(self):
@@ -292,7 +279,7 @@ class TestOrder(unittest.TestCase):
 
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(404, response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_orders_placed_caterer(self):
@@ -302,7 +289,7 @@ class TestOrder(unittest.TestCase):
 
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(403, response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_orders_no_placed_order(self):
@@ -312,7 +299,7 @@ class TestOrder(unittest.TestCase):
 
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(200, response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_modify_order_invalid_order_id(self):
@@ -322,7 +309,7 @@ class TestOrder(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 404)
+        self.assertEqual(404, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_modify_order_missing_key(self):
@@ -332,7 +319,7 @@ class TestOrder(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 400)
+        self.assertEqual(400, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
 

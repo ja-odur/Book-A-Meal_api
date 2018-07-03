@@ -46,7 +46,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 201)
+        self.assertEqual(201, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_all_meals(self):
@@ -60,7 +60,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(200, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_update_meal_price(self):
@@ -81,7 +81,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(200, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_update_meal_Name(self):
@@ -103,7 +103,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(200, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_delete_meal(self):
@@ -122,7 +122,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(200, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_delete_meal_failure(self):
@@ -131,7 +131,7 @@ class TestMeals(unittest.TestCase):
         delete_url = self.meals_url + delete_id
         input_data1 = dict(name='meal1', price=5000)
         input_data2 = dict(name='meal', price=5000)
-        expected_response_message = 'Deletion failed, not item found to delete.'
+        expected_response_message = 'Deletion failed, no item found to delete.'
         self.tester.post(self.meals_url, content_type="application/json", headers={'access-token':token},
                          data=json.dumps(input_data1))
         self.tester.post(self.meals_url, content_type="application/json", data=json.dumps(input_data2),
@@ -140,7 +140,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 404)
+        self.assertEqual(404, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_easy_point(self):
@@ -165,7 +165,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(200, response.status_code)
         self.assertEqual(expected_results, response_results['message'][0]['point'])
 
     def test_easy_point_failure(self):
@@ -183,7 +183,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(200, response.status_code)
         self.assertEqual(expected_results, response_results['message'])
 
     def test_easy_point_caterer(self):
@@ -195,7 +195,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(403, response.status_code)
         self.assertEqual(expected_results, response_results['message'])
 
     def test_create_meal_failure(self):
@@ -207,7 +207,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 400)
+        self.assertEqual(400, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_duplicate_meal_creation(self):
@@ -223,7 +223,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(200, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_meals_no_meals(self):
@@ -234,7 +234,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 404)
+        self.assertEqual(404, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_update_meal_invalid_body_tag(self):
@@ -254,7 +254,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 400)
+        self.assertEqual(400, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_empty_token(self):
@@ -264,7 +264,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 401)
+        self.assertEqual(401, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_invalid_token(self):
@@ -274,7 +274,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 401)
+        self.assertEqual(401, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_token_admin_rights(self):
@@ -290,7 +290,7 @@ class TestMeals(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 401)
+        self.assertEqual(401, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
 

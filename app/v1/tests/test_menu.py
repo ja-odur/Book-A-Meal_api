@@ -49,7 +49,7 @@ class TestMenu(unittest.TestCase):
 
         response_results = json.loads(self.get_response.data.decode())
 
-        self.assertEqual(self.get_response.status_code, 201)
+        self.assertEqual(201, self.get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_create_menu_missing_meal_ids(self):
@@ -62,7 +62,7 @@ class TestMenu(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 400)
+        self.assertEqual(400, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_create_menu_bad_format(self):
@@ -75,7 +75,7 @@ class TestMenu(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 400)
+        self.assertEqual(400, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_create_menu_invalid_meal_id(self):
@@ -88,7 +88,7 @@ class TestMenu(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 400)
+        self.assertEqual(400, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_menu(self):
@@ -97,14 +97,16 @@ class TestMenu(unittest.TestCase):
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token},
                                              content_type="application/json", data=json.dumps(meal_ids))
 
-        expected_response_message = {'MENU': {'1': [{'caterer_id': 1, 'name': 'meal1', 'point': 0, 'price': 5000},
-                {'caterer_id': 1, 'name': 'meal2', 'point': 0, 'price': 5000}]}}
+        expected_response_message = {'MENU': {'1': [{'caterer_id': 1, 'menu_id': 1, 'name': 'meal1',
+                                                     'point': 0, 'price': 5000},
+                                                    {'caterer_id': 1, 'menu_id': 2, 'name': 'meal2',
+                                                     'point': 0, 'price': 5000}]}}
         
         get_response = self.tester.get('api/v1/menu/', headers={'access-token':self.token})
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(200, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_menu_failure(self):
@@ -115,7 +117,7 @@ class TestMenu(unittest.TestCase):
 
         response_results = json.loads(get_response.data.decode())
 
-        self.assertEqual(get_response.status_code, 404)
+        self.assertEqual(404, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_remove_meal_from_menu_successful(self):
