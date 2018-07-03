@@ -10,8 +10,8 @@ URL_PREFIX = 'api/v1'
 class TestMenu(unittest.TestCase):
     def setUp(self):
         DB.create_all()
-        signup_url = URL_PREFIX + '/auth/signup'
-        login_url = URL_PREFIX + '/auth/login'
+        self.signup_url = URL_PREFIX + '/auth/signup'
+        self.login_url = URL_PREFIX + '/auth/login'
         self.meals_url = URL_PREFIX + '/meals/'
         self.menu_url = URL_PREFIX + '/menu/'
 
@@ -20,8 +20,8 @@ class TestMenu(unittest.TestCase):
                             confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
         self.login_data = dict(category='caterer', username='caterer1', password='12345')
 
-        self.tester.post(signup_url, content_type="application/json", data=json.dumps(self.reg_data))
-        self.response = self.tester.post(login_url, content_type="application/json",
+        self.tester.post(self.signup_url, content_type="application/json", data=json.dumps(self.reg_data))
+        self.response = self.tester.post(self.login_url, content_type="application/json",
                                          data=json.dumps(self.login_data))
         self.response_results = json.loads(self.response.data.decode())
         self.token = self.response_results['token']
@@ -148,6 +148,27 @@ class TestMenu(unittest.TestCase):
 
     def test_delete_menu_successful(self):
         meal_ids = dict(meal_ids=[1, 2])
+        reg_data = dict(category='caterer', email='caterer2@gmail.com', username='caterer2', password='12345',
+                             confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
+        login_data = dict(category='caterer', username='caterer2', password='12345')
+
+        self.tester.post(self.signup_url, content_type="application/json", data=json.dumps(reg_data))
+
+        response1 = self.tester.post(self.login_url, content_type="application/json",
+                                         data=json.dumps(login_data))
+        response_results1 = json.loads(response1.data.decode())
+        token_caterer2 = response_results1['token']
+
+        meal_data1 = dict(name='meal3', price=5000)
+        meal_data2 = dict(name='meal4', price=5000)
+
+        self.tester.post(self.meals_url, content_type="application/json", headers={'access-token': token_caterer2},
+                         data=json.dumps(meal_data1))
+        self.tester.post(self.meals_url, content_type="application/json", headers={'access-token': token_caterer2},
+                         data=json.dumps(meal_data2))
+
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': token_caterer2},
+                                             content_type="application/json", data=json.dumps(dict(meal_ids=[2,3])))
 
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token},
                                              content_type="application/json", data=json.dumps(meal_ids))
@@ -159,14 +180,13 @@ class TestMenu(unittest.TestCase):
         self.assertEqual(200, get_response.status_code)
         self.assertEqual('Menu deleted', response_results['message'])
 
-    # def test_delete_menu_failure(self):
-    #     self.tester.delete('api/v1/menu/', headers={'access-token': self.token})
-    #     get_response = self.tester.delete('api/v1/menu/', headers={'access-token': self.token})
-    #
-    #     response_results = json.loads(get_response.data.decode())
-    #
-    #     self.assertEqual(200, get_response.status_code)
-    #     self.assertEqual('Menu deletedfdgf', response_results['message'])
+    def test_delete_menu_failure(self):
+        get_response = self.tester.delete('api/v1/menu/', headers={'access-token': self.token})
+
+        response_results = json.loads(get_response.data.decode())
+
+        self.assertEqual(404, get_response.status_code)
+        self.assertEqual('No menu found', response_results['message'])
 
 
 # if __name__ == '__main__':
