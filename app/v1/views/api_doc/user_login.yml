@@ -22,7 +22,7 @@ parameters:
         password:
           type: "string"
           format: password
-          example: 12345
+          example: "12345"
 
 responses:
   201:

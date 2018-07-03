@@ -49,4 +49,33 @@ def get_menu(current_user):
     return make_response(jsonify(message='Menu not found.'), 404)
 
 
+@menu.route('/menu/meal/<int:meal_id>', methods=['DELETE'])
+@token_required(admin=True)
+def delete_meal_menu(current_user, meal_id):
+    caterer = Caterer.get_caterer(username=current_user[1])
+    removed_meal = Menu.remove_meal_from_menu(caterer_id=caterer.id, meal_id=meal_id)
+
+    if removed_meal:
+        return make_response(jsonify(message='Meal successfully removed from menu.'), 200)
+    return make_response(jsonify(message='Meal not removed'), 404)
+
+
+@menu.route('/menu/', methods=['DELETE'])
+@token_required(admin=True)
+def delete_menu(current_user):
+
+    caterer = Caterer.get_caterer(username=current_user[1])
+
+    if caterer:
+        menu_deleted = Menu.delete_menu(caterer_id=caterer.id)
+
+        if menu_deleted:
+            return make_response(jsonify(message='Menu deleted'), 200)
+    return make_response(jsonify(message='No menu found'), 404)
+
+
+
+
+
+
 

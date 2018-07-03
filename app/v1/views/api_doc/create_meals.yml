@@ -9,13 +9,9 @@ parameters:
     schema:
       type: object
       required:
-        - "username"
         - "name"
         - "price"
       properties:
-        username:
-          type: "string"
-          example: "default"
         name:
           type: "string"
           example: "meat and rice"

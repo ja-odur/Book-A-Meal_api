@@ -81,6 +81,8 @@ def log_in(**data):
 
     elif data['category'] == 'caterer':
         user_info = Caterer.get_caterer(data['username'])
+    else:
+        return dict(message='Invalid category', status_code=400, operation=False)
 
     if user_info:
         token = verify_password(username=user_info.username, user_email=user_info.email, db_password=user_info.password,

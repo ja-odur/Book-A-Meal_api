@@ -3,22 +3,13 @@ Endpoint that enable a customer to place an order.
 tags:
   - Orders
 parameters:
-  - name: body
-    in: body
+  - name: menu_id
+    in: path
     required: true
-    schema:
-      type: object
-      required:
-        - "meal"
-        - "caterer"
-      properties:
-        meal:
-          type: "array"
-          example: [1, 'rice and posho', 5000]
-
-        caterer:
-          type: "string"
-          example: "default"
+    properties:
+       menu_id:
+        type: "int"
+    default: 1
   - name: access-token
     in: header
     required: true

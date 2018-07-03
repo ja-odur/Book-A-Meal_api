@@ -70,10 +70,12 @@ def update_meal(current_user, meal_id):
 
     if 'price' in data:
         updated = Meal.update_meal(caterer=caterer, meal_id=meal_id, value=data['price'])
+    else:
+        return make_response(jsonify(message='Invalid format.'), 400)
 
     if updated:
         return make_response(jsonify(message=updated), 201)
-    return make_response(jsonify(message='Invalid format.'), 400)
+    return make_response(jsonify(message='Meal not found.'), 404)
 
 
 @meals.route('/meals/<int:meal_id>', methods=['DELETE'])
@@ -91,7 +93,7 @@ def delete_meal(current_user, meal_id):
 
     if meal_deleted:
         return make_response(jsonify(message='meal deleted'), 200)
-    return make_response(jsonify(message='Deletion failed, not item found to delete.'), 404)
+    return make_response(jsonify(message='Deletion failed, no item found to delete.'), 404)
 
 
 @meals.route('/meals/point/<int:meal_id>', methods=['POST'])

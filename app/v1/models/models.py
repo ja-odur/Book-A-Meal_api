@@ -383,7 +383,7 @@ class Menu(DB.Model):
     """
     __tablename__ = 'menus'
     id = DB.Column(DB.Integer, primary_key=True)
-    meal = DB.Column(DB.Integer, DB.ForeignKey('meals.id'))
+    meal = DB.Column(DB.Integer, DB.ForeignKey('meals.id'), unique=True)
     order = DB.relationship('Order', backref='order')
     caterer = DB.Column(DB.Integer)
 
@@ -412,7 +412,7 @@ class Menu(DB.Model):
 
     @staticmethod
     def remove_meal_from_menu(caterer_id, meal_id):
-        meal = Menu.query.filter_by(id=meal_id).first()
+        meal = Menu.query.filter_by(meal=meal_id).first()
         if not meal:
             return False
         if meal.caterer == caterer_id:
@@ -455,7 +455,7 @@ class Menu(DB.Model):
         for menu_item in raw_menu:
             menu.append(
                 dict(name=menu_item.menu.name, price=menu_item.menu.price, point=menu_item.menu.point,
-                     caterer_id=menu_item.menu.caterer)
+                     caterer_id=menu_item.menu.caterer, menu_id=menu_item.id)
             )
 
         return menu

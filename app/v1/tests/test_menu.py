@@ -102,7 +102,6 @@ class TestMenu(unittest.TestCase):
         
         get_response = self.tester.get('api/v1/menu/', headers={'access-token':self.token})
 
-        print(get_response)
         response_results = json.loads(get_response.data.decode())
 
         self.assertEqual(get_response.status_code, 200)
@@ -114,11 +113,58 @@ class TestMenu(unittest.TestCase):
 
         get_response = self.tester.get('api/v1/menu/', headers={'access-token': self.token})
 
-        print(get_response)
         response_results = json.loads(get_response.data.decode())
 
         self.assertEqual(get_response.status_code, 404)
         self.assertEqual(expected_response_message, response_results['message'])
+
+    def test_remove_meal_from_menu_successful(self):
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        get_response = self.tester.delete('api/v1/menu/meal/1', headers={'access-token': self.token})
+
+        response_results = json.loads(get_response.data.decode())
+
+        self.assertEqual(200, get_response.status_code)
+        self.assertEqual('Meal successfully removed from menu.', response_results['message'])
+
+    def test_remove_meal_from_menu_failure(self):
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        get_response = self.tester.delete('api/v1/menu/meal/3', headers={'access-token': self.token})
+
+        response_results = json.loads(get_response.data.decode())
+
+        self.assertEqual(404, get_response.status_code)
+        self.assertEqual('Meal not removed', response_results['message'])
+
+    def test_delete_menu_successful(self):
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        get_response = self.tester.delete('api/v1/menu/', headers={'access-token': self.token})
+
+        response_results = json.loads(get_response.data.decode())
+
+        self.assertEqual(200, get_response.status_code)
+        self.assertEqual('Menu deleted', response_results['message'])
+
+    # def test_delete_menu_failure(self):
+    #     self.tester.delete('api/v1/menu/', headers={'access-token': self.token})
+    #     get_response = self.tester.delete('api/v1/menu/', headers={'access-token': self.token})
+    #
+    #     response_results = json.loads(get_response.data.decode())
+    #
+    #     self.assertEqual(200, get_response.status_code)
+    #     self.assertEqual('Menu deletedfdgf', response_results['message'])
 
 
 if __name__ == '__main__':

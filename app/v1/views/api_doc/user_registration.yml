@@ -11,6 +11,8 @@ parameters:
       required:
         - "category"
         - "email"
+        - "first_name"
+        - "last_name"
         - "username"
         - "password"
         - "confirm_password"
@@ -21,7 +23,13 @@ parameters:
           example: "user or caterer"
         email:
           type: "string"
-          example: "johndoe@emaple.com"
+          example: "johndoe@example.com"
+        first_name:
+          type: "string"
+          example: "john"
+        last_name:
+          type: "string"
+          example: "doe"
         username:
           type: "string"
           example: "johndoe"

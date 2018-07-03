@@ -7,32 +7,30 @@ from app.v1.models.models import Order, User, Caterer
 orders = Blueprint('orders', __name__, url_prefix='/api/v1')
 
 
-@orders.route('/orders', methods=['POST'])
+@orders.route('/orders/<int:menu_id>', methods=['POST'])
 @swag_from('api_doc/create_order.yml')
 @token_required()
-def create_order(current_user):
+def create_order(current_user, menu_id):
     """
     This function enables only users to make an order
     :param current_user: A list containing the current users information i.e category username, email
     :return: returns a confirmation message
     """
-    data = request.get_json()
+    # data = request.get_json()
     if current_user[0] == 'caterer':
         return make_response(jsonify(dict(message='Caterers can not create an order')), 403)
 
     customer = User.get_user(current_user[1])
 
     if customer:
-        try:
-            if data['meal_id']:
-                new_order = Order(customer_id=customer.id, meal_id=data['meal_id']).add_order()
 
-                if new_order:
-                    message = 'Order successfully placed.'
-                    return make_response(jsonify(message=message), 201)
+        if menu_id:
+            new_order = Order(customer_id=customer.id, meal_id=menu_id).add_order()
 
-        except KeyError:
-            return make_response(jsonify(message='Invalid request format'), 400)
+            if new_order:
+                message = 'Order successfully placed.'
+                return make_response(jsonify(message=message), 201)
+
     return make_response(jsonify(message='Order not placed'), 404)
 
 

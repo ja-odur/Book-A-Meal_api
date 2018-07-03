@@ -9,11 +9,11 @@ parameters:
     schema:
       type: object
       required:
-        - "menu"
+        - "meal_ids"
       properties:
-        menu:
+        meal_ids:
           type: "array"
-          example: [[1, 'rice and posho', 5000], [2, 'rice and posho', 5000], [3, 'rice and posho', 5000]]
+          example: [1]
   - name: access-token
     in: header
     required: true
