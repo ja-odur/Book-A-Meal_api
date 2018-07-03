@@ -64,7 +64,6 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_update_meal_price(self):
-        token = self.token
 
         input_data = dict(name='meal', price=5000)
         update_data = dict(price=6000)
@@ -73,12 +72,12 @@ class TestMeals(unittest.TestCase):
 
         expected_response_message = [{'caterer': 1, 'meal_id': 1, 'name': 'meal', 'point': 0, 'price': 6000}]
 
-        self.tester.post(self.meals_url, content_type="application/json", headers={'access-token':token},
+        self.tester.post(self.meals_url, content_type="application/json", headers={'access-token':self.token},
                          data=json.dumps(input_data))
         self.tester.put(update_url, content_type="application/json",
-                        headers={'access-token':token}, data=json.dumps(update_data))
+                        headers={'access-token':self.token}, data=json.dumps(update_data))
 
-        get_response = self.tester.get(self.meals_url, headers={'access-token': token})
+        get_response = self.tester.get(self.meals_url, headers={'access-token': self.token})
 
         response_results = json.loads(get_response.data.decode())
 
