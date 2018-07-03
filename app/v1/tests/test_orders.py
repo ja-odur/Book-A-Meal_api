@@ -323,5 +323,5 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(expected_response_message, response_results['message'])
 
 
-if __name__ == '__main__':
-    unittest.main()
+# if __name__ == '__main__':
+#     unittest.main()

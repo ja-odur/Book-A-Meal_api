@@ -178,5 +178,5 @@ class TestSuccessfulRegistration(unittest.TestCase):
         self.assertEqual(401, get_response.status_code)
 
 
-if __name__ == '__main__':
-    unittest.main()
+# if __name__ == '__main__':
+#     unittest.main()

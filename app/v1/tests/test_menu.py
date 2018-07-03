@@ -169,5 +169,5 @@ class TestMenu(unittest.TestCase):
     #     self.assertEqual('Menu deletedfdgf', response_results['message'])
 
 
-if __name__ == '__main__':
-    unittest.main()
+# if __name__ == '__main__':
+#     unittest.main()
