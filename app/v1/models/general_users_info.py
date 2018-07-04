@@ -1,6 +1,4 @@
-from app.v1.models.db_connection import DB
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import UnmappedInstanceError
+from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError
 
 
 class UserInfo(DB.Model):

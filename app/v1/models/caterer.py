@@ -1,6 +1,5 @@
-from app.v1.models.general_users_info import DB, UserInfo
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import UnmappedInstanceError
+from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError
+from app.v1.models.general_users_info import UserInfo
 
 
 class Caterer(DB.Model):
