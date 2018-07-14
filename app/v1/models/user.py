@@ -38,7 +38,7 @@ class User(DB.Model):
             return False
 
     @staticmethod
-    def get_user(username, email=None, user_id=None):
+    def get_user(username=None, email=None, user_id=None):
         try:
             user = User.query.filter_by(email=email).first() or User.query.filter_by(id=user_id).first() or \
                    User.query.filter_by(username=username).first()
@@ -73,36 +73,26 @@ class User(DB.Model):
         return User.query.all()
 
     def add_user(self):
-        users = self.get_users()
-
-        for user in users:
-            if user.email == self.email or user.username == self.username:
-                return False
+        user = self.get_user(email=self.email) or self.get_user(username=self.username)
+        if user:
+            return False
 
         user_info = UserInfo.query.filter_by(email=self.email).first()
 
         if user_info:
             user_info.user_counter += 1
             self.user = user_info.user_id
-            return self.save()
+            # return self.save()
         else:
             new_user_info = UserInfo(email=self.email, first_name=self.first_name, last_name=self.last_name,
                                      address=self.address).add_user()
             if new_user_info:
                 self.user = UserInfo.query.filter_by(email=self.email).first().user_id
-                return self.save()
-        return False
+        return self.save()
+        # return False
 
     def save(self):
         DB.session.add(self)
         return self.commit_changes()
 
-    # def __repr__(self):
-    #     try:
-    #         return "User->(email={}, username={}, first_name={}, last_name={}," \
-    #                " address={})".format(self.email, self.username, self.customer.first_name, self.customer.last_name,
-    #                                      self.customer.address)
-    #     except AttributeError:
-    #         return "User to created->(email={}, username={}, first_name={}, last_name={}" \
-    #                ")".format(self.email, self.username, self.first_name, self.last_name)
 
