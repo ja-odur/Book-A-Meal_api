@@ -22,23 +22,18 @@ def register_user():
 
     data = request.get_json()
     try:
-        if data['category'] and data['email'] and data['username'] and data['first_name'] and data['last_name'] \
-                and data['password'] and data['confirm_password'] and data['address']:
-            pass
+        user_data = dict(category=data['category'], email=data['email'], username=data['username'],
+                         first_name=data['first_name'], last_name=data['last_name'], password=data['password'],
+                         confirm_password=data['confirm_password'], address=data['address'])
     except KeyError:
         return make_response(jsonify(dict(message='PROVIDE ALL REQUIRED INFORMATION.')), 400)
 
-    error_response = verify_registration_data(category=data['category'], email=data['email'], username=data['username'],
-                                        first_name=data['first_name'], last_name=data['last_name'],
-                                        password=data['password'], confirm_password=data['confirm_password'],
-                                        address=data['address'])
+    error_response = verify_registration_data(**user_data)
 
     if error_response:
         return make_response(jsonify({'message': error_response['message']}), error_response['status_code'])
 
-    new_sign_up = sign_up(category=data['category'], email=data['email'], username=data['username'],
-                          first_name=data['first_name'], last_name=data['last_name'], password=data['password'],
-                          confirm_password=data['confirm_password'], address=data['address'])
+    new_sign_up = sign_up(**user_data)
 
     return make_response(jsonify({'message': new_sign_up['message']}), new_sign_up['status_code'])
 
