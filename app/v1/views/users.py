@@ -28,7 +28,7 @@ def register_user():
     except KeyError:
         return make_response(jsonify(dict(message='PROVIDE ALL REQUIRED INFORMATION.')), 400)
 
-    error_response = verify_registration_data(**user_data)
+    error_response = verify_registration_data(user_data)
 
     if error_response:
         return make_response(jsonify({'message': error_response['message']}), error_response['status_code'])

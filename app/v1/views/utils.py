@@ -20,9 +20,8 @@ def verify_password(username, user_email, db_password, input_password, category)
 
 
 def verify_input_data(**input_data):
-    for data in input_data.values():
-        if not data:
-            return False
+    if '' in input_data.values():
+        return False
 
     at_char_found, at_count, period_count = False, 0, 0
 
@@ -41,27 +40,23 @@ def verify_input_data(**input_data):
     return True
 
 
-def verify_registration_data(category, email, username, first_name, last_name, password, confirm_password,
-                             address):
+def verify_registration_data(dictionary=dict(category=None, email=None, username=None, first_name=None, last_name=None,
+                                             password=None, confirm_password=None,address=None)):
 
-    if not verify_input_data(**dict(category=category, email=email, username=username,
-                                    first_name=first_name, last_name=last_name,
-                                    password=password, confirm_password=confirm_password,
-                                    address=address)):
+    if not verify_input_data(**dictionary):
         return dict(message='Invalid data format. Check email field and fill in all fields.', status_code=400)
 
 
 def sign_up(**data):
     if data['password'] == data['confirm_password']:
         new_user = False
+        user_data = dict(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
+                         username=data['username'], password=data['password'], address=data['address'])
         if data['category'] == 'user':
-            new_user = User(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
-                            username=data['username'], password=data['password'], address=data['address']).add_user()
+            new_user = User(**user_data).add_user()
             tag = "User"
         elif data['category'] == 'caterer':
-            new_user = Caterer(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
-                               username=data['username'], password=data['password'],
-                               address=data['address']).add_caterer()
+            new_user = Caterer(**user_data).add_caterer()
             tag = "Caterer"
         else:
             return dict(message='category can either be user or caterer.', status_code=400)
