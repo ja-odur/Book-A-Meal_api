@@ -26,10 +26,12 @@ class Order(DB.Model):
     def commit_changes():
         try:
             DB.session.commit()
-            return True
         except (IntegrityError, UnmappedInstanceError):
             DB.session.rollback()
-            return False
+            commit = False
+        else:
+            commit = True
+        return commit
 
     def add_order(self):
         self.order_time = datetime.datetime.now()
@@ -55,23 +57,22 @@ class Order(DB.Model):
 
     @staticmethod
     def get_orders(customer_id=None, caterer_id=None):
-        if customer_id:
-            raw_orders = Order.query.filter_by(customer=customer_id)
-            if raw_orders:
-                orders = []
-                for order in raw_orders:
-                    orders.append(order.to_dictionary())
-                return orders
-            return False
-
-        if caterer_id:
-            raw_orders = Order.query.all()
+        raw_orders = Order.query.filter_by(customer=customer_id)
+        if customer_id and raw_orders:
             orders = []
-            if raw_orders:
-                for order in raw_orders:
-                    if order.order.menu.caterer == caterer_id:
-                        orders.append(order.to_dictionary())
-                return orders
+            for order in raw_orders:
+                if not caterer_id:
+                    orders.append(order.to_dictionary())
+            return orders
+
+        raw_orders = Order.query.all()
+
+        if caterer_id and raw_orders:
+            orders = []
+            for order in raw_orders:
+                if order.order.menu.caterer == caterer_id:
+                    orders.append(order.to_dictionary())
+            return orders
         return False
 
     @staticmethod
