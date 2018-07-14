@@ -1,6 +1,7 @@
 
 import jwt
 import datetime
+from flask import make_response, jsonify
 from app.v1.models.models import User, Caterer
 
 from env_config import API_KEY
@@ -86,6 +87,12 @@ def log_in(**data):
             return dict(token=token, status_code=200, operation=True)
 
     return dict(message='Invalid Username or Password', status_code=401, operation=False)
+
+
+def block_caterer(current_user, reason):
+    if current_user[0] == 'caterer':
+        return make_response(jsonify(dict(message=reason)), 403)
+    return False
 
 
 

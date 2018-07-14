@@ -2,6 +2,7 @@ from flasgger import swag_from
 from flask import jsonify, request, make_response, Blueprint
 from app.v1.views.decorators import token_required
 from app.v1.models.models import Order, User, Caterer
+from app.v1.views.utils import block_caterer
 
 
 orders = Blueprint('orders', __name__, url_prefix='/api/v1')
@@ -17,19 +18,18 @@ def create_order(current_user, menu_id):
     :return: returns a confirmation message
     """
     # data = request.get_json()
-    if current_user[0] == 'caterer':
-        return make_response(jsonify(dict(message='Caterers can not create an order')), 403)
+    caterer_blocked = block_caterer(current_user=current_user, reason='Caterers can not create an order')
+    if caterer_blocked:
+        return caterer_blocked
 
     customer = User.get_user(current_user[1])
 
-    if customer:
+    if menu_id:
+        new_order = Order(customer_id=customer.id, meal_id=menu_id).add_order()
 
-        if menu_id:
-            new_order = Order(customer_id=customer.id, meal_id=menu_id).add_order()
-
-            if new_order:
-                message = 'Order successfully placed.'
-                return make_response(jsonify(message=message), 201)
+        if new_order:
+            message = 'Order successfully placed.'
+            return make_response(jsonify(message=message), 201)
 
     return make_response(jsonify(message='Order not placed'), 404)
 
@@ -45,22 +45,22 @@ def modify_order(current_user, order_id):
         :return: returns a confirmation message
         """
     data = request.get_json()
-    if current_user[0] == 'caterer':
-        return make_response(jsonify(dict(message='Caterers can not modify an order')), 403)
+    caterer_blocked = block_caterer(current_user=current_user, reason='Caterers can not modify an order')
+    if caterer_blocked:
+        return caterer_blocked
     try:
-        customer = User.get_user(current_user[1])
-        if customer:
-            if data['meal_id']:
-
-                updated_order = Order.modify_order(customer_id=customer.id, order_id=order_id, meal_id=data['meal_id'])
-                if updated_order:
-                    message = 'Order successfully modified.'
-                    return make_response(jsonify(message=message), 201)
-
-        return make_response(jsonify(message="Resource not found"), 404)
-
+        meal_id = data['meal_id']
     except KeyError:
         return make_response(jsonify(message='Invalid request format'), 400)
+
+    customer = User.get_user(current_user[1])
+
+    updated_order = Order.modify_order(customer_id=customer.id, order_id=order_id, meal_id=meal_id)
+    if updated_order:
+        message = 'Order successfully modified.'
+        return make_response(jsonify(message=message), 201)
+
+    return make_response(jsonify(message="Resource not found"), 404)
 
 
 @orders.route('/orders', methods=['GET'])
@@ -90,8 +90,10 @@ def get_orders(current_user):
     :return: returns the orders if the operation is successful
     """
     customer = User.get_user(current_user[1])
-    if current_user[0] == 'caterer':
-        return make_response(jsonify(dict(message='This method is meant for customers only')), 403)
+
+    caterer_blocked = block_caterer(current_user=current_user, reason='This method is meant for customers only')
+    if caterer_blocked:
+        return caterer_blocked
 
     if customer:
         placed_orders = Order.get_orders(customer_id=customer.id)
@@ -113,8 +115,11 @@ def delete_order(current_user, order_id):
     :return: returns a confirmation message
     """
     customer = User.get_user(current_user[1])
-    if current_user[0] == 'caterer':
-        return make_response(jsonify(dict(message='This method is meant for customers only')), 403)
+
+    caterer_blocked = block_caterer(current_user=current_user, reason='This method is meant for customers only')
+    if caterer_blocked:
+        return caterer_blocked
+
     order_deleted = Order.delete_order(customer_id=customer.id, order_id=order_id)
 
     if order_deleted:
@@ -151,8 +156,9 @@ def get_history(current_user):
     """
     customer = User.get_user(current_user[1])
 
-    if current_user[0] == 'caterer':
-        return make_response(jsonify(dict(message='Sorry operation not permitted for caterers.')), 403)
+    caterer_blocked = block_caterer(current_user=current_user, reason='Sorry operation not permitted for caterers.')
+    if caterer_blocked:
+        return caterer_blocked
 
     order_history = Order.get_order_history(customer_id=customer.id)
 
