@@ -35,7 +35,7 @@ class User(DB.Model):
             return True
         except (IntegrityError, UnmappedInstanceError):
             DB.session.rollback()
-            return False
+        return False
 
     @staticmethod
     def get_user(username=None, email=None, user_id=None):
@@ -61,12 +61,8 @@ class User(DB.Model):
         else:
             user.customer.user_counter -= 1
             DB.session.commit()
-        try:
             DB.session.delete(user)
-        except UnmappedInstanceError:
-            return False
-        else:
-            return User.commit_changes()
+        return User.commit_changes()
 
     @staticmethod
     def get_users():
@@ -82,14 +78,11 @@ class User(DB.Model):
         if user_info:
             user_info.user_counter += 1
             self.user = user_info.user_id
-            # return self.save()
         else:
-            new_user_info = UserInfo(email=self.email, first_name=self.first_name, last_name=self.last_name,
-                                     address=self.address).add_user()
-            if new_user_info:
+            if UserInfo(email=self.email, first_name=self.first_name, last_name=self.last_name,
+                        address=self.address).add_user():
                 self.user = UserInfo.query.filter_by(email=self.email).first().user_id
         return self.save()
-        # return False
 
     def save(self):
         DB.session.add(self)
