@@ -28,19 +28,16 @@ class Caterer(DB.Model):
     def commit_changes():
         try:
             DB.session.commit()
-            return True
+            commit_status = True
         except (IntegrityError, UnmappedInstanceError):
             DB.session.rollback()
-            return False
+            commit_status = False
+        return commit_status
 
     @staticmethod
     def get_caterer(username, email=None, caterer_id=None):
-        if caterer_id:
-            caterer = Caterer.query.filter_by(id=caterer_id).first()
-
-        elif email:
-            caterer = Caterer.query.filter_by(email=email).first()
-        else:
+        caterer = Caterer.query.filter_by(id=caterer_id).first() or Caterer.query.filter_by(email=email).first()
+        if not caterer:
             caterer = Caterer.query.filter_by(username=username).first()
         if caterer:
             return caterer
