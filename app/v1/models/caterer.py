@@ -92,11 +92,11 @@ class Caterer(DB.Model):
         DB.session.add(self)
         return self.commit_changes()
 
-    def __repr__(self):
-        try:
-            return "Caterer->(email={}, username={}, first_name={}, last_name={}," \
-               " address={})".format(self.email, self.username, self.caterer.first_name, self.caterer.last_name,
-                                     self.caterer.address)
-        except AttributeError:
-            return "Caterer to created->(email={}, username={}, first_name={}, last_name={}" \
-                   ")".format(self.email, self.username, self.first_name, self.last_name)
+    # def __repr__(self):
+    #     try:
+    #         return "Caterer->(email={}, username={}, first_name={}, last_name={}," \
+    #            " address={})".format(self.email, self.username, self.caterer.first_name, self.caterer.last_name,
+    #                                  self.caterer.address)
+    #     except AttributeError:
+    #         return "Caterer to created->(email={}, username={}, first_name={}, last_name={}" \
+    #                ")".format(self.email, self.username, self.first_name, self.last_name)

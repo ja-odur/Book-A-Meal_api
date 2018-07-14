@@ -10,7 +10,6 @@ class Meal(DB.Model):
 
     id = DB.Column(DB.Integer, primary_key=True)
     name = DB.Column(DB.String(120),nullable=False)
-    long_name = DB.Column(DB.String(120), unique=True, nullable=False)
     price = DB.Column(DB.Integer, nullable=False)
     point = DB.Column(DB.Integer, default=0)
     caterer = DB.Column(DB.Integer, DB.ForeignKey('caterers.id'))
@@ -32,12 +31,13 @@ class Meal(DB.Model):
     def add_meal(self, caterer):
         try:
             caterer_id = caterer.id
+            meal = Meal.query.filter_by(name=self.name).first()
         except AttributeError:
             return False
         else:
+            if meal and (meal.caterer == caterer_id):
+                return False
             self.caterer = caterer_id
-            self.long_name = '{}{}'.format(self.name, self.caterer)
-
             DB.session.add(self)
 
         return self.commit_changes()

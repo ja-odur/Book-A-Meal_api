@@ -24,12 +24,9 @@ class User(DB.Model):
         self.first_name = first_name
         self.last_name = last_name
 
-    @staticmethod
-    def to_dictionary(user_object):
-        if isinstance(user_object, User):
-            return dict(username=user_object.username, email=user_object.email, address=user_object.address,
-                        user_id=user_object.id)
-        return False
+    def to_dictionary(self):
+        return dict(username=self.username, email=self.email, address=self.address,
+                    user_id=self.id)
 
     @staticmethod
     def commit_changes():
@@ -42,13 +39,13 @@ class User(DB.Model):
 
     @staticmethod
     def get_user(username, email=None, user_id=None):
-        if user_id:
-            user = User.query.filter_by(id=user_id).first()
+        try:
+            user = User.query.filter_by(email=email).first() or User.query.filter_by(id=user_id).first() or \
+                   User.query.filter_by(username=username).first()
 
-        elif email:
-            user = User.query.filter_by(email=email).first()
-        else:
-            user = User.query.filter_by(username=username).first()
+        except NameError:
+            return False
+
         if user:
             return user
         return False
@@ -77,6 +74,7 @@ class User(DB.Model):
 
     def add_user(self):
         users = self.get_users()
+
         for user in users:
             if user.email == self.email or user.username == self.username:
                 return False
@@ -92,19 +90,19 @@ class User(DB.Model):
                                      address=self.address).add_user()
             if new_user_info:
                 self.user = UserInfo.query.filter_by(email=self.email).first().user_id
-                if self.save():
-                    return True
+                return self.save()
         return False
 
     def save(self):
         DB.session.add(self)
         return self.commit_changes()
 
-    def __repr__(self):
-        try:
-            return "User->(email={}, username={}, first_name={}, last_name={}," \
-                   " address={})".format(self.email, self.username, self.customer.first_name, self.customer.last_name,
-                                         self.customer.address)
-        except AttributeError:
-            return "User to created->(email={}, username={}, first_name={}, last_name={}" \
-                   ")".format(self.email, self.username, self.first_name, self.last_name)
+    # def __repr__(self):
+    #     try:
+    #         return "User->(email={}, username={}, first_name={}, last_name={}," \
+    #                " address={})".format(self.email, self.username, self.customer.first_name, self.customer.last_name,
+    #                                      self.customer.address)
+    #     except AttributeError:
+    #         return "User to created->(email={}, username={}, first_name={}, last_name={}" \
+    #                ")".format(self.email, self.username, self.first_name, self.last_name)
+
