@@ -16,13 +16,14 @@ class Caterer(DB.Model):
     user = DB.Column(DB.Integer, DB.ForeignKey('users_info.user_id'))
     meal = DB.relationship('Meal', backref='meal')
 
-    def __init__(self, first_name, last_name, email, username, password, address='No address provided'):
-        self.email = email
-        self.username = username
-        self.password = password
-        self.address = address
-        self.first_name = first_name
-        self.last_name = last_name
+    def __init__(self, caterer_data=dict(first_name=None, last_name=None, email=None, username=None, password=None,
+                                         address='No address provided')):
+        self.email = caterer_data['email']
+        self.username = caterer_data['username']
+        self.password = caterer_data['password']
+        self.address = caterer_data['address']
+        self.first_name = caterer_data['first_name']
+        self.last_name = caterer_data['last_name']
 
     @staticmethod
     def commit_changes():

@@ -56,7 +56,7 @@ def sign_up(**data):
             new_user = User(**user_data).add_user()
             tag = "User"
         elif data['category'] == 'caterer':
-            new_user = Caterer(**user_data).add_caterer()
+            new_user = Caterer(caterer_data=user_data).add_caterer()
             tag = "Caterer"
         else:
             return dict(message='category can either be user or caterer.', status_code=400)
