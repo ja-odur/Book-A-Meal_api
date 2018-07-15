@@ -33,9 +33,12 @@ class User(DB.Model):
         try:
             DB.session.commit()
             return True
-        except (IntegrityError, UnmappedInstanceError):
+        except IntegrityError:
             DB.session.rollback()
-        return False
+            return False
+        except UnmappedInstanceError:
+            DB.session.rollback()
+            return False
 
     @staticmethod
     def get_user(username=None, email=None, user_id=None):
