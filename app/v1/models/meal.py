@@ -24,9 +24,11 @@ class Meal(DB.Model):
         try:
             DB.session.commit()
             return True
-        except (IntegrityError, UnmappedInstanceError):
+        except IntegrityError:
             DB.session.rollback()
-            return False
+        except UnmappedInstanceError:
+            DB.session.rollback()
+        return False
 
     def add_meal(self, caterer):
         try:

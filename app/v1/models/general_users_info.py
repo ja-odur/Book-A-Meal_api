@@ -37,7 +37,7 @@ class UserInfo(DB.Model):
             return True
         except (IntegrityError, UnmappedInstanceError):
             DB.session.rollback()
-            return False
+        return False
 
     @staticmethod
     def get_user(user_id, email=None):
