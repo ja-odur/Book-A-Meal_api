@@ -1,7 +1,7 @@
 import unittest
 import json
 
-from run import app
+from app.v1.tests.test_app import app
 from app.v1.models.db_connection import DB
 
 URL_PREFIX = 'api/v1'
@@ -322,6 +322,3 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(400, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
-
-# if __name__ == '__main__':
-#     unittest.main()

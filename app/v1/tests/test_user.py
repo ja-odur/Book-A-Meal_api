@@ -1,7 +1,7 @@
 import unittest
 import json
 
-from run import app
+from app.v1.tests.test_app import app
 from app.v1.models.db_connection import DB
 
 URL_PREFIX = 'api/v1'
@@ -177,6 +177,3 @@ class TestSuccessfulRegistration(unittest.TestCase):
 
         self.assertEqual(401, get_response.status_code)
 
-
-# if __name__ == '__main__':
-#     unittest.main()

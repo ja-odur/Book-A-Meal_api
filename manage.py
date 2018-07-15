@@ -1,13 +1,35 @@
-from run_setup import app
-from app.v1.models.db_connection import DB
-from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
+from app.v1.views.meals import meals
+from app.v1.views.menu import menu
+from app.v1.views.users import users
+from app.v1.views.orders import orders
 
-migrate = Migrate(app, DB)
-manager = Manager(app)
+from flasgger import Swagger
+from migrate import manager
+from run_setup import app, create_app
 
-manager.add_command('db', MigrateCommand)
+
+def app_manager(development=True):
+    if development:
+        create_app()
+    else:
+        create_app(dev=False)
+
+    swagger = Swagger(app)
+
+    app.register_blueprint(users)
+
+    app.register_blueprint(meals)
+
+    app.register_blueprint(menu)
+
+    app.register_blueprint(orders)
+
+    return app
+
+
+# app = app_manager(development=True)
 
 
 if __name__ == '__main__':
+    app_manager(development=False)
     manager.run()

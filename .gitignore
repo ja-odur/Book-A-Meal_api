@@ -2,12 +2,14 @@
 __pycache__/
 .pytest_cache/
 .idea/
+.env_config
 *.py[cod]
 env/
 
 .Python
 .coverage
 .coverage.*
+htmlcov/
 .coveralls.yml
 .cache
 nosetests.xml
