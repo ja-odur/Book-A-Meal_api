@@ -3,6 +3,7 @@ import jwt
 import datetime
 from flask import make_response, jsonify
 from app.v1.models.models import User, Caterer
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from env_config import API_KEY
 
@@ -11,7 +12,7 @@ SECRET_KEY = API_KEY
 
 
 def verify_password(username, user_email, db_password, input_password, category):
-    if db_password == input_password:
+    if check_password_hash(password=str(input_password), pwhash=db_password):
         token_string = str(category) + ',' + str(username) + ',' + str(user_email)
         token = jwt.encode({'info': token_string,
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
@@ -50,9 +51,9 @@ def verify_registration_data(dictionary=dict(category=None, email=None, username
 
 def sign_up(**data):
     if data['password'] == data['confirm_password']:
-        new_user = False
+        password = generate_password_hash(password=str(data['password']), salt_length=20)
         user_data = dict(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
-                         username=data['username'], password=data['password'], address=data['address'])
+                         username=data['username'], password=password, address=data['address'])
         if data['category'] == 'user':
             new_user = User(**user_data).add_user()
             tag = "User"
