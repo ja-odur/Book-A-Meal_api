@@ -177,3 +177,17 @@ class TestSuccessfulRegistration(unittest.TestCase):
 
         self.assertEqual(401, get_response.status_code)
 
+    def test_invalid_login_category(self):
+        login_data = dict(category='unknown_category', username='user1', password='12345')
+
+        expected_response_message = 'Invalid category'
+
+        get_response = self.tester.post(self.login_url, content_type="application/json",
+                                        data=json.dumps(login_data))
+
+        response_results = json.loads(get_response.data.decode())
+
+        self.assertEqual(400, get_response.status_code)
+        self.assertEqual(expected_response_message, response_results['message'])
+
+

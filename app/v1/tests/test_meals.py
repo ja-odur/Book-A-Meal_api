@@ -257,6 +257,22 @@ class TestMeals(unittest.TestCase):
         self.assertEqual(400, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
 
+    def test_update_meal_invalid_meal_id(self):
+        token = self.token
+        update_data = dict(price=6000)
+        update_id = '1'
+        update_url = self.meals_url + update_id
+
+        expected_response_message = 'Meal not found.'
+
+        get_response = self.tester.put(update_url, content_type="application/json",
+                                       headers={'access-token': token}, data=json.dumps(update_data))
+
+        response_results = json.loads(get_response.data.decode())
+
+        self.assertEqual(404, get_response.status_code)
+        self.assertEqual(expected_response_message, response_results['message'])
+
     def test_empty_token(self):
         expected_response_message = 'Token required'
         get_response = self.tester.post(self.meals_url, headers={'access-token':''},
