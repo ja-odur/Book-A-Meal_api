@@ -53,8 +53,7 @@ class User(DB.Model):
         user = User.query.filter_by(username=username).first()
         if not user:
             return False
-        counter = user.customer.user_counter
-        if counter <= 1:
+        if user.customer.user_counter == 1:
             UserInfo.delete_user(user.customer.user_id)
         else:
             user.customer.user_counter -= 1

@@ -39,9 +39,6 @@ class Caterer(DB.Model):
     def get_caterer(username, email=None, caterer_id=None):
         if caterer_id or email:
             caterer = Caterer.query.filter_by(id=caterer_id).first() or Caterer.query.filter_by(email=email).first()
-        # elif email:
-        #     caterer = Caterer.query.filter_by(email=email).first()
-
         else:
             caterer = Caterer.query.filter_by(username=username).first()
 
@@ -59,8 +56,7 @@ class Caterer(DB.Model):
                 DB.session.commit()
 
             DB.session.delete(caterer)
-            return Caterer.commit_changes()
-        return False
+        return Caterer.commit_changes()
 
     @staticmethod
     def get_caterers():
