@@ -47,5 +47,9 @@ checks:
  brakeman:
   enabled: true
 exclude_patterns:
-- "migrations/"
-- "**/migrations/"
+  - "migrations/"
+  - "**/migrations/"
+
+#exclude_paths:
+#  - "v1/api/models/**/*"
+#  - "models/**/*"
