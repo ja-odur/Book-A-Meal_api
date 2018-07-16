@@ -17,16 +17,10 @@ install:
 before_script:
   - psql -c 'create database "Book-A-Meal";' -U postgres
   - psql -c 'create database "Book-A-Meal_test_db";' -U postgres
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
-
 
 script:
   - pytest --cov=app/
   - coverage report
-  - codeclimate-test-reporter
-
 
 # generate code climate report
 after_script:
@@ -34,4 +28,5 @@ after_script:
   - coveralls
 
 after_success:
+  - codeclimate-test-reporter
   - coveralls
