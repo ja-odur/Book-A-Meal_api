@@ -25,7 +25,7 @@ before_script:
 script:
   - pytest --cov=app/
   - coverage report
-  - codeclimate-test-reporter --file .coverage
+  - codeclimate-test-reporter
 
 
 # generate code climate report
