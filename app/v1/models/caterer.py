@@ -37,12 +37,8 @@ class Caterer(DB.Model):
 
     @staticmethod
     def get_caterer(username, email=None, caterer_id=None):
-        if caterer_id or email:
-            caterer = Caterer.query.filter_by(id=caterer_id).first() or Caterer.query.filter_by(email=email).first()
-        else:
-            caterer = Caterer.query.filter_by(username=username).first()
-
-        return caterer or False
+        return Caterer.query.filter_by(id=caterer_id).first() or Caterer.query.filter_by(email=email).first() or \
+               Caterer.query.filter_by(username=username).first() or False
 
     @staticmethod
     def delete_caterer(username):
