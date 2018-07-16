@@ -47,17 +47,17 @@ class Caterer(DB.Model):
     @staticmethod
     def delete_caterer(username):
         caterer = Caterer.query.filter_by(username=username).first()
-        if not caterer:
-            return False
-        counter = caterer.caterer.user_counter
-        if counter <= 1:
-            UserInfo.delete_user(caterer.caterer.user_id)
-        else:
-            caterer.caterer.user_counter -= 1
-            DB.session.commit()
+        if caterer:
+            counter = caterer.caterer.user_counter
+            if counter <= 1:
+                UserInfo.delete_user(caterer.caterer.user_id)
+            else:
+                caterer.caterer.user_counter -= 1
+                DB.session.commit()
 
-        DB.session.delete(caterer)
-        return Caterer.commit_changes()
+            DB.session.delete(caterer)
+            return Caterer.commit_changes()
+        return False
 
     @staticmethod
     def get_caterers():
