@@ -14,6 +14,18 @@ install:
   - pip install coverage
   - pip install coveralls
 
+dependencies:
+  post:
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
+
+test:
+  pre:
+    - ./cc-test-reporter before-build
+
+  post:
+    - ./cc-test-reporter after-build --exit-code $EXIT_CODE
+
 before_script:
   - psql -c 'create database "Book-A-Meal";' -U postgres
   - psql -c 'create database "Book-A-Meal_test_db";' -U postgres
