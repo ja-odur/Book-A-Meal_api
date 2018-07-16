@@ -49,6 +49,7 @@ class Menu(DB.Model):
     @staticmethod
     def create_menu(caterer_id, *meal_ids):
         added_meals = []
+        Menu.delete_menu(caterer_id=caterer_id)
         if not Caterer.query.filter_by(id=caterer_id).first():
             return False
 
