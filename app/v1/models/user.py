@@ -50,23 +50,6 @@ class User(DB.Model):
 
     @staticmethod
     def delete_user(username):
-        # user = User.query.filter_by(username=username).first()
-        # print('usestbcnsadhjkas', user)
-        #
-        # if not user:
-        #     return False
-        #
-        # counter = user.customer.user_counter
-        #
-        #
-        # if counter <= 1:
-        #     UserInfo.delete_user(user.customer.user_id)
-        # else:
-        #     user.customer.user_counter -= 1
-        #     DB.session.commit()
-        #     DB.session.delete(user)
-        # return User.commit_changes()
-
         user = User.query.filter_by(username=username).first()
         if not user:
             return False
@@ -76,7 +59,6 @@ class User(DB.Model):
         else:
             user.customer.user_counter -= 1
             DB.session.commit()
-
         DB.session.delete(user)
         return user.commit_changes()
 
