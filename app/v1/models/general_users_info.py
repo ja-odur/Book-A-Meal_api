@@ -1,4 +1,4 @@
-from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError
+from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError, DataError
 
 
 class UserInfo(DB.Model):
@@ -25,17 +25,15 @@ class UserInfo(DB.Model):
 
     @staticmethod
     def to_dictionary(user_object):
-        if isinstance(user_object, UserInfo):
-            return dict(first_name=user_object.first_name, last_name=user_object.last_name, email=user_object.email,
-                        address=user_object.address)
-        return False
+        return dict(first_name=user_object.first_name, last_name=user_object.last_name, email=user_object.email,
+                    address=user_object.address)
 
     @staticmethod
     def commit_changes():
         try:
             DB.session.commit()
             return True
-        except (IntegrityError, UnmappedInstanceError):
+        except (IntegrityError, UnmappedInstanceError, DataError):
             DB.session.rollback()
         return False
 
@@ -49,8 +47,8 @@ class UserInfo(DB.Model):
         return user
 
     @staticmethod
-    def delete_user(user_id):
-        user = UserInfo.query.filter_by(user_id=user_id).first()
+    def delete_user(user_id, email=None):
+        user = UserInfo.query.filter_by(user_id=user_id).first() or UserInfo.query.filter_by(email=email).first()
         try:
             DB.session.delete(user)
         except UnmappedInstanceError:
@@ -60,7 +58,13 @@ class UserInfo(DB.Model):
 
     @staticmethod
     def get_users():
-        return UserInfo.query.all()
+        raw_users = UserInfo.query.all()
+        users = []
+
+        for user in raw_users:
+            users.append(UserInfo.to_dictionary(user))
+
+        return users
 
     def add_user(self):
         user = DB.session.add(self)

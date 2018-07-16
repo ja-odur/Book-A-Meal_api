@@ -1,4 +1,4 @@
-from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError
+from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError, DataError
 from app.v1.models.general_users_info import UserInfo
 
 
@@ -30,7 +30,7 @@ class Caterer(DB.Model):
         try:
             DB.session.commit()
             commit_status = True
-        except (IntegrityError, UnmappedInstanceError):
+        except (IntegrityError, UnmappedInstanceError, DataError):
             DB.session.rollback()
             commit_status = False
         return commit_status
@@ -55,12 +55,9 @@ class Caterer(DB.Model):
         else:
             caterer.caterer.user_counter -= 1
             DB.session.commit()
-        try:
-            DB.session.delete(caterer)
-        except UnmappedInstanceError:
-            return False
-        else:
-            return Caterer.commit_changes()
+
+        DB.session.delete(caterer)
+        return Caterer.commit_changes()
 
     @staticmethod
     def get_caterers():

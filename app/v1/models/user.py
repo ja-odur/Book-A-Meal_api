@@ -1,4 +1,4 @@
-from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError
+from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError, DataError
 from app.v1.models.general_users_info import UserInfo
 
 
@@ -25,15 +25,14 @@ class User(DB.Model):
         self.last_name = last_name
 
     def to_dictionary(self):
-        return dict(username=self.username, email=self.email, address=self.address,
-                    user_id=self.id)
+        return dict(username=self.username, email=self.email, user_id=self.id)
 
     @staticmethod
     def commit_changes():
         try:
             DB.session.commit()
             return True
-        except IntegrityError:
+        except (IntegrityError, DataError):
             DB.session.rollback()
             return False
         except UnmappedInstanceError:
@@ -42,12 +41,8 @@ class User(DB.Model):
 
     @staticmethod
     def get_user(username=None, email=None, user_id=None):
-        try:
-            user = User.query.filter_by(email=email).first() or User.query.filter_by(id=user_id).first() or \
-                   User.query.filter_by(username=username).first()
-
-        except NameError:
-            return False
+        user = User.query.filter_by(email=email).first() or User.query.filter_by(id=user_id).first() or \
+               User.query.filter_by(username=username).first()
 
         if user:
             return user
@@ -55,6 +50,23 @@ class User(DB.Model):
 
     @staticmethod
     def delete_user(username):
+        # user = User.query.filter_by(username=username).first()
+        # print('usestbcnsadhjkas', user)
+        #
+        # if not user:
+        #     return False
+        #
+        # counter = user.customer.user_counter
+        #
+        #
+        # if counter <= 1:
+        #     UserInfo.delete_user(user.customer.user_id)
+        # else:
+        #     user.customer.user_counter -= 1
+        #     DB.session.commit()
+        #     DB.session.delete(user)
+        # return User.commit_changes()
+
         user = User.query.filter_by(username=username).first()
         if not user:
             return False
@@ -64,12 +76,17 @@ class User(DB.Model):
         else:
             user.customer.user_counter -= 1
             DB.session.commit()
-            DB.session.delete(user)
-        return User.commit_changes()
+
+        DB.session.delete(user)
+        return user.commit_changes()
 
     @staticmethod
     def get_users():
-        return User.query.all()
+        raw_users = User.query.all()
+        users = []
+        for user in raw_users:
+            users.append(user.to_dictionary())
+        return users
 
     def add_user(self):
         user = self.get_user(email=self.email) or self.get_user(username=self.username)

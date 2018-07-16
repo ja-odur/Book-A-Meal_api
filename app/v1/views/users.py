@@ -72,7 +72,7 @@ def delete_account(current_user):
 
     if deleted:
         return make_response(jsonify({'message': 'Account successfully deleted'}), 200)
-    # return make_response(jsonify({'message': 'Account deletion failed'}), 404)
+    # return make_response(jsonify({'message': 'Account deletion failed'}), 404
 
 
 

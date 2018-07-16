@@ -1,4 +1,4 @@
-from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError
+from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError, DataError
 from app.v1.models.caterer import Caterer
 
 
@@ -24,9 +24,9 @@ class Meal(DB.Model):
         try:
             DB.session.commit()
             return True
-        except IntegrityError:
+        except (IntegrityError, UnmappedInstanceError):
             DB.session.rollback()
-        except UnmappedInstanceError:
+        except DataError:
             DB.session.rollback()
         return False
 
@@ -66,13 +66,15 @@ class Meal(DB.Model):
     @staticmethod
     def get_meals(caterer):
         meals = []
-        raw_meals = Meal.query.filter_by(caterer=caterer.id)
+        try:
+            raw_meals = Meal.query.filter_by(caterer=caterer.id)
+        except AttributeError:
+            return False
 
         if raw_meals:
             for meal in raw_meals:
                 meals.append(meal.to_dictionary())
-            return meals
-        return False
+        return meals or False
 
     @staticmethod
     def delete_meal(meal_id):
