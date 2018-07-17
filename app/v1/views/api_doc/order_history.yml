@@ -16,4 +16,15 @@ responses:
     schema:
       type: object
     examples:
-      {"message": "Order successfully cleared"}
+      {
+        "message": [
+          {
+            "caterer_id": 4,
+            "customer_id": 1,
+            "meal": "meat and rice",
+            "order_cleared": true,
+            "order_id": 2,
+            "price": 6000
+          }
+        ]
+      }

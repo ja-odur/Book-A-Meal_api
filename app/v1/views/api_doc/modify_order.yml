@@ -9,17 +9,13 @@ parameters:
     schema:
       type: object
       required:
-        - "meal"
-        - "caterer"
+        - "meal_id"
       properties:
-        meal:
-          type: "array"
-          example: [1, 'rice and posho modified', 5000]
+        meal_id:
+          type: "Integer"
+          example: 1
 
-        caterer:
-          type: "string"
-          example: "default"
-  - name: meal_id
+  - name: order_id
     in: path
     required: true
     properties:
