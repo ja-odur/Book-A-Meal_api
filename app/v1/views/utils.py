@@ -43,8 +43,9 @@ def verify_input_data(**input_data):
 
 
 def verify_registration_data(dictionary=dict(category=None, email=None, username=None, first_name=None, last_name=None,
-                                             password=None, confirm_password=None,address=None)):
-
+                                             password=None, confirm_password=None, brand_name=None, address=None)):
+    if dictionary['category'] == 'user':
+        dictionary['brand_name'] = 'N/A'
     if not verify_input_data(**dictionary):
         return dict(message='Invalid data format. Check email field and fill in all fields.', status_code=400)
 
@@ -53,7 +54,8 @@ def sign_up(**data):
     if data['password'] == data['confirm_password']:
         password = generate_password_hash(password=str(data['password']), salt_length=20)
         user_data = dict(first_name=data['first_name'], last_name=data['last_name'], email=data['email'],
-                         username=data['username'], password=password, address=data['address'])
+                         username=data['username'], password=password, brand_name=data['brand_name'],
+                         address=data['address'])
         if data['category'] == 'user':
             new_user = User(**user_data).add_user()
             tag = "User"

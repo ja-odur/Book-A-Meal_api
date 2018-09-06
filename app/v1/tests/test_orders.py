@@ -18,10 +18,12 @@ class TestOrder(unittest.TestCase):
 
         self.tester = app.test_client(self)
         self.reg_data = dict(category='caterer', email='caterer1@gmail.com', username='caterer1', password='12345',
-                             confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
+                             confirm_password='12345', address='address1', brand_name='easy_caterer',
+                             first_name='odur', last_name='joseph')
 
         self.reg_data_user = dict(category='user', email='user1@gmail.com', username='user1', password='12345',
-                                  confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
+                                  confirm_password='12345', address='address1', brand_name='easy_caterer',
+                                  first_name='odur', last_name='joseph')
 
         self.login_data = dict(category='caterer', username='caterer1', password='12345')
         self.login_data_user = dict(category='user', username='user1', password='12345')

@@ -20,8 +20,8 @@ def create_meal(current_user):
     """
     data = request.get_json()
     try:
-        if data['name'] and data['price']:
-            pass
+        if not data['name'] and not data['price']:
+            return make_response(jsonify(dict(message='All fields are required.')), 400)
     except KeyError:
         return make_response(jsonify(dict(message='Invalid format.')), 400)
 
@@ -30,6 +30,7 @@ def create_meal(current_user):
         if Meal(name=data['name'], price=data['price']).add_meal(caterer=caterer):
             message = 'Meal {} successfully added.'.format(data['name'])
             return make_response(jsonify(dict(message=message)), 201)
+    print('name', data['name'], 'price', data['price'])
 
     return make_response(jsonify(dict(message='Meal already exists.')), 200)
 

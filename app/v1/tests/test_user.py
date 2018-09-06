@@ -20,7 +20,8 @@ class TestSuccessfulRegistration(unittest.TestCase):
 
     def test_successful_user_registration(self):
         input_data = dict(category='user', email='user1@gmail.com', username='user1', password='12345',
-                          confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
+                          confirm_password='12345', address='address1', brand_name='brandname', first_name='odur',
+                          last_name='joseph')
         expected_response_message = 'User {} successfully signed up.'.format(input_data['username'])
         get_response = self.tester.post(self.signup_url, content_type="application/json",
                                         data=json.dumps(input_data))
@@ -45,7 +46,8 @@ class TestSuccessfulRegistration(unittest.TestCase):
 
     def test_duplicate_user_sign_up(self):
         input_data = dict(category='user', email='user1@gmail.com', username='user1', password='12345',
-                          confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
+                          confirm_password='12345', address='address1', brand_name='easy_caterer', first_name='odur',
+                          last_name='joseph')
 
         # initial signup
         self.tester.post(self.signup_url, content_type="application/json", data=json.dumps(input_data))
@@ -63,7 +65,8 @@ class TestSuccessfulRegistration(unittest.TestCase):
 
     def test_login_user(self):
         reg_data = dict(category='user', email='user1@gmail.com', username='user1', password='12345',
-                        confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
+                        confirm_password='12345', address='address1', brand_name='easy_caterer', first_name='odur',
+                        last_name='joseph')
         login_data = dict(category='user', username='user1', password='12345')
 
         self.tester.post( self.signup_url, content_type="application/json", data=json.dumps(reg_data))

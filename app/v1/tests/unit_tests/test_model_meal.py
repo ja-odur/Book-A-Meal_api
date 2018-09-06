@@ -11,7 +11,8 @@ class TestModelUserInfo(unittest.TestCase):
 
     def test_handles_integrity(self):
         Caterer(caterer_data=dict(first_name='john', last_name='doe', email='default@example.com',
-                                  username='default', password=12345, address='address')).add_caterer()
+                                  username='default', brand_name='easy_caterer', password=12345,
+                                  address='address')).add_caterer()
         caterer = Caterer.get_caterer(username='default')
 
         meal = Meal(name='test_meal', price='invalid_type').add_meal(caterer=caterer)
@@ -26,7 +27,8 @@ class TestModelUserInfo(unittest.TestCase):
 
     def test_get_meals(self):
         Caterer(caterer_data=dict(first_name='john', last_name='doe', email='default@example.com',
-                                  username='default', password=12345, address='address')).add_caterer()
+                                  username='default', brand_name='easy_caterer',
+                                  password=12345, address='address')).add_caterer()
         caterer = Caterer.get_caterer(username='default')
         Caterer.delete_caterer(username='default')
         meals = Meal.get_meals(caterer)
@@ -40,7 +42,8 @@ class TestModelUserInfo(unittest.TestCase):
 
     def test_invalid_missing_date(self):
         Caterer(caterer_data=dict(first_name='john', last_name='doe', email='default@example.com',
-                                  username='default', password=12345, address='address')).add_caterer()
+                                  username='default', brand_name='easy_caterer', password=12345,
+                                  address='address')).add_caterer()
         caterer = Caterer.get_caterer(username='default')
 
         meal = Meal(name='test_meal', price=None).add_meal(caterer=caterer)

@@ -13,7 +13,7 @@ class TestModelCaterer(unittest.TestCase):
         Caterer(caterer_data=dict(first_name='john', last_name='doe', email='johndoe1@example.com',
                                   username='johndoegdsahjasmhakjda,ksakasjhgkasFGJDSAFMNBFKJhgadsnmbafsdjhbkajkhabnmba'
                                            'jkhsdajkhasdklhasdjhdasklaskladskjklsdauafshjklasflkhfsahklasf',
-                                  password=12345, address='address')).add_caterer()
+                                  password=12345, address='address', brand_name='easy_caterer')).add_caterer()
 
         caterers = Caterer.get_caterers()
 
@@ -21,9 +21,10 @@ class TestModelCaterer(unittest.TestCase):
 
     def test_delete_user(self):
         User(first_name='john', last_name='doe', email='johndoe10@example.com', username='johndoe10', password=12345,
-             address='address').add_user()
+             address='address', brand_name='easy_caterer').add_user()
         Caterer(caterer_data=dict(first_name='john', last_name='doe', email='johndoe10@example.com',
-                                  username='johndoe10', password=12345, address='address')).add_caterer()
+                                  username='johndoe10', password=12345, address='address',
+                                  brand_name='easy_caterer')).add_caterer()
 
         deleted = Caterer.delete_caterer(username='johndoe10')
         self.assertTrue(deleted)
@@ -35,9 +36,11 @@ class TestModelCaterer(unittest.TestCase):
 
     def test_duplicate_creation(self):
         Caterer(caterer_data=dict(first_name='john', last_name='doe', email='johndoe1@example.com',
-                                  username='johndoe',password=12345, address='address')).add_caterer()
+                                  username='johndoe',password=12345, address='address',
+                                  brand_name='easy_caterer')).add_caterer()
         caterer = Caterer(caterer_data=dict(first_name='john', last_name='doe', email='johndoe1@example.com',
-                                            username='johndoe',password=12345, address='address')).add_caterer()
+                                            username='johndoe',password=12345, address='address',
+                                            brand_name='easy_caterer')).add_caterer()
         Caterer.delete_caterer(username='johndoe')
 
         self.assertFalse(caterer)

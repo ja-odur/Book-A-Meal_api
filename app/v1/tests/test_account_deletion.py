@@ -17,10 +17,12 @@ class TestAccountDeletion(unittest.TestCase):
         self.tester = app.test_client(self)
 
         self.reg_data = dict(category='caterer', email='caterer1@gmail.com', username='caterer1', password='12345',
-                             confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
+                             confirm_password='12345', address='address1', brand_name='easy_caterer',
+                             first_name='odur', last_name='joseph')
 
         self.reg_data_user = dict(category='user', email='agnes@gmail.com', username='agnes', password='12345',
-                                  confirm_password='12345', address='address1', first_name='agnes', last_name='a')
+                                  confirm_password='12345', address='address1', brand_name='easy_caterer',
+                                  first_name='agnes', last_name='a')
 
         self.login_data = dict(category='caterer', username='caterer1', password='12345')
         self.login_data_user = dict(category='user', username='agnes', password='12345')

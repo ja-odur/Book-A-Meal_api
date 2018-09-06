@@ -11,15 +11,17 @@ class Caterer(DB.Model):
     __tablename__ = 'caterers'
     id = DB.Column(DB.Integer, primary_key=True)
     username = DB.Column(DB.String(60), unique=True)
+    brand_name = DB.Column(DB.String(60), unique=True)
     email = DB.Column(DB.String(160), unique=True)
     password = DB.Column(DB.String(254), nullable=False)
     user = DB.Column(DB.Integer, DB.ForeignKey('users_info.user_id'))
     meal = DB.relationship('Meal', backref='meal')
 
     def __init__(self, caterer_data=dict(first_name=None, last_name=None, email=None, username=None, password=None,
-                                         address='No address provided')):
+                                         brand_name=None, address='No address provided')):
         self.email = caterer_data['email']
         self.username = caterer_data['username']
+        self.brand_name = caterer_data['brand_name']
         self.password = caterer_data['password']
         self.address = caterer_data['address']
         self.first_name = caterer_data['first_name']

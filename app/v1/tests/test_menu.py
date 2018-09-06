@@ -17,7 +17,8 @@ class TestMenu(unittest.TestCase):
 
         self.tester = app.test_client(self)
         self.reg_data = dict(category='caterer', email='caterer1@gmail.com', username='caterer1', password='12345',
-                            confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
+                            confirm_password='12345', address='address1', brand_name='easy_caterer',
+                             first_name='odur', last_name='joseph')
         self.login_data = dict(category='caterer', username='caterer1', password='12345')
 
         self.tester.post(self.signup_url, content_type="application/json", data=json.dumps(self.reg_data))
@@ -97,10 +98,10 @@ class TestMenu(unittest.TestCase):
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token},
                                              content_type="application/json", data=json.dumps(meal_ids))
 
-        expected_response_message = {'MENU': {'1': [{'caterer_id': 1, 'menu_id': 1, 'name': 'meal1',
-                                                     'point': 0, 'price': 5000},
-                                                    {'caterer_id': 1, 'menu_id': 2, 'name': 'meal2',
-                                                     'point': 0, 'price': 5000}]}}
+        expected_response_message = {'MENU': {'1': [{'brand_name': 'easy_caterer', 'caterer_id': 1, 'meal_id': 1,
+                                                     'menu_id': 1, 'name': 'meal1', 'point': 0, 'price': 5000},
+                                                    {'brand_name': 'easy_caterer', 'caterer_id': 1, 'meal_id': 2,
+                                                     'menu_id': 2, 'name': 'meal2', 'point': 0, 'price': 5000}]}}
         
         get_response = self.tester.get('api/v1/menu/', headers={'access-token':self.token})
 
@@ -149,7 +150,8 @@ class TestMenu(unittest.TestCase):
     def test_delete_menu_successful(self):
         meal_ids = dict(meal_ids=[1, 2])
         reg_data = dict(category='caterer', email='caterer2@gmail.com', username='caterer2', password='12345',
-                             confirm_password='12345', address='address1', first_name='odur', last_name='joseph')
+                             confirm_password='12345', address='address1', brand_name='easy_caterer1',
+                        first_name='odur', last_name='joseph')
         login_data = dict(category='caterer', username='caterer2', password='12345')
 
         self.tester.post(self.signup_url, content_type="application/json", data=json.dumps(reg_data))

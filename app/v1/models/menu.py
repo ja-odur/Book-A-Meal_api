@@ -28,9 +28,12 @@ class Menu(DB.Model):
 
     def add_meal_to_menu(self):
         meal = Meal.query.filter_by(id=self.meal).first()
-
         if not meal:
             return False
+
+        if Menu.query.filter_by(caterer=self.caterer, meal=meal.id).first():
+            return False
+
         if meal.caterer == self.caterer:
             DB.session.add(self)
             return Menu.commit_changes()
@@ -84,7 +87,8 @@ class Menu(DB.Model):
         for menu_item in raw_menu:
             menu.append(
                 dict(name=menu_item.menu.name, price=menu_item.menu.price, point=menu_item.menu.point,
-                     caterer_id=menu_item.menu.caterer, menu_id=menu_item.id)
+                     caterer_id=menu_item.menu.caterer, menu_id=menu_item.id, meal_id=menu_item.menu.id,
+                     brand_name=menu_item.menu.meal.brand_name)
             )
 
         return menu

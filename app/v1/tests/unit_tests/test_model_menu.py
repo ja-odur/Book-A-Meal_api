@@ -9,7 +9,7 @@ class TestModelMenu(unittest.TestCase):
         DB.create_all()
 
     def test_handles_integrity(self):
-        menu = Menu(caterer_id=100, meal_id=100).add_meal_to_menu()
+        menu = Menu(caterer_id=100, meal_id=1).add_meal_to_menu()
 
         self.assertFalse(menu)
 

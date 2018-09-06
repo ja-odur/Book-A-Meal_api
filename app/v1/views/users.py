@@ -24,7 +24,8 @@ def register_user():
     try:
         user_data = dict(category=data['category'], email=data['email'], username=data['username'],
                          first_name=data['first_name'], last_name=data['last_name'], password=data['password'],
-                         confirm_password=data['confirm_password'], address=data['address'])
+                         confirm_password=data['confirm_password'], brand_name=data['brand_name'],
+                         address=data['address'])
     except KeyError:
         return make_response(jsonify(dict(message='PROVIDE ALL REQUIRED INFORMATION.')), 400)
 

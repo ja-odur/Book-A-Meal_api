@@ -15,7 +15,7 @@ class TestModelUser(unittest.TestCase):
 
     def test_get_users(self):
         User(first_name='john', last_name='doe', email='johndoe@example.com', username='johndoe', password=12345,
-             address='address').add_user()
+             brand_name='easy_caterer', address='address').add_user()
         users = User.get_users()
         User.delete_user(username='johndoe')
 
@@ -25,7 +25,7 @@ class TestModelUser(unittest.TestCase):
     def test_handles_integrity(self):
         User(first_name='john', last_name='doe', email='johndoe1@example.com', username='johndoegdsahjasmhakjda,ksakasj'
              'hgkasFGJDSAFMNBFKJhgadsnmbafsdjhbkajkhabnmbajkhsdajkhasdklhasdjhdasklaskladskjklsdauafshjklasflkhf'
-             'sahklasf', password=12345, address='address').add_user()
+             'sahklasf', brand_name='easy_caterer2', password=12345, address='address').add_user()
 
         users = User.get_users()
 
@@ -33,7 +33,8 @@ class TestModelUser(unittest.TestCase):
 
     def test_delete_user(self):
         Caterer(caterer_data=dict(first_name='john', last_name='doe', email='johndoe5@example.com',
-                                  username='johndoe5', password=12345, address='address')).add_caterer()
+                                  username='johndoe5', brand_name='easy_caterer',
+                                  password=12345, address='address')).add_caterer()
         User(first_name='john', last_name='doe', email='johndoe5@example.com', username='johndoe5', password=12345,
              address='address').add_user()
 

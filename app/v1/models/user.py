@@ -16,7 +16,7 @@ class User(DB.Model):
     user = DB.Column(DB.Integer, DB.ForeignKey('users_info.user_id'))
     order = DB.relationship('Order', backref='client')
 
-    def __init__(self, first_name, last_name, email, username, password, address='No address provided'):
+    def __init__(self, first_name, last_name, email, username, password, brand_name=None, address='No address provided'):
         self.email = email
         self.username = username
         self.password = password
