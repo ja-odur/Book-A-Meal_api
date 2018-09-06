@@ -100,7 +100,7 @@ class Menu(DB.Model):
 
         for menu_item in raw_menus:
             if menu_item.menu.caterer not in all_menus.keys():
-                all_menus[menu_item.menu.caterer] = Menu.get_menu(caterer_id=menu_item.caterer)
+                all_menus[menu_item.menu.meal.brand_name] = Menu.get_menu(caterer_id=menu_item.caterer)
 
         if all_menus:
             return all_menus

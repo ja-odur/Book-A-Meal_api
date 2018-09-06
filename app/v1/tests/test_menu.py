@@ -98,10 +98,12 @@ class TestMenu(unittest.TestCase):
         self.get_response = self.tester.post(self.menu_url, headers={'access-token': self.token},
                                              content_type="application/json", data=json.dumps(meal_ids))
 
-        expected_response_message = {'MENU': {'1': [{'brand_name': 'easy_caterer', 'caterer_id': 1, 'meal_id': 1,
-                                                     'menu_id': 1, 'name': 'meal1', 'point': 0, 'price': 5000},
-                                                    {'brand_name': 'easy_caterer', 'caterer_id': 1, 'meal_id': 2,
-                                                     'menu_id': 2, 'name': 'meal2', 'point': 0, 'price': 5000}]}}
+        expected_response_message = {'MENU': {'easy_caterer': [{'brand_name': 'easy_caterer', 'caterer_id': 1,
+                                                                'meal_id': 1, 'menu_id': 1, 'name': 'meal1',
+                                                                'point': 0, 'price': 5000},
+                                                               {'brand_name': 'easy_caterer', 'caterer_id': 1,
+                                                                'meal_id': 2, 'menu_id': 2, 'name': 'meal2',
+                                                                'point': 0, 'price': 5000}]}}
         
         get_response = self.tester.get('api/v1/menu/', headers={'access-token':self.token})
 
