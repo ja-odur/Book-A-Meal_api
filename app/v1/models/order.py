@@ -1,4 +1,5 @@
 from app.v1.models.db_connection import DB, IntegrityError, UnmappedInstanceError
+from app.v1.models.order_history import OrderHistory
 import datetime
 
 
@@ -61,7 +62,7 @@ class Order(DB.Model):
         if customer_id and raw_orders:
             orders = []
             for order in raw_orders:
-                if not caterer_id:
+                if not caterer_id and not order.order_cleared:
                     orders.append(order.to_dictionary())
             return orders
 
@@ -70,7 +71,7 @@ class Order(DB.Model):
         if caterer_id and raw_orders:
             orders = []
             for order in raw_orders:
-                if order.order.menu.caterer == caterer_id:
+                if order.order.menu.caterer == caterer_id and not order.order_cleared:
                     orders.append(order.to_dictionary())
             return orders
         return False
@@ -100,22 +101,27 @@ class Order(DB.Model):
             return False
         if order.order.menu.caterer == caterer_id:
             order.order_cleared = True
+            order_history = order.to_dictionary()
+            OrderHistory(**order_history).add_order_history()
+            DB.session.delete(order)
             return Order.commit_changes()
         return False
 
     @staticmethod
     def get_order_history(customer_id):
-        orders = Order.query.filter_by(customer=customer_id)
+        orders = OrderHistory.get_order_history(customer_id=customer_id)
 
         if not orders:
             return False
         order_history = []
 
         for order in orders:
-            if order.order_cleared:
-                order_history.append(order.to_dictionary())
+
+            order_history.append(order)
         return order_history
 
     def to_dictionary(self):
         return dict(order_id=self.id, meal=self.order.menu.name, price=self.order.menu.price,
-                    order_cleared=self.order_cleared, customer_id=self.customer, caterer_id=self.order.menu.caterer)
+                    order_cleared=self.order_cleared, customer_id=self.customer, meal_id=self.order.menu.id,
+                    caterer=self.order.menu.meal.brand_name, points=self.order.menu.point,
+                    customer="{} {}".format(self.client.customer.first_name, self.client.customer.last_name))

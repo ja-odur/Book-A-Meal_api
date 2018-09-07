@@ -117,3 +117,14 @@ def easy_point(current_user, meal_id):
     if point_out:
         return make_response(jsonify(message='Point out successful'), 200)
     return make_response(jsonify(message='Point out failed.'), 200)
+
+
+# @meals.route('/meals/trending', methods=['GET'])
+# @token_required()
+# def get_trending(current_user):
+#
+#     meals = Meal.get_trending()
+#
+#     return make_response(jsonify(message=meals), 200)
+
+

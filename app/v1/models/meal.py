@@ -94,7 +94,18 @@ class Meal(DB.Model):
         return False
 
     def to_dictionary(self):
-        return dict(name=self.name, price=self.price, point=self.point, caterer=self.caterer, meal_id=self.id)
+        return dict(name=self.name, price=self.price, point=self.point, caterer_id=self.caterer, meal_id=self.id,
+                    caterer=self.meal.brand_name)
+
+    @staticmethod
+    def get_trending():
+        raw_meals = Meal.query.all()
+        meals = []
+        for meal in raw_meals:
+            meals.append(meal.to_dictionary())
+
+        meals.sort(key=lambda m: m['point'], reverse=True)
+        return meals
 
     def __repr__(self):
         return "Meal ->(name={}, price={})".format(self.name, self.price)

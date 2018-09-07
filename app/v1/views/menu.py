@@ -146,6 +146,15 @@ def delete_menu(current_user):
     return make_response(jsonify(message='No menu found'), 404)
 
 
+@menu.route('/meals/trending', methods=['GET'])
+@token_required()
+def get_trending(current_user):
+
+    meals = Menu.get_trending()
+
+    return make_response(jsonify(message=meals), 200)
+
+
 
 
 

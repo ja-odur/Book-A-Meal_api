@@ -10,7 +10,8 @@ class Menu(DB.Model):
     __tablename__ = 'menus'
     id = DB.Column(DB.Integer, primary_key=True)
     meal = DB.Column(DB.Integer, DB.ForeignKey('meals.id'))
-    order = DB.relationship('Order', backref='order')
+    order = DB.relationship('Order', backref=DB.backref('order', cascade="all, delete"))
+    # order = DB.relationship('Order', backref='order')
     caterer = DB.Column(DB.Integer)
 
     def __init__(self, caterer_id, meal_id):
@@ -105,6 +106,20 @@ class Menu(DB.Model):
         if all_menus:
             return all_menus
         return False
+
+    @staticmethod
+    def get_trending():
+        raw_menus = Menu.query.all()
+        meals = []
+        for menu_item in raw_menus:
+            meals.append(
+                dict(name=menu_item.menu.name, price=menu_item.menu.price, point=menu_item.menu.point,
+                     caterer_id=menu_item.menu.caterer, menu_id=menu_item.id, meal_id=menu_item.menu.id,
+                     brand_name=menu_item.menu.meal.brand_name)
+            )
+
+        meals.sort(key=lambda m: m['point'], reverse=True)
+        return meals
 
     def __repr__(self):
         return 'Menu Object'
