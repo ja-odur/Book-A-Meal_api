@@ -102,14 +102,18 @@ class Order(DB.Model):
         if order.order.menu.caterer == caterer_id:
             order.order_cleared = True
             order_history = order.to_dictionary()
-            OrderHistory(**order_history).add_order_history()
             DB.session.delete(order)
-            return Order.commit_changes()
+            Order.commit_changes()
+            return OrderHistory(**order_history).add_order_history()
         return False
 
     @staticmethod
-    def get_order_history(customer_id):
-        orders = OrderHistory.get_order_history(customer_id=customer_id)
+    def get_order_history(customer_id=None, caterer_brand=None):
+        if customer_id:
+            orders = OrderHistory.get_order_history(customer_id=customer_id)
+        else:
+            orders = OrderHistory.get_order_history(caterer_brand=caterer_brand)
+
 
         if not orders:
             return False

@@ -10,8 +10,7 @@ class Menu(DB.Model):
     __tablename__ = 'menus'
     id = DB.Column(DB.Integer, primary_key=True)
     meal = DB.Column(DB.Integer, DB.ForeignKey('meals.id'))
-    order = DB.relationship('Order', backref=DB.backref('order', cascade="all, delete"))
-    # order = DB.relationship('Order', backref='order')
+    order = DB.relationship('Order', backref='order')
     caterer = DB.Column(DB.Integer)
 
     def __init__(self, caterer_id, meal_id):

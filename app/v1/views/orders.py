@@ -155,12 +155,16 @@ def get_history(current_user):
     :return: returns the order history if the operation is successful
     """
     customer = User.get_user(current_user[1])
+    category = current_user[0]
 
-    caterer_blocked = block_caterer(current_user=current_user, reason='Sorry operation not permitted for caterers.')
-    if caterer_blocked:
-        return caterer_blocked
-
-    order_history = Order.get_order_history(customer_id=customer.id)
+    # caterer_blocked = block_caterer(current_user=current_user, reason='Sorry operation not permitted for caterers.')
+    # if caterer_blocked:
+    #     return caterer_blocked
+    if category == 'user':
+        order_history = Order.get_order_history(customer_id=customer.id)
+    else:
+        caterer = Caterer.get_caterer(current_user[1])
+        order_history = Order.get_order_history(caterer_brand=caterer.brand_name)
 
     if order_history:
         return make_response(jsonify(dict(message=order_history)), 200)

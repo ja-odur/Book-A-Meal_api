@@ -50,8 +50,11 @@ class OrderHistory(DB.Model):
         return OrderHistory.commit_changes()
 
     @staticmethod
-    def get_order_history(customer_id):
-        orders = OrderHistory.query.filter_by(customer_id=customer_id)
+    def get_order_history(customer_id=None, caterer_brand=None):
+        if customer_id:
+            orders = OrderHistory.query.filter_by(customer_id=customer_id)
+        else:
+            orders = OrderHistory.query.filter_by(caterer=caterer_brand)
 
         if not orders:
             return False

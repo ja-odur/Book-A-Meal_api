@@ -1,2 +1,1 @@
-
-
+from .run_setup import app
