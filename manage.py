@@ -27,7 +27,6 @@ def app_manager(development=True):
     return app
 
 
-app_heroku = app_manager(development=False)
 
 
 if __name__ == '__main__':
