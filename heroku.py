@@ -4,7 +4,7 @@ from app.v1.views.users import users
 from app.v1.views.orders import orders
 
 from flasgger import Swagger
-from run_setup import app, create_app
+from run_setup import create_app
 
 
 app= create_app(dev=False)

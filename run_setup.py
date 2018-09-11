@@ -8,9 +8,11 @@ CORS(app)
 
 def create_app(dev=True):
     if dev:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:13811923@localhost:5432/Book-A-Meal_test_db'
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
+                                                               'postgresql://postgres:13811923@localhost:5432/Book-A-Meal_test_db')
     else:
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:13811923@localhost:5432/Book-A-Meal'
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
+                                                               'postgresql://postgres:13811923@localhost:5432/Book-A-Meal')
 
     app.config['DEBUG'] = os.environ.get('DEBUG', False)
 
