@@ -2,10 +2,12 @@ from app.v1.views.meals import meals
 from app.v1.views.menu import menu
 from app.v1.views.users import users
 from app.v1.views.orders import orders
+from flask_sqlalchemy import SQLAlchemy
 from flasgger import Swagger
 from flask import Flask
 from flask_cors import CORS
 import os
+DB = SQLAlchemy()
 
 app = Flask(__name__, instance_relative_config=True)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
@@ -18,6 +20,7 @@ app.config['SWAGGER'] = {
     'title': 'BOOK-A-MEAL API',
     'version': 1,
 }
+DB.init_app(app)
 CORS(app)
 
 swagger = Swagger(app)
