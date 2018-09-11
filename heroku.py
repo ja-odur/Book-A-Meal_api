@@ -2,12 +2,23 @@ from app.v1.views.meals import meals
 from app.v1.views.menu import menu
 from app.v1.views.users import users
 from app.v1.views.orders import orders
-
 from flasgger import Swagger
-from run_setup import create_app
+from flask import Flask
+from flask_cors import CORS
+import os
 
+app = Flask(__name__, instance_relative_config=True)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
+                                                       'postgresql://postgres:13811923@localhost:5432/Book-A-Meal')
 
-app= create_app(dev=False)
+app.config['DEBUG'] = os.environ.get('DEBUG', False)
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SWAGGER'] = {
+    'title': 'BOOK-A-MEAL API',
+    'version': 1,
+}
+CORS(app)
 
 swagger = Swagger(app)
 
@@ -18,4 +29,8 @@ app.register_blueprint(meals)
 app.register_blueprint(menu)
 
 app.register_blueprint(orders)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
