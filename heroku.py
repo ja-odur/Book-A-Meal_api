@@ -7,7 +7,7 @@ from flasgger import Swagger
 from run_setup import app, create_app
 
 
-create_app(dev=False)
+app= create_app(dev=False)
 
 swagger = Swagger(app)
 
