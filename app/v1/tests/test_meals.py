@@ -54,7 +54,8 @@ class TestMeals(unittest.TestCase):
     def test_get_all_meals(self):
         input_data = dict(name='meal', price=5000)
         token = self.token
-        expected_response_message = [{'caterer': 1, 'meal_id': 1, 'name': 'meal', 'point': 0, 'price': 5000}]
+        expected_response_message = [{'caterer': 'easy_caterer', 'caterer_id': 1, 'meal_id': 1, 'name': 'meal',
+                                      'point': 0, 'price': 5000}]
         self.tester.post(self.meals_url, content_type="application/json", headers={'access-token':token},
                          data=json.dumps(input_data))
 
@@ -72,7 +73,8 @@ class TestMeals(unittest.TestCase):
         update_id = '1'
         update_url = self.meals_url + update_id
 
-        expected_response_message = [{'caterer': 1, 'meal_id': 1, 'name': 'meal', 'point': 0, 'price': 6000}]
+        expected_response_message = [{'caterer': 'easy_caterer', 'caterer_id': 1, 'meal_id': 1, 'name': 'meal',
+                                      'point': 0, 'price': 6000}]
 
         self.tester.post(self.meals_url, content_type="application/json", headers={'access-token':self.token},
                          data=json.dumps(input_data))
@@ -94,7 +96,8 @@ class TestMeals(unittest.TestCase):
         update_id = '1'
         update_url = self.meals_url + update_id
 
-        expected_response_message = [{'caterer': 1, 'meal_id': 1, 'name': 'meal_updated', 'point': 0, 'price': 5000}]
+        expected_response_message = [{'caterer': 'easy_caterer', 'caterer_id': 1, 'meal_id': 1, 'name': 'meal_updated',
+                                      'point': 0, 'price': 5000}]
 
         self.tester.post(self.meals_url, content_type="application/json", headers={'access-token':token},
                          data=json.dumps(input_data))
@@ -114,7 +117,8 @@ class TestMeals(unittest.TestCase):
         delete_url = self.meals_url + delete_id
         input_data1 = dict(name='meal1', price=5000)
         input_data2 = dict(name='meal', price=5000)
-        expected_response_message = [{'caterer': 1, 'meal_id': 2, 'name': 'meal', 'point': 0, 'price': 5000}]
+        expected_response_message = [{'caterer': 'easy_caterer', 'caterer_id': 1, 'meal_id': 2, 'name': 'meal',
+                                      'point': 0, 'price': 5000}]
         self.tester.post(self.meals_url, content_type="application/json", headers={'access-token':token},
                          data=json.dumps(input_data1))
         self.tester.post(self.meals_url, content_type="application/json", data=json.dumps(input_data2),
@@ -310,4 +314,6 @@ class TestMeals(unittest.TestCase):
 
         self.assertEqual(401, get_response.status_code)
         self.assertEqual(expected_response_message, response_results['message'])
+
+
 

@@ -1,1 +1,1 @@
-from .run_setup import app
+from .manage import app_heroku

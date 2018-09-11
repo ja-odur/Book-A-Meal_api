@@ -123,8 +123,9 @@ class TestOrder(unittest.TestCase):
 
         self.tester.post(self.order_url + '/1', headers={'access-token': self.token_user})
 
-        expected_response_message = {'content': [{'caterer_id': 1, 'customer_id': 1, 'meal': 'meal',
-                                                  'order_cleared': False, 'order_id': 1, 'price': 5000}]}
+        expected_response_message = {'content': [{'caterer': 'easy_caterer', 'customer': 'odur joseph',
+                                                  'customer_id': 1, 'meal': 'meal', 'meal_id': 1,
+                                                  'order_cleared': False, 'order_id': 1, 'points': 0, 'price': 5000}]}
 
         get_response = self.tester.get(self.order_url, headers={'access-token':self.token_caterer})
 
@@ -168,7 +169,7 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(expected_response_message, len(response_results['message']))
 
     def test_clear_order(self):
-        expected_response_message = True
+        expected_response_message = 'Order successfully cleared'
 
         meal_ids = dict(meal_ids=[1, 2])
 
@@ -177,12 +178,11 @@ class TestOrder(unittest.TestCase):
 
         self.tester.post(self.order_url + '/1', headers={'access-token': self.token_user})
 
-        self.tester.patch(self.order_url + '/clear/1', headers={'access-token':self.token_caterer})
+        response= self.tester.patch(self.order_url + '/clear/1', headers={'access-token':self.token_caterer})
 
-        response = self.tester.get(self.order_url + '/placed', headers={'access-token': self.token_user})
         response_results = json.loads(response.data.decode())
         self.assertEqual(200, response.status_code)
-        self.assertEqual(expected_response_message, response_results['message'][0]['order_cleared'])
+        self.assertEqual(expected_response_message, response_results['message'])
 
     def test_clear_order_invalid_order_id(self):
         expected_response_message = 'Order does not exist'
@@ -249,12 +249,12 @@ class TestOrder(unittest.TestCase):
         self.assertEqual(expected_response_message, response_results['message'])
 
     def test_get_history_caterer(self):
-        expected_result = 'Sorry operation not permitted for caterers.'
+        expected_result = 'No order history'
 
         history_response = self.tester.get(self.order_url + '/history', headers={'access-token': self.token_caterer})
         history = json.loads(history_response.data.decode())
 
-        self.assertEqual(403, history_response.status_code)
+        self.assertEqual(200, history_response.status_code)
         self.assertEqual(expected_result, history['message'])
 
     def test_get_empty_history(self):

@@ -192,4 +192,74 @@ class TestMenu(unittest.TestCase):
         self.assertEqual(404, get_response.status_code)
         self.assertEqual('No menu found', response_results['message'])
 
+    def test_add_meals_to_menu_successful(self):
+        meal_ids = dict(meal_ids=[1, 2])
+
+        get_response = self.tester.post(self.menu_url + 'meals/add/', headers={'access-token': self.token},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        self.assertEqual(201, get_response.status_code)
+
+    def test_add_meals_to_menu_failure1(self):
+        meal_ids = dict(meal_id=[1, 2])
+
+        get_response = self.tester.post(self.menu_url + 'meals/add/', headers={'access-token': self.token},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        self.assertEqual(400, get_response.status_code)
+
+    def test_add_meals_to_menu_failure2(self):
+        meal_ids = dict(meal_ids=dict(id=2) )
+
+        get_response = self.tester.post(self.menu_url + 'meals/add/', headers={'access-token': self.token},
+                                             content_type="application/json", data=json.dumps(meal_ids))
+
+        self.assertEqual(400, get_response.status_code)
+
+    def test_reomve_meals_to_menu_success(self):
+        meal_ids2 = dict(meal_id=1)
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.tester.post(self.menu_url + 'meals/add/', headers={'access-token': self.token},
+                                        content_type="application/json", data=json.dumps(meal_ids))
+
+        get_response = self.tester.post(self.menu_url + 'meal/', headers={'access-token': self.token},
+                                             content_type="application/json", data=json.dumps(meal_ids2))
+
+        self.assertEqual(201, get_response.status_code)
+
+    def test_reomve_meals_to_menu_failure(self):
+        meal_ids2 = dict(meal_ids=1)
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.tester.post(self.menu_url + 'meals/add/', headers={'access-token': self.token},
+                                        content_type="application/json", data=json.dumps(meal_ids))
+
+        get_response = self.tester.post(self.menu_url + 'meal/', headers={'access-token': self.token},
+                                             content_type="application/json", data=json.dumps(meal_ids2))
+
+        self.assertEqual(400, get_response.status_code)
+
+    def test_reomve_meals_to_menu_failure2(self):
+        meal_ids2 = dict(meal_id=[])
+        meal_ids = dict(meal_ids=[1, 2])
+
+        self.tester.post(self.menu_url + 'meals/add/', headers={'access-token': self.token},
+                                        content_type="application/json", data=json.dumps(meal_ids))
+
+        get_response = self.tester.post(self.menu_url + 'meal/', headers={'access-token': self.token},
+                                             content_type="application/json", data=json.dumps(meal_ids2))
+
+        self.assertEqual(400, get_response.status_code)
+
+
+    def test_trending(self):
+
+        get_response = self.tester.get(URL_PREFIX + '/meals/trending', headers={'access-token': self.token})
+
+        self.assertEqual(200, get_response.status_code)
+
+
+
+
 
