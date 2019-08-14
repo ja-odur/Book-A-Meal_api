@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jaodur/Book-A-Meal_api.svg?branch=persistentDATA)](https://travis-ci.org/jaodur/Book-A-Meal_api)
+[![Build Status](https://travis-ci.org/jaodur/Book-A-Meal_api.svg?branch=persistentDATA)](https://travis-ci.org/ja-odur/Book-A-Meal_api)
 [![Coverage Status](https://coveralls.io/repos/github/jaodur/Book-A-Meal_api/badge.svg?branch=persistentDATA)](https://coveralls.io/github/jaodur/Book-A-Meal_api?branch=persistentDATA)
 [![Maintainability](https://api.codeclimate.com/v1/badges/cb220ab726615c522d8a/maintainability)](https://codeclimate.com/github/jaodur/Book-A-Meal_api/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/cb220ab726615c522d8a/test_coverage)](https://codeclimate.com/github/jaodur/Book-A-Meal_api/test_coverage)
